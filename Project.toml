@@ -1,4 +1,11 @@
-name = "PartitionnedStructure"
+name = "PartitionnedStructures"
 uuid = "a6683cb1-4e99-4d03-b5b5-b79ed0acabcf"
 authors = ["raynaudp "]
 version = "0.1.0"
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ProfileView = "c46f51b8-102a-5cf2-8d2c-8597cb0e0da7"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
