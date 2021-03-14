@@ -12,8 +12,9 @@ module M_elt_vec
 
 	@inline set_vec!(ev :: T, vec :: Vector{Y}) where T <: Elt_vec where Y = ev.vec = vec
 	@inline set_indices!(ev :: T, indices :: Vector{Int}) where T <: Elt_vec = ev.indices = indices
-	
+	@inline set_nie!(ev :: T, nie :: Int) where T <: Elt_vec = ev.nie = nie
+		
 	export Elt_vec
 	export get_vec, get_indices, get_nie
-	export set_vec!, set_indices!
+	export set_vec!, set_indices!, set_nie!
 end

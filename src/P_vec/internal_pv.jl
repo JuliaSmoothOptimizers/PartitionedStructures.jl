@@ -16,7 +16,7 @@ module M_internal_pv
 	new_internal_pv(N,n;nᵢ,T)
 	Define an internal partitionned vector of N elemental nᵢ-sized vector simulating a n-sized T-vector.
 	"""
-	function new_internal_pv(N :: Int,n :: Int; nᵢ=3, T=Float64)		
+	function rand_ipv(N :: Int,n :: Int; nᵢ=3, T=Float64)		
 		int_ev_set = Vector{Internal_elt_vec{T}}(undef,N)
 		for i in 1:N
 			nᵢᴱ = rand(max(nᵢ-1,0):nᵢ+1)
@@ -29,6 +29,6 @@ module M_internal_pv
 
 export Internal_pv
 
-export new_internal_pv
+export rand_ipv
 	
 end

@@ -13,9 +13,15 @@ module M_part_v
 	@inline set_v!(p :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = p.v[i] = value
 	@inline add_v!(p :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = p.v[i] += value
 
-	@inline reset_v!(p :: T ) where T <: Part_v{Y} where Y = p.v .= zeros(Y,get_n(p))
+	@inline reset_v!(p :: T ) where T <: Part_v{Y} where Y = p.v .= zero.(get_n(p))
 
 	@inline build_v!(p :: T) where T <: Part_v = error("part_v should not be call")
+
+
+
+
+
+
 
 	# using ..M_elt_vec
 	# mutable struct Part_v{T, Y <: Vector{Elt_vec{T}}}
