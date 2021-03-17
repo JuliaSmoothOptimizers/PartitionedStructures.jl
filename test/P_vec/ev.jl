@@ -77,7 +77,7 @@ end
 	eev1 = Elemental_elt_vec([1:5;],[1:2:9;],nᵢᴱ)
 	v1 = get_vec(eev1)
 	i1 = get_indices(eev1)
-	lin_com = zeros(eltype(v1),nᵢᴱ,nᵢᴱ) # identity matrix Matrix(I,n,n) didn't work
+	lin_com = spzeros(eltype(v1),nᵢᴱ,nᵢᴱ) # identity matrix Matrix(I,n,n) didn't work
 	[lin_com[i,i] = 1 for i in 1:nᵢᴱ] 
 	sv = sparsevec(i1,v1)
 	_tmp = rand(Int,nᵢᴱ)

@@ -35,7 +35,7 @@ not_last && @testset "test k-chained et build_v!" begin
 
 end 
 
-# @testset "test fonction création epv" begin 
+@testset "test fonction création epv" begin 
 	# elemental
 	n = 10
 	N = 2
@@ -57,10 +57,12 @@ end
 	ipv = ipv_from_epv(epv)
 	ipv_v = build_v(ipv)
 
+	@test (@allocated build_v(ipv)) == 0
+
 	@test epv_v == ipv_v
-# end
+end
 
 
-bi = @benchmark build_v!(ipv)
-be = @benchmark build_v!(epv)
+# bi = @benchmark build_v!(ipv)
+# be = @benchmark build_v!(epv)
 # ProfileView.@profview @benchmark build_v!(ipv)

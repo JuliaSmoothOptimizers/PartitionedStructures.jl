@@ -49,7 +49,6 @@ module M_internal_pv
 
 	# Warning: the order of ipv.indices is crucial to get the expected result.
 	# the order of ipv.lin_comb, ipv.vec, ipv.indices must be synchronise	
-	# at least 1 alloc by build_tmp!, alloc the transpose wrapper
 	function M_part_v.build_v!(ipv :: Internal_pv{T}) where T
 		reset_v!(ipv)
 		N = get_N(ipv)		
