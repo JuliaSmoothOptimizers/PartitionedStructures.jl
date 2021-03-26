@@ -1,9 +1,11 @@
 module M_elemental_pm
+# Symmetric bloc elemental partitioned matrix
 
 	using SparseArrays
 
 	using ..M_part_mat
 	using ..M_elt_mat, ..M_elemental_em
+	
 	
 	mutable struct Elemental_pm{T} <: Part_mat{T}
 		N :: Int
@@ -13,6 +15,7 @@ module M_elemental_pm
 		component_list :: Vector{Vector{Int}}
 	end
 
+	#getter/setter
 	get_eem_set(epm :: Elemental_pm{T}) where T = epm.eem_set
 	get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = epm.eem_set[i]
 
@@ -20,7 +23,11 @@ module M_elemental_pm
 	get_component_list(epm :: Elemental_pm{T}) where T = epm.component_list
 	get_component_list(epm :: Elemental_pm{T},i::Int) where T = epm.component_list[i]
 	
-	function identity_pm(N :: Int, n ::Int; T=Float64, nie::Int=5)		
+	"""
+		identity_epm(N,n; type, nie)
+	Create a a partitionned matrix of N nie-identity blocs whose positions are randoms
+	"""
+	function identity_epm(N :: Int, n ::Int; T=Float64, nie::Int=5)		
 		eem_set = map(i -> identity_eem(nie;T=T,n=n), [1:N;])
 		spm = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
@@ -30,7 +37,11 @@ module M_elemental_pm
 		return epm
 	end 
 
-	function ones_pm(N :: Int, n ::Int; T=Float64, nie::Int=5)		
+	"""
+		ones_epm(N,n; type, nie)
+	Create a a partitionned matrix of N ones(nie,nie) blocs whose positions are randoms
+	"""
+	function ones_epm(N :: Int, n ::Int; T=Float64, nie::Int=5)		
 		eem_set = map(i -> ones_eem(nie;T=T,n=n), [1:N;])
 		spm = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
@@ -40,6 +51,11 @@ module M_elemental_pm
 		return epm
 	end 
 
+
+	"""
+		initialize_component_list!(epm)
+	initialize_component_list! Build for each index i the list of the blocs using i.
+	"""
 	function initialize_component_list!(epm)
 		N = get_N(epm)
 		n = get_n(epm)
@@ -52,22 +68,32 @@ module M_elemental_pm
 		end 
 	end 
 
-	reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm .= (T)(0)
-	function set_spm!(epm :: Elemental_pm{T}) where T
+	"""
 		reset_spm!(epm)
+	Reset the sparse matrix epm.spm
+	"""
+	# @inline reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm .= (T)(0)
+	@inline reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm.nzval .= (T)(0) #.nzval delete the 1 alloc
+
+	"""
+		set_spm!(epm)
+	Build the sparse matrix spm from the blocs epm.eem_set, according to the indinces.
+	"""
+	function set_spm!(epm :: Elemental_pm{T}) where T
+		reset_spm!(epm) # epm.spm .= 0
+
 		N = get_N(epm)
 		n = get_n(epm)
 		spm = get_spm(epm)
 		for i in 1:N
 			epmᵢ = get_eem_set(epm,i)
 			nie = get_nie(epmᵢ)
-			_indices = get_indices(epmᵢ)
 			hie = get_hie(epmᵢ)
 			for i in 1:nie, j in 1:nie
 				val = hie[i,j]
-				real_i = _indices[i]
-				real_j = _indices[j]
-				spm[real_i,real_j] += val 
+				real_i = get_indices(epmᵢ,i) # epmᵢ.indices[i]
+				real_j = get_indices(epmᵢ,j) # epmᵢ.indices[j]
+				spm[real_i, real_j] += val 
 			end 
 		end 
 	end
@@ -77,5 +103,5 @@ module M_elemental_pm
 	export get_eem_set, get_spm, get_component_list
 	export initialize_component_list!
 	export reset_spm!, set_spm!
-	export identity_pm, ones_pm
+	export identity_epm, ones_epm
 end

@@ -5,6 +5,7 @@ module M_elt_mat
 
 	# we assume at least the field nie, and indices
 	get_indices(eem :: T ) where T <: Elt_mat = eem.indices
+	get_indices(eem :: T, i::Int ) where T <: Elt_mat = eem.indices[i]
 	get_nie(eem :: T ) where T <: Elt_mat = eem.nie
 	
 	set_indices!(eem :: T, indices :: Vector{Int}) where T <: Elt_mat = eem.indices = indices
