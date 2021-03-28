@@ -2,7 +2,7 @@ using PartitionnedStructures.M_elt_vec
 using PartitionnedStructures.M_elemental_em
 using PartitionnedStructures.M_elemental_pm
 
-using SparseArrays
+using SparseArrays, StatsBase
 
 
 @testset "first tests on epm" begin 
@@ -18,17 +18,43 @@ using SparseArrays
 	# a = sparse([1:2:5;],[2:2:6;],ones(3))
 
 	@test (@allocated reset_spm!(pm1)) == 0
-	@test (@allocated set_spm!(pm1)) == 0
+	@test (@allocated set_spm!(pm1)) == 0 
+
+	set_spm!(pm1)
+	original_spm1 = copy(get_spm(pm1))
+	original_pm1 = copy(pm1)
+
+	p = [1:n;]
+	permute!(pm1,p)
+	set_spm!(pm1)
+	id_spm1 = copy(get_spm(pm1))
+	id_pm1 = copy(pm1)
+	@test id_spm1 == original_spm1
+
+	p = sample(1:n, n,replace=false)
+	permute!(pm1,p)
+	set_spm!(pm1)
+	perm_spm1 = copy(get_spm(pm1))
+	perm_pm1 = copy(pm1)
+	@test perm_pm1 != original_spm1
+
 end 
 
-N = 100
-n = 200
-nie = 5
+N = 3
+n = 5
+nie = 2
 pm1 = identity_epm(N,n; nie=nie)
 pm2 = ones_epm(N,n; nie=nie)
 
-b1 = @benchmark reset_spm!(pm1)
-b2 = @benchmark set_spm!(pm1)
+
+
+
+
+
+
+
+# b1 = @benchmark reset_spm!(pm1)
+# b2 = @benchmark set_spm!(pm1)
 
 # @code_warntype set_spm!(pm1)
 # ProfileView.@profview (@benchmark set_spm!(pm1))
