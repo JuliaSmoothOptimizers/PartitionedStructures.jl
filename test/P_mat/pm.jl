@@ -40,11 +40,11 @@ using SparseArrays, StatsBase
 
 end 
 
-N = 3
-n = 5
-nie = 2
-pm1 = identity_epm(N,n; nie=nie)
-pm2 = ones_epm(N,n; nie=nie)
+# N = 3
+# n = 5
+# nie = 2
+# pm1 = identity_epm(N,n; nie=nie)
+# pm2 = ones_epm(N,n; nie=nie)
 
 
 

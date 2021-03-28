@@ -12,6 +12,7 @@ module M_elemental_pm
 		n :: Int
 		eem_set :: Vector{Elemental_em{T}}
 		spm :: SparseMatrixCSC{T,Int}
+		L :: SparseMatrixCSC{T,Int}
 		component_list :: Vector{Vector{Int}}
 		permutation :: Vector{Int} # n-size vector 
 	end
@@ -21,14 +22,16 @@ module M_elemental_pm
 	get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = epm.eem_set[i]
 
 	get_spm(epm :: Elemental_pm{T}) where T = epm.spm
+	get_L(epm :: Elemental_pm{T}) where T = epm.L
 	get_component_list(epm :: Elemental_pm{T}) where T = epm.component_list
 	get_component_list(epm :: Elemental_pm{T},i::Int) where T = epm.component_list[i]
+	
 	
 	import Base.==
 	(==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
 
 	import Base.copy
-	copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),copy.(get_eem_set(epm)),copy(get_spm(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
+	copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),copy.(get_eem_set(epm)),copy(get_spm(epm)), copy(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
 	"""
 		identity_epm(N,n; type, nie)
 	Create a a partitionned matrix of N nie-identity blocs whose positions are randoms
@@ -36,9 +39,10 @@ module M_elemental_pm
 	function identity_epm(N :: Int, n ::Int; T=Float64, nie::Int=5)		
 		eem_set = map(i -> identity_eem(nie;T=T,n=n), [1:N;])
 		spm = spzeros(T,n,n)
+		L = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
 		no_perm = [1:n;]
-		epm = Elemental_pm{T}(N,n,eem_set,spm,component_list,no_perm)
+		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
 		set_spm!(epm)
 		return epm
@@ -51,9 +55,10 @@ module M_elemental_pm
 	function ones_epm(N :: Int, n ::Int; T=Float64, nie::Int=5)		
 		eem_set = map(i -> ones_eem(nie;T=T,n=n), [1:N;])
 		spm = spzeros(T,n,n)
+		L = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
 		no_perm= [1:n;]
-		epm = Elemental_pm{T}(N,n,eem_set,spm,component_list,no_perm)
+		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
 		set_spm!(epm)
 		return epm
@@ -82,6 +87,9 @@ module M_elemental_pm
 	"""
 	@inline reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm.nzval .= (T)(0) #.nzval delete the 1 alloc
 	@inline hard_reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm = spzeros(T,get_n(epm),get_n(epm))
+
+	@inline reset_L!(epm :: Elemental_pm{T}) where T = epm.L.nzval .= (T)(0) #.nzval delete the 1 alloc
+	@inline hard_reset_L!(epm :: Elemental_pm{T}) where T = epm.L = spzeros(T,get_n(epm),get_n(epm))
 
 	"""
 		set_spm!(epm)
@@ -115,14 +123,23 @@ module M_elemental_pm
 	"""
 	function permute!(epm :: Elemental_pm{T}, p :: Vector{Int}) where T
 		N = get_N(epm)
+		n = get_n(epm)
+		# permute on element matrix 
 		for i in 1:N
 			epmᵢ = get_eem_set(epm,i)
 			indicesᵢ = get_indices(epmᵢ)
 			e_perm = Vector(view(p,indicesᵢ))
 			permute!(epmᵢ,e_perm)
 		end 
+		# permute on the permutation vector
 		perm = get_permutation(epm)
 		permute!(perm, p)
+		# permute component list
+		new_component_list = Vector{Vector{Int}}(undef,n)
+		for i in 1:n
+			new_component_list[i] = get_component_list(epm, p[i])
+		end 
+		# hard reset of the sparse matrix
 		hard_reset_spm!(epm)
 	end 
 
