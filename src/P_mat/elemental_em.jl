@@ -36,7 +36,7 @@ module M_elemental_em
 	end 
 
 	function fixed_ones_eem(i::Int, nie :: Int; T=Float64) 
-		indices = [i:(i+nie);]
+		indices = [i:(i+nie-1);]
 		hie = ones(T,nie,nie)		
 		[hie[i,i] = 5 for i in 1:nie]
 		eem = Elemental_em{T}(nie,indices,Symmetric(hie))

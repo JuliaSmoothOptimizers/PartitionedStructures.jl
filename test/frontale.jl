@@ -3,7 +3,7 @@ using PartitionnedStructures.M_elemental_pm
 using PartitionnedStructures.M_part_mat
 using PartitionnedStructures.M_frontale
 
-using LinearAlgebra, LDLFactorizations
+using LinearAlgebra
 
 
 #=
@@ -31,17 +31,19 @@ end
 
 # Exemple pouvant être plus facilement manipuler
 # attention aux grandes dimensions le pattern de ones_epm_and_id(N,n,nie) n'est pas bon de manière générale.
-N = 15
-n = 30
+
+n = 1000
 nie = 5
-pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
+# N = 15
+# pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
+pm = tri_diag_dom(n; nie=nie) # create a tridiag dominant matrix
 sp_pm = get_spm(pm) # the sparse matrix from the bloc matrix
 m = Matrix(sp_pm) # Matrix format for nice print
 
 LLT = cholesky(m)
-L_chol = LLT.L
-
 frontale!(pm)
+
+L_chol = LLT.L
 L_frontale = Matrix(tril(get_L(pm)))
 m_frontale = L_frontale * L_frontale'
 
@@ -51,4 +53,7 @@ m_frontale = L_frontale * L_frontale'
 bench_chol = @benchmark cholesky(m)
 bench_frontale = @benchmark frontale!(pm)
 
+# ProfileView.@profview (@benchmark frontale!(pm))
+
+# @code_warntype frontale!(pm) tout bleu
 # afficher m et m_frontale

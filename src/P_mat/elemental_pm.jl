@@ -95,12 +95,12 @@ end
 function tri_diag_dom(n ::Int; T=Float64, nie::Int=5)
 	mod(n,5) == 0 || error("n doit être multiple de 5")
 	eem_set = map(i -> fixed_ones_eem(i,5;T=T), [1:5:n;])	
-	spm = spzeros(T,n+1,n+1)
-	L = spzeros(T,n+1,n+1)
-	component_list = map(i -> Vector{Int}(undef,0), [1:n+1;])
-	no_perm= [1:n+1;]
-	N = Int(floor(n/5))
-	epm = Elemental_pm{T}(N,n+1,eem_set,spm,L,component_list,no_perm)
+	spm = spzeros(T,n,n)
+	L = spzeros(T,n,n)
+	component_list = map(i -> Vector{Int}(undef,0), [1:n;])
+	no_perm = [1:n;]
+	N = Int(floor(n/5))	
+	epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 	initialize_component_list!(epm)
 	set_spm!(epm)
 	return epm
@@ -187,6 +187,10 @@ end
 		hard_reset_spm!(epm)
 	end 
 
+	"""
+			correlated_var(epm,i) 
+	correlated_var(epm,i) get the linked vars to i depending the structure of epm.
+	"""
 	function correlated_var(epm :: Elemental_pm{T}, i :: Int) where T
 		component_list = get_component_list(epm)
 		bloc_list = component_list[i]
