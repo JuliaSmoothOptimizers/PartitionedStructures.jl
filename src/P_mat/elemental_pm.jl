@@ -87,6 +87,26 @@ function ones_epm_and_id(N :: Int, n ::Int; T=Float64, nie::Int=5)
 	return epm
 end 
 
+
+"""
+	tri_diag_dom(n)
+	n multiple de 5
+"""
+function tri_diag_dom(n ::Int; T=Float64, nie::Int=5)
+	mod(n,5) == 0 || error("n doit être multiple de 5")
+	eem_set = map(i -> fixed_ones_eem(i,5;T=T), [1:5:n;])	
+	spm = spzeros(T,n+1,n+1)
+	L = spzeros(T,n+1,n+1)
+	component_list = map(i -> Vector{Int}(undef,0), [1:n+1;])
+	no_perm= [1:n+1;]
+	N = Int(floor(n/5))
+	epm = Elemental_pm{T}(N,n+1,eem_set,spm,L,component_list,no_perm)
+	initialize_component_list!(epm)
+	set_spm!(epm)
+	return epm
+end 
+
+
 	"""
 		initialize_component_list!(epm)
 	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
@@ -191,5 +211,5 @@ end
 	export initialize_component_list!, correlated_var
 	export reset_spm!, set_spm!, set_L_to_spm!
 
-	export identity_epm, ones_epm, ones_epm_and_id
+	export identity_epm, ones_epm, ones_epm_and_id, tri_diag_dom
 end

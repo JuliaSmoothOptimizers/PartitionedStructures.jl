@@ -35,6 +35,14 @@ module M_elemental_em
 		return eem
 	end 
 
+	function fixed_ones_eem(i::Int, nie :: Int; T=Float64) 
+		indices = [i:(i+nie);]
+		hie = ones(T,nie,nie)		
+		[hie[i,i] = 5 for i in 1:nie]
+		eem = Elemental_em{T}(nie,indices,Symmetric(hie))
+		return eem
+	end 
+
 	one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1,[index], Symmetric(ones(1,1)))
 
 
@@ -45,6 +53,6 @@ module M_elemental_em
 	export Elemental_em
 
 	export get_hie
-	export identity_eem, ones_eem, one_size_bloc
+	export identity_eem, ones_eem, fixed_ones_eem, one_size_bloc
 
 end 

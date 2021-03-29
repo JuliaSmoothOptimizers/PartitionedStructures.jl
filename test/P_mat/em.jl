@@ -12,7 +12,7 @@ using StatsBase
 
 	cp_eem1 = copy(eem1)
 	p = [1:n;]
-	p_view = Vector(view(p, get_indices(eem1)))
+	p_view = Vector(view(p, M_elemental_em.get_indices(eem1)))
 	permute!(eem1,p_view)
 	@test cp_eem1 == eem1
 
