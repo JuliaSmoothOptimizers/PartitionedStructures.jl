@@ -22,9 +22,14 @@ module M_elemental_pm
 	get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = epm.eem_set[i]
 
 	get_spm(epm :: Elemental_pm{T}) where T = epm.spm
+	get_spm(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = epm.spm[i,j]
 	get_L(epm :: Elemental_pm{T}) where T = epm.L
+	get_L(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = epm.L[i,j]
 	get_component_list(epm :: Elemental_pm{T}) where T = epm.component_list
 	get_component_list(epm :: Elemental_pm{T},i::Int) where T = epm.component_list[i]
+
+	set_L!(epm :: Elemental_pm{T}, i :: Int, j :: Int, v :: T) where T = epm.L[i,j] = v
+	set_L_to_spm!(epm :: Elemental_pm{T}) where T = epm.L = copy(epm.spm)
 	
 	
 	import Base.==
@@ -64,10 +69,27 @@ module M_elemental_pm
 		return epm
 	end 
 
+"""
+	ones_epm(N,n; type, nie)
+Create a a partitionned matrix of N ones(nie,nie) blocs whose positions are randoms
+"""
+function ones_epm_and_id(N :: Int, n ::Int; T=Float64, nie::Int=5)		
+	eem_set1 = map(i -> ones_eem(nie;T=T,n=n), [1:N;])
+	eem_set2 = map(i -> one_size_bloc(i;T=T), [1:n;])
+	eem_set = vcat(eem_set1,eem_set2)
+	spm = spzeros(T,n,n)
+	L = spzeros(T,n,n)
+	component_list = map(i -> Vector{Int}(undef,0), [1:n;])
+	no_perm= [1:n;]
+	epm = Elemental_pm{T}(N+n,n,eem_set,spm,L,component_list,no_perm)
+	initialize_component_list!(epm)
+	set_spm!(epm)
+	return epm
+end 
 
 	"""
 		initialize_component_list!(epm)
-	initialize_component_list! Build for each index i the list of the blocs using i.
+	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
 	"""
 	function initialize_component_list!(epm)
 		N = get_N(epm)
@@ -81,6 +103,7 @@ module M_elemental_pm
 		end 
 	end 
 
+
 	"""
 		reset_spm!(epm)
 	Reset the sparse matrix epm.spm
@@ -91,13 +114,13 @@ module M_elemental_pm
 	@inline reset_L!(epm :: Elemental_pm{T}) where T = epm.L.nzval .= (T)(0) #.nzval delete the 1 alloc
 	@inline hard_reset_L!(epm :: Elemental_pm{T}) where T = epm.L = spzeros(T,get_n(epm),get_n(epm))
 
+
 	"""
 		set_spm!(epm)
 	Build the sparse matrix spm from the blocs epm.eem_set, according to the indinces.
 	"""
 	function set_spm!(epm :: Elemental_pm{T}) where T
 		reset_spm!(epm) # epm.spm .= 0
-
 		N = get_N(epm)
 		n = get_n(epm)
 		spm = get_spm(epm)
@@ -113,6 +136,7 @@ module M_elemental_pm
 			end 
 		end 
 	end
+
 
 	import Base.permute! 
 	"""
@@ -143,10 +167,29 @@ module M_elemental_pm
 		hard_reset_spm!(epm)
 	end 
 
+	function correlated_var(epm :: Elemental_pm{T}, i :: Int) where T
+		component_list = get_component_list(epm)
+		bloc_list = component_list[i]
+		indices_list = Vector{Int}(undef,0)
+		for (id_j,j) in enumerate(bloc_list)
+			eemᵢ = get_eem_set(epm,j)
+			_indices = get_indices(eemᵢ)
+			append!(indices_list, _indices)
+		end
+		var_list = vcat(indices_list...)
+		unique!(var_list)
+		return var_list
+	end 
+
+
+
 	export Elemental_pm
 
-	export get_eem_set, get_spm, get_component_list
-	export initialize_component_list!
-	export reset_spm!, set_spm!
-	export identity_epm, ones_epm
+	export get_eem_set, get_spm, get_L, get_component_list
+	export set_L!
+
+	export initialize_component_list!, correlated_var
+	export reset_spm!, set_spm!, set_L_to_spm!
+
+	export identity_epm, ones_epm, ones_epm_and_id
 end

@@ -35,6 +35,8 @@ module M_elemental_em
 		return eem
 	end 
 
+	one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1,[index], Symmetric(ones(1,1)))
+
 
 	import Base.permute!
 	permute!(eem :: Elemental_em{T}, p :: Vector{Int}) where T = eem.indices .= p
@@ -43,6 +45,6 @@ module M_elemental_em
 	export Elemental_em
 
 	export get_hie
-	export identity_eem, ones_eem
+	export identity_eem, ones_eem, one_size_bloc
 
 end 
