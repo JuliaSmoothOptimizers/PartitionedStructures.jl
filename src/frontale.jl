@@ -2,12 +2,15 @@ module M_frontale
 
 	using ..M_part_mat, ..M_elemental_pm
 
-
+	using LoopVectorization
 
 	function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T	
-		permute!(epm, perm) # apply the permutation
+		if perm != [1:get_n(epm);]
+			permute!(epm, perm) # apply the permutation
+		end
 		set_spm!(epm) #(re)-build the sparse matrix of epm
 		set_L_to_spm!(epm) # copy on spm on L
+		
 
 		N = get_N(epm)
 		n = get_n(epm)
@@ -20,14 +23,14 @@ module M_frontale
 			# Front update
 			push!(front,_current_var)
 			crl_var = correlated_var(epm, _current_var) # getting correlated var from the blocs
-			needed_var = select_var(crl_var, not_treated) # filterinf these correlated var to maintain order
+			needed_var = select_var(crl_var, not_treated) # filtering these correlated var to maintain order
 			front = vcat(front, needed_var)
 			sort!(front) # maintaining order
 			unique!(front) # without duplication
 			actualise_not_added!(front, not_added) # update of boolean list
 
-			for j in front
-				if j == _current_var # pivot (1 ere iter)
+			@simd for j in front
+				if j == _current_var # pivot (1st iter)
 					v = sqrt(get_L(epm,_current_var,_current_var))
 					set_L!(epm,_current_var,_current_var,v)
 				else # terms below the pivot

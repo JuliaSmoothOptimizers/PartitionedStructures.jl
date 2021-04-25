@@ -10,13 +10,13 @@ module M_elemental_em
 		hie :: Symmetric{T,Matrix{T}} # size nᵢᴱ × nᵢᴱ
 	end
 
-	get_hie(eem :: Elemental_em{T}) where T = eem.hie
+	@inline get_hie(eem :: Elemental_em{T}) where T = eem.hie
 
 	import Base.==
-	(==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_hie(eem1)== get_hie(eem2)) && (get_indices(eem1)== get_indices(eem2))
+	@inline (==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_hie(eem1)== get_hie(eem2)) && (get_indices(eem1)== get_indices(eem2))
 
 	import Base.copy
-	copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_hie(eem)))
+	@inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_hie(eem)))
 
 	# function creating elemental element matrix 
 
@@ -35,10 +35,10 @@ module M_elemental_em
 		return eem
 	end 
 
-	function fixed_ones_eem(i::Int, nie :: Int; T=Float64) 
+	function fixed_ones_eem(i::Int, nie :: Int; T=Float64, mul=5.) 
 		indices = [i:(i+nie-1);]
 		hie = ones(T,nie,nie)		
-		[hie[i,i] = 5 for i in 1:nie]
+		[hie[i,i] = mul for i in 1:nie]
 		eem = Elemental_em{T}(nie,indices,Symmetric(hie))
 		return eem
 	end 
