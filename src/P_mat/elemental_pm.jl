@@ -73,8 +73,8 @@ module M_elemental_pm
 	end 
 
 	"""
-		ones_epm(N,n; type, nie)
-	Create a a partitionned matrix of N ones(nie,nie) blocs whose positions are randoms.
+			ones_epm_and_id(N,n; type, nie)
+	Create a a partitionned matrix of N ones(nie,nie) blocs whose positions are randoms and adding .
 	Not singular.
 	"""
 	function ones_epm_and_id(N :: Int, n ::Int; T=Float64, nie::Int=5)		
@@ -97,9 +97,9 @@ module M_elemental_pm
 	A nᵢ bloc separable matrix
 	By default nᵢ = 5
 	"""
-	function n_i_sep(n ::Int; T=Float64, nie::Int=5)
+	function n_i_sep(n ::Int; T=Float64, nie::Int=5, mul=5.)
 		mod(n,nie) == 0 || error("n doit être multiple de nie")
-		eem_set = map(i -> fixed_ones_eem(i,nie;T=T), [1:nie:n;])
+		eem_set = map(i -> fixed_ones_eem(i,nie;T=T, mul=mul), [1:nie:n;])
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
@@ -116,11 +116,11 @@ module M_elemental_pm
 	A nᵢ bloc separable matrix
 	By default nᵢ = 5
 	"""
-	function n_i_SPS(n ::Int; T=Float64, nie::Int=5, overlapping::Int=1)
+	function n_i_SPS(n ::Int; T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
 		mod(n,nie) == 0 || error("n doit être multiple de nie")
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
-		eem_set1 = map(i -> fixed_ones_eem(i,nie;T=T), [1:nie:n;])
-		eem_set2 = map(i -> fixed_ones_eem(i,nie;T=T), [1+overlapping:nie:n-nie+overlapping;])
+		eem_set1 = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1:nie:n;])
+		eem_set2 = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1+overlapping:nie:n-nie+overlapping;])
 		eem_set = vcat(eem_set1,eem_set2)
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)

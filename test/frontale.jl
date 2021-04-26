@@ -106,7 +106,6 @@ sps_m = Matrix(n_i_sps_pm)
 
 names = []
 vector_n = [100,200,500,1000,5000,10000]
-# vector_n = [100,200,300,400,500]
 vector_ni = [5,10,20]
 vector_chevauchement = [1,2,3]
 
