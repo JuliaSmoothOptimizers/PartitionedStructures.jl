@@ -18,7 +18,7 @@ using SparseArrays, LinearAlgebra
 	piv = rand_ipv(N,nᵢ)
 end 
 
-not_last && @testset "test k-chained et build_v!" begin 
+@testset "test k-chained et build_v!" begin 
 	N = 100
 	k = 4
 
@@ -60,6 +60,19 @@ end
 	@test (@allocated build_v(ipv)) == 0
 
 	@test epv_v == ipv_v
+end
+
+@testset "test similar et copy" begin
+	N = 100
+	k = 4
+	epv = ones_kchained_epv(N,k)
+
+	@test epv == copy(epv)
+	@test copy(epv) != similar(epv)
+	
+	epv2 = copy(epv)
+	set_eev!(epv2, 1, 1, 5.0)
+	@test epv2 != epv
 end
 
 

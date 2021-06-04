@@ -1,10 +1,12 @@
 module M_part_v
 
-	# we assume that each type T <: Part_v{T} possess at least a field N and n 
-	abstract type Part_v{T} end 
+	using ..M_abstract_part_struct
 
-	@inline get_N(pv :: T ) where T <: Part_v = pv.N
-	@inline get_n(pv :: T ) where T <: Part_v = pv.n
+	# we assume that each type T <: Part_v{T} possess at least a field N and n 
+	abstract type Part_v{T} <: Part_struct{T} end 
+
+	# @inline get_N(pv :: T ) where T <: Part_v = pv.N
+	# @inline get_n(pv :: T ) where T <: Part_v = pv.n
 	@inline get_v(pv :: T ) where T <: Part_v = pv.v
 
 	@inline set_N!(pv :: T, N :: Int ) where T <: Part_v = pv.N = N
@@ -23,7 +25,6 @@ module M_part_v
 	"""
 	@inline build_v(pv :: T) where T <: Part_v = begin build_v!(pv); return get_v(pv) end
 	@inline build_v!(pv :: T) where T <: Part_v = error("M_part_v.build_v!() should not be call")
-
 
 
 

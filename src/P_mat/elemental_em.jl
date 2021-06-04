@@ -4,6 +4,8 @@ module M_elemental_em
 	
 	using ..M_elt_mat
 
+	import Base.==, Base.copy, Base.similar
+
 	mutable struct Elemental_em{T} <: Elt_mat{T}
 		nie :: Int # nᵢᴱ
 		indices :: Vector{Int} # size nᵢᴱ
@@ -12,11 +14,10 @@ module M_elemental_em
 
 	@inline get_hie(eem :: Elemental_em{T}) where T = eem.hie
 
-	import Base.==
+	
 	@inline (==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_hie(eem1)== get_hie(eem2)) && (get_indices(eem1)== get_indices(eem2))
-
-	import Base.copy
 	@inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_hie(eem)))
+	@inline similar(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_hie(eem)))
 
 	# function creating elemental element matrix 
 

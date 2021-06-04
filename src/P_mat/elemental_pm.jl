@@ -6,6 +6,9 @@ module M_elemental_pm
 
 	using ..M_part_mat
 	using ..M_elt_mat, ..M_elemental_em
+
+	import Base.==, Base.copy, Base.similar
+	import Base.Matrix, SparseArrays.SparseMatrixCSC
 	
 	
 	mutable struct Elemental_pm{T} <: Part_mat{T}
@@ -21,6 +24,7 @@ module M_elemental_pm
 	#getter/setter
 	@inline get_eem_set(epm :: Elemental_pm{T}) where T = epm.eem_set
 	@inline get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = @inbounds epm.eem_set[i]
+	@inline get_eem_set_hie(epm :: Elemental_pm{T}, i::Int) where T = get_hie(get_eem_set(epm,i))
 
 	@inline get_spm(epm :: Elemental_pm{T}) where T = epm.spm
 	@inline get_spm(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.spm[i,j]
@@ -33,11 +37,10 @@ module M_elemental_pm
 	@inline set_L_to_spm!(epm :: Elemental_pm{T}) where T = epm.L = copy(epm.spm)
 	
 	
-	import Base.==
-	(==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
-
-	import Base.copy
-	copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),copy.(get_eem_set(epm)),copy(get_spm(epm)), copy(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
+	
+	@inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
+	@inline copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),copy.(get_eem_set(epm)),copy(get_spm(epm)), copy(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
+	@inline similar(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),similar.(get_eem_set(epm)),similar(get_spm(epm)), similar(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
 
 	"""
 		identity_epm(N,n; type, nie)
@@ -133,6 +136,28 @@ module M_elemental_pm
 		return epm
 	end 
 
+	"""
+			n_i_SPS(n)
+	A nᵢ partially bloc separable matrix, whith on the diagonal band regular with overlapping (=1 by default)
+	By default nᵢ=5, overlapping=1, mul=5.
+	"""
+	function part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
+		overlapping < nie || error("l'overlapping doit être plus faible que nie")
+		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
+		
+		eem_set = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
+		spm = spzeros(T,n,n)
+		L = spzeros(T,n,n)
+		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
+		no_perm = [1:n;]
+		N = length(eem_set)
+		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
+		set_spm!(epm)
+		initialize_component_list!(epm)		
+		return epm
+	end 
+
+
 
 	"""
 		initialize_component_list!(epm)
@@ -175,11 +200,11 @@ module M_elemental_pm
 			epmᵢ = get_eem_set(epm,i)
 			nie = get_nie(epmᵢ)
 			hie = get_hie(epmᵢ)
-			@avx for i in 1:nie, j in 1:nie
+			for i in 1:nie, j in 1:nie
 				val = hie[i,j]
-				@inbounds real_i = get_indices(epmᵢ,i) # epmᵢ.indices[i]
-				@inbounds real_j = get_indices(epmᵢ,j) # epmᵢ.indices[j]
-				@inbounds spm[real_i, real_j] += val 
+				real_i = get_indices(epmᵢ,i) # epmᵢ.indices[i]
+				real_j = get_indices(epmᵢ,j) # epmᵢ.indices[j]
+				spm[real_i, real_j] += val 
 			end 
 		end 
 	end
@@ -208,7 +233,7 @@ module M_elemental_pm
 		# permute component list
 		new_component_list = Vector{Vector{Int}}(undef,n)
 		for i in 1:n
-			@inbounds new_component_list[i] = get_component_list(epm, p[i])
+			new_component_list[i] = get_component_list(epm, p[i])
 		end 
 		# hard reset of the sparse matrix
 		hard_reset_spm!(epm)
@@ -220,7 +245,7 @@ module M_elemental_pm
 	"""
 	function correlated_var(epm :: Elemental_pm{T}, i :: Int) where T
 		component_list = get_component_list(epm)
-		@inbounds bloc_list = component_list[i]
+		bloc_list = component_list[i]
 		indices_list = Vector{Int}(undef,0)
 		for (id_j,j) in enumerate(bloc_list)
 			eemᵢ = get_eem_set(epm,j)
@@ -232,24 +257,23 @@ module M_elemental_pm
 		return var_list
 	end 
 
-	import Base.Matrix
+	
 	function Base.Matrix(epm :: Elemental_pm{T}) where T
 		sp_pm = get_spm(epm)
 		m = Matrix(sp_pm)
 		return m
 	end 
 
-	import SparseArrays.SparseMatrixCSC
 	SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = get_spm(epm)
 
 
 	export Elemental_pm
 
-	export get_eem_set, get_spm, get_L, get_component_list
-	export set_L!
+	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_hie
+	export set_L!, set_L_to_spm!
 
 	export initialize_component_list!, correlated_var
 	export reset_spm!, set_spm!, set_L_to_spm!
 
-	export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS
+	export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 end

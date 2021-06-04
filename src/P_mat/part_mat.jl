@@ -1,9 +1,11 @@
 module M_part_mat
 
-	abstract type Part_mat{T} end
+	using ..M_abstract_part_struct
 
-	@inline get_N(pm :: T ) where T <: Part_mat = pm.N
-	@inline get_n(pm :: T ) where T <: Part_mat = pm.n
+	abstract type Part_mat{T} <: Part_struct{T} end
+
+	# @inline get_N(pm :: T ) where T <: Part_mat = pm.N
+	# @inline get_n(pm :: T ) where T <: Part_mat = pm.n
 	@inline get_permutation(pm :: T) where T <: Part_mat = pm.permutation
 
 	@inline set_N!(pm :: T, N :: Int) where T <: Part_mat = pm.N = N

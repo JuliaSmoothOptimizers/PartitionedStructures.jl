@@ -103,72 +103,73 @@ sps_sp_m = SparseMatrixCSC(n_i_sps_pm)
 ldl(sps_sp_m)
 sps_m = Matrix(n_i_sps_pm)
 
+function test_multifrontale()
+	names = []
+	vector_n = [100,200,500,1000,5000,10000]
+	vector_ni = [5,10,20]
+	vector_chevauchement = [1,2,3]
 
-names = []
-vector_n = [100,200,500,1000,5000,10000]
-vector_ni = [5,10,20]
-vector_chevauchement = [1,2,3]
+	time_chol = []
+	time_sparse = []
+	time_frontale = []
 
-time_chol = []
-time_sparse = []
-time_frontale = []
+	memory_chol = []
+	memory_sparse = []
+	memory_frontale = []
 
-memory_chol = []
-memory_sparse = []
-memory_frontale = []
+	allocs_chol = []
+	allocs_sparse = []
+	allocs_frontale = []
 
-allocs_chol = []
-allocs_sparse = []
-allocs_frontale = []
+	for (id_n,n) in enumerate(vector_n)
+		vector_N = Vector{Int}([n/10:n/10:2*n;])
+		for N in vector_N 
+			for ni in vector_ni
+				for chevauchement in vector_chevauchement
+					pm = n_i_SPS(n; nie=nie, overlapping=chevauchement) # create a overlapping bloc diagonale matrix
+					sp_m = SparseMatrixCSC(pm) # the sparse matrix from the partitioned matrix
+					m = Matrix(sp_pm) # dense one
 
-for (id_n,n) in enumerate(vector_n)
-	vector_N = Vector{Int}([n/10:n/10:2*n;])
-	for N in vector_N 
-		for ni in vector_ni
-			for chevauchement in vector_chevauchement
-				pm = n_i_SPS(n; nie=nie, overlapping=chevauchement) # create a overlapping bloc diagonale matrix
-				sp_m = SparseMatrixCSC(pm) # the sparse matrix from the partitioned matrix
-				m = Matrix(sp_pm) # dense one
+					name = "$(n)_"*"$(N)_"*"$(ni)_"*"$(chevauchement)"
+					println(name)
+					push!(names, name)
 
-				name = "$(n)_"*"$(N)_"*"$(ni)_"*"$(chevauchement)"
-				println(name)
-				push!(names, name)
+					bench_chol = @timed cholesky(m)
+					push!(memory_chol, bench_chol.bytes)
+					push!(allocs_chol, bench_chol.gcstats.malloc)
+					push!(time_chol, bench_chol.time)
 
-				bench_chol = @timed cholesky(m)
-				push!(memory_chol, bench_chol.bytes)
-				push!(allocs_chol, bench_chol.gcstats.malloc)
-				push!(time_chol, bench_chol.time)
+					bench_sparse = @timed ldl(sp_m)
+					push!(memory_sparse, bench_sparse.bytes)
+					push!(allocs_sparse, bench_sparse.gcstats.malloc)
+					push!(time_sparse, bench_sparse.time)
 
-				bench_sparse = @timed ldl(sp_m)
-				push!(memory_sparse, bench_sparse.bytes)
-				push!(allocs_sparse, bench_sparse.gcstats.malloc)
-				push!(time_sparse, bench_sparse.time)
-
-				bench_frontale = @timed frontale!(pm)
-				push!(memory_frontale, bench_frontale.bytes)
-				push!(allocs_frontale, bench_frontale.gcstats.malloc)
-				push!(time_frontale, bench_frontale.time)
-			end 			
+					bench_frontale = @timed frontale!(pm)
+					push!(memory_frontale, bench_frontale.bytes)
+					push!(allocs_frontale, bench_frontale.gcstats.malloc)
+					push!(time_frontale, bench_frontale.time)
+				end 			
+			end 
 		end 
 	end 
-end 
 
-data = Matrix(undef,length(names),10)
+	data = Matrix(undef,length(names),10)
 
-for (id,name) in enumerate(names)
-	data[id,1] = name
+	for (id,name) in enumerate(names)
+		data[id,1] = name
 
-	data[id,2] = time_chol[id]
-	data[id,3] = time_sparse[id]
-	data[id,4] = time_frontale[id]
+		data[id,2] = time_chol[id]
+		data[id,3] = time_sparse[id]
+		data[id,4] = time_frontale[id]
 
-	data[id,5] = memory_chol[id]
-	data[id,6] = memory_sparse[id]
-	data[id,7] = memory_frontale[id]
+		data[id,5] = memory_chol[id]
+		data[id,6] = memory_sparse[id]
+		data[id,7] = memory_frontale[id]
 
-	data[id,8] = allocs_chol[id]
-	data[id,9] = allocs_sparse[id]
-	data[id,10] = allocs_frontale[id]
-end 
+		data[id,8] = allocs_chol[id]
+		data[id,9] = allocs_sparse[id]
+		data[id,10] = allocs_frontale[id]
+	end 
 
-pretty_table(data, ["name","t chol","t sparse", "t frontale","memory chol", "memory sparse", "memory frontale", "allocs chol", "allocs sparse", "allocs frontale"])
+	pretty_table(data, ["name","t chol","t sparse", "t frontale","memory chol", "memory sparse", "memory frontale", "allocs chol", "allocs sparse", "allocs frontale"])
+end
