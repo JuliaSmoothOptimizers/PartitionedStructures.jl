@@ -5,7 +5,7 @@ module M_elemental_pm
 	using LoopVectorization
 
 	using ..M_part_mat
-	using ..M_elt_mat, ..M_elemental_em
+	using ..M_elt_mat, ..M_elemental_em, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
@@ -24,6 +24,7 @@ module M_elemental_pm
 	#getter/setter
 	@inline get_eem_set(epm :: Elemental_pm{T}) where T = epm.eem_set
 	@inline get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = @inbounds epm.eem_set[i]
+	@inline get_eem_sub_set(epm :: Elemental_pm{T}, indices::Vector{Int}) where T = epm.eem_set[indices]
 	@inline get_eem_set_hie(epm :: Elemental_pm{T}, i::Int) where T = get_hie(get_eem_set(epm,i))
 
 	@inline get_spm(epm :: Elemental_pm{T}) where T = epm.spm
@@ -152,8 +153,8 @@ module M_elemental_pm
 		no_perm = [1:n;]
 		N = length(eem_set)
 		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
-		set_spm!(epm)
 		initialize_component_list!(epm)		
+		set_spm!(epm)
 		return epm
 	end 
 
@@ -269,7 +270,7 @@ module M_elemental_pm
 
 	export Elemental_pm
 
-	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_hie
+	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_hie, get_eem_sub_set
 	export set_L!, set_L_to_spm!
 
 	export initialize_component_list!, correlated_var

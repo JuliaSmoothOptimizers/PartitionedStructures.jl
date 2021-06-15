@@ -2,7 +2,7 @@ module M_elemental_em
 
 	using LinearAlgebra
 	
-	using ..M_elt_mat
+	using ..M_elt_mat, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
 
@@ -13,7 +13,7 @@ module M_elemental_em
 	end
 
 	@inline get_hie(eem :: Elemental_em{T}) where T = eem.hie
-
+	@inline M_elt_mat.get_mat(eem :: Elemental_em{T}) where T = get_hie(eem)
 	
 	@inline (==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_hie(eem1)== get_hie(eem2)) && (get_indices(eem1)== get_indices(eem2))
 	@inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_hie(eem)))

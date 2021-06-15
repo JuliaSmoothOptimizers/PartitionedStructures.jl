@@ -2,6 +2,7 @@ using PartitionnedStructures
 using PartitionnedStructures.M_elemental_elt_vec
 using PartitionnedStructures.M_internal_elt_vec
 using PartitionnedStructures.M_elt_vec
+using PartitionnedStructures.M_abstract_element_struct
 
 using SparseArrays
 

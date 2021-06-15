@@ -3,7 +3,7 @@ module M_elemental_elt_vec
 
 	using SparseArrays
 
- 	using ..M_elt_vec, ..M_utils
+ 	using ..M_elt_vec, ..M_utils, ..M_abstract_element_struct
 	
 	import Base.==, Base.copy, Base.similar
 	 
@@ -22,6 +22,7 @@ module M_elemental_elt_vec
 
 	@inline new_eev(nᵢ::Int; T=Float64, n=nᵢ^2) = Elemental_elt_vec(rand(T,nᵢ), rand(1:n,nᵢ), nᵢ)
 	@inline ones_eev(nᵢ::Int; T=Float64, n=nᵢ^2) = Elemental_elt_vec(ones(T,nᵢ), rand(1:n,nᵢ), nᵢ)
+	@inline specific_ones_eev(nie::Int,index::Int; T=Float64, mul::Float64=1.) = Elemental_elt_vec((xi -> mul*xi).(rand(T,nie)), [index:index+nie-1;], nie)
 	
 	@inline set_vec_eev!(eev :: Elemental_elt_vec{T}, i :: Int, val :: T) where T = eev.vec[i] = val
 	@inline set_vec_eev!(eev :: Elemental_elt_vec{T}, vec :: Vector{T}) where T = eev.vec = vec
@@ -45,9 +46,7 @@ module M_elemental_elt_vec
 	# export get_vec
 	export set_vec_eev!
 # comfort
-	export new_eev, ones_eev
-# on var
-	export max_indices, min_indices
+	export new_eev, ones_eev, specific_ones_eev
 # interface with SparseArrays
 	export eev_from_sparse_vec, sparse_vec_from_eev
 

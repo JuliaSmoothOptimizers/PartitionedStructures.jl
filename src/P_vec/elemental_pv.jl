@@ -1,10 +1,11 @@
 module M_elemental_pv
 
-	using ..M_elt_vec, ..M_elemental_elt_vec	# element modules 
+	using ..M_elt_vec, ..M_elemental_elt_vec, ..M_abstract_element_struct	# element modules 
 	using ..M_part_v # partitoned modules
 
 	using SparseArrays
 	
+	import Base.Vector
 	import Base.==, Base.similar, Base.copy
 
 	mutable struct Elemental_pv{T} <: Part_v{T}
@@ -17,10 +18,11 @@ module M_elemental_pv
 
 	@inline get_eev_set(pv :: Elemental_pv{T}) where T = pv.eev_set
 	@inline get_eev(pv :: Elemental_pv{T}, i :: Int) where T = pv.eev_set[i]
+	@inline get_eevs(pv :: Elemental_pv{T}, indices :: Vector{Int}) where T = pv.eev_set[indices]
 	@inline get_eev_value(pv :: Elemental_pv{T}, i :: Int) where T = get_vec(get_eev(pv,i))
+	@inline get_eev_value(pv :: Elemental_pv{T}, i :: Int, j :: Int) where T = get_vec(get_eev(pv,i))[j]
 	@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, j::Int, val:: T ) where T = set_vec_eev!(get_eev(pv,i),j,val)
 	@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, vec ::Vector{T} ) where T = set_vec_eev!(get_eev(pv,i),vec)
-
 	@inline (==)(ep1 :: Elemental_pv{T},ep2 :: Elemental_pv{T}) where T = (get_N(ep1) == get_N(ep2)) && (get_n(ep1) == get_n(ep2)) && (get_eev_set(ep1) == get_eev_set(ep2))
 	@inline similar(ep :: Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef,get_n(ep)))
 	@inline copy(ep :: Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), copy.(get_eev_set(ep)), Vector{T}(get_v(ep)))
@@ -53,8 +55,38 @@ module M_elemental_pv
 		Elemental_pv{T}(N, n, eev_set, v)
 	end	
 
+	function scale_epv(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T <: Number
+		get_N(epv)==length(scalars) || error("scale_epv, N != length(scalars")
+		_tmp_v = get_v(epv)
+		reset_v!(epv)
+		N = get_N(epv)
+		for i in 1:N
+			eevᵢ = get_eev(epv,i)
+			nᵢᴱ = get_nie(eevᵢ)			
+			scalar = scalars[i]
+			for j in 1:nᵢᴱ
+				add_v!(epv, get_indices(eevᵢ,j), scalar*get_vec(eevᵢ,j))
+			end 
+		end 
+		res_v = get_v(epv)
+		set_v!(epv,_tmp_v)
+		return res_v
+	end 
 
-
+	function scale_epv!(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T  
+		get_N(scale_epv)==length(scalars) || error("scale_epv, N != length(scalars")
+		reset_v!(epv)
+		N = get_N(epv)
+		for i in 1:N
+			eevᵢ = get_eev(epv,i)
+			nᵢᴱ = get_nie(eevᵢ)			
+			scalar = scalars[i]
+			for j in 1:nᵢᴱ
+				add_v!(epv, get_indices(eevᵢ,j), scalar*get_vec(eevᵢ,j))
+			end 
+		end 
+		return get_v(epv)
+	end 
 
 #=
 	Tests structures fonctions 
@@ -83,11 +115,11 @@ module M_elemental_pv
 		return Elemental_pv{T}(N, n, eev_set, v)
 	end
 
-	function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)
+	function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
 		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
 
-		eev_set = map(i -> ones_eev(nie; T, n=n), [1:nie-overlapping:n-(nie-overlapping);])
+		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
 		N = length(eev_set)
 		v = Vector{T}(undef,n)
 		epv = Elemental_pv{T}(N,n,eev_set,v)		
@@ -95,10 +127,29 @@ module M_elemental_pv
 	end
 
 
+	Base.Vector(pv :: Elemental_pv{T}) where T = begin build_v!(pv); get_v(pv) end 
+
+
+	function epv_from_v(x :: Vector{T}, shape_epv :: Elemental_pv{T}) where T 
+		epv_x = similar(shape_epv)
+		epv_from_v!(epv_x, x)
+		return epv_x
+	end 
+	function epv_from_v!(epv_x :: Elemental_pv{T}, x :: Vector{T}) where T 
+		eev_set = get_eev_set(epv_x)
+		for (idx,val) in enumerate(eev_set)
+			set_eev!(epv_x, idx, x[get_indices(val)]) # mais le vecteur élément comme une copie de x 
+		end 		
+	end 
+
+
 export Elemental_pv
 
-export get_eev_set, get_eev, get_eev_value
+export get_eev_set, get_eev, get_eev_value, get_eevs
 export set_eev!
 export rand_epv, create_epv, ones_kchained_epv, part_vec
+
+export scale_epv, scale_epv!
+export epv_from_v, epv_from_v!
 
 end
