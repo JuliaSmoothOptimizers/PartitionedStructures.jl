@@ -4,7 +4,8 @@ using PartitionnedStructures.M_internal_pv
 using PartitionnedStructures.M_elemental_elt_vec
 using PartitionnedStructures.M_abstract_element_struct
 
-using BenchmarkTools, ProfileView, Test
+using Test 
+# using BenchmarkTools, ProfileView
 
 using SparseArrays, LinearAlgebra
 
