@@ -13,7 +13,7 @@ jl)
 
 [![Coverage Status](https://coveralls.io/repos/github/paraynaud/PartitionnedStructures.jl/badge.svg?branch=main)](https://coveralls.io/github/paraynaud/PartitionnedStructures.jl?branch=main)
 
-[![Documentation/stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaSmoothOptimizers.github.io/QuadraticModels.jl/
+[![Documentation/stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://paraynaud.github.io/PartitionnedStructures.jl/
 stable)
 
 
