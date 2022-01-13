@@ -12,11 +12,11 @@ using LinearAlgebra
 
 
 # (epm,epv) = create_epv_epm()
-# (epm,epv) = create_epv_epm(;n=13)
+(epm,epv) = create_epv_epm(;n=13)
 # (epm,epv) = create_epv_epm(;n=21)
 # (epm,epv) = create_epv_epm(;n=1033)
 # (epm,epv) = create_epv_epm(;n=1033)
-(epm,epv) = create_epv_epm_rand(;n=1033)
+# (epm,epv) = create_epv_epm_rand(;n=1033)
 m = Matrix(epm)
 v = Vector(epv)
 f(s) = m*s-v

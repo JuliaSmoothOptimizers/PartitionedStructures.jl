@@ -5,9 +5,9 @@ using ..M_part_v, ..M_elemental_pv, ..M_elt_vec, ..M_elemental_elt_vec
 using ..M_link
 
 using LinearAlgebra, Statistics
-using Ipopt, ADNLPModels, NLPModelsIpopt 
-using JuMP
-using BlackBoxOptim, NaturalES
+# using Ipopt, ADNLPModels, NLPModelsIpopt 
+# using JuMP
+# using BlackBoxOptim, NaturalES
 
 
 	function first_parallel(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T	

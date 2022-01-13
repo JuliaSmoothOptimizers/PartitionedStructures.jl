@@ -1,3 +1,4 @@
+using LinearAlgebra: Matrix
 using PartitionnedStructures
 using Test
 using BenchmarkTools, ProfileView

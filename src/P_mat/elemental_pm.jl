@@ -124,7 +124,8 @@ module M_elemental_pm
 		mod(n,nie) == 0 || error("n doit être multiple de nie")
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
 		eem_set1 = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1:nie:n;])
-		eem_set2 = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1+overlapping:nie:n-nie+overlapping;])
+		# eem_set2 = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1+overlapping:nie:n-nie+overlapping;])
+		eem_set2 = map(i -> fixed_ones_eem(i,2*overlapping;T=T,mul=mul), [nie-overlapping:nie:n-nie-overlapping;])
 		eem_set = vcat(eem_set1,eem_set2)
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)
@@ -138,7 +139,7 @@ module M_elemental_pm
 	end 
 
 	"""
-			n_i_SPS(n)
+			part_mat(n)
 	A nᵢ partially bloc separable matrix, whith on the diagonal band regular with overlapping (=1 by default)
 	By default nᵢ=5, overlapping=1, mul=5.
 	"""

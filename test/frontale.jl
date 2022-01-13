@@ -105,9 +105,19 @@ sps_m = Matrix(n_i_sps_pm)
 
 function test_multifrontale()
 	names = []
-	vector_n = [100,200,500,1000,5000,10000]
-	vector_ni = [5,10,20]
-	vector_chevauchement = [1,2,3]
+	# vector_n = [100,200,500,1000,5000,10000]
+	# vector_ni = [5,10,20]
+	# vector_chevauchement = [1,2,3]
+	vector_n = [100,1000,10000]		
+	vector_ni = [10,20]	
+	vector_chevauchement = [1,2,5]
+	# vector_n = [82,802,8002]	
+	# vector_ni = [10]	
+	# vector_chevauchement = [2]
+	
+	# @show pwd()
+	io = open("test/results/res_frontale.tex","w")
+	
 
 	time_chol = []
 	time_sparse = []
@@ -122,15 +132,18 @@ function test_multifrontale()
 	allocs_frontale = []
 
 	for (id_n,n) in enumerate(vector_n)
-		vector_N = Vector{Int}([n/10:n/10:2*n;])
-		for N in vector_N 
+		# vector_N = Vector{Int}([n/10:n/10:2*n;])
+		# for N in vector_N 
 			for ni in vector_ni
 				for chevauchement in vector_chevauchement
-					pm = n_i_SPS(n; nie=nie, overlapping=chevauchement) # create a overlapping bloc diagonale matrix
+					pm = n_i_SPS(n; nie=ni, overlapping=chevauchement) # create a overlapping bloc diagonale matrix			
+					# pm = part_mat(;n=n,nie=ni, overlapping=chevauchement)
 					sp_m = SparseMatrixCSC(pm) # the sparse matrix from the partitioned matrix
-					m = Matrix(sp_pm) # dense one
-
-					name = "$(n)_"*"$(N)_"*"$(ni)_"*"$(chevauchement)"
+					
+					m = Matrix(pm) # dense one
+					
+					# name = "$(n)_"*"$(N)_"*"$(ni)_"*"$(chevauchement)"
+					name = "$(n)\\_"*"$(ni)\\_"*"$(chevauchement)"
 					println(name)
 					push!(names, name)
 
@@ -139,7 +152,10 @@ function test_multifrontale()
 					push!(allocs_chol, bench_chol.gcstats.malloc)
 					push!(time_chol, bench_chol.time)
 
-					bench_sparse = @timed ldl(sp_m)
+					# bench_sparse = @timed ldl(sp_m)							
+					sm = Symmetric(triu(sp_m), :U) # get upper triangle and apply Symmetric wrapper
+					LDL = ldl_analyze(sm)
+					bench_sparse = @timed ldl_factorize!(sm, LDL)
 					push!(memory_sparse, bench_sparse.bytes)
 					push!(allocs_sparse, bench_sparse.gcstats.malloc)
 					push!(time_sparse, bench_sparse.time)
@@ -150,7 +166,7 @@ function test_multifrontale()
 					push!(time_frontale, bench_frontale.time)
 				end 			
 			end 
-		end 
+		# end 
 	end 
 
 	data = Matrix(undef,length(names),10)
@@ -171,5 +187,19 @@ function test_multifrontale()
 		data[id,10] = allocs_frontale[id]
 	end 
 
-	pretty_table(data, ["name","t chol","t sparse", "t frontale","memory chol", "memory sparse", "memory frontale", "allocs chol", "allocs sparse", "allocs frontale"])
+	pretty_table(data; header=["n_ni_overlapping","t chol","t sparse", "t frontale","memory chol", "memory sparse", "memory frontale", "allocs chol", "allocs sparse", "allocs frontale"])
+	pretty_table(io,data[:, 1:7]; header=["n\\_ni\\_overlapping","time chol","time sparse", "time frontale","memory chol", "memory sparse", "memory frontale"], backend = Val(:latex))
+	close(io)
 end
+
+sp_m = sprand(10,10,0.1)
+sp_m2 = copy(sp_m)
+m = Matrix(sp_m)
+sm = Symmetric(triu(sp_m2), :U) # get upper triangle and apply Symmetric wrapper
+LDL = ldl_analyze(sm)
+bench_sparse = @timed ldl_factorize!(sm, LDL)
+bench_sparse2 = @timed ldl(sp_m)
+@show bench_sparse.time, bench_sparse2.time
+
+
+

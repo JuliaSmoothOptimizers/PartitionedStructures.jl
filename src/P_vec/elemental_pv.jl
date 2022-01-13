@@ -13,8 +13,34 @@ module M_elemental_pv
 		n :: Int
 		eev_set :: Vector{Elemental_elt_vec{T}}
 		v :: Vector{T}
+		component_list :: Vector{Vector{Int}}
+		permutation :: Vector{Int} # n-size vector 
 	end
+	function Elemental_pv{T}(N :: Int, n :: Int, eev_set :: Vector{Elemental_elt_vec{T}}, v :: Vector{T}; perm::Vector{Int}=[1:n;]) where T
+		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
+		return Elemental_pv{T}(N,n,eev_set,v,component_list,perm)
+	end 
 
+
+	"""
+initialize_component_list!(epm)
+initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
+"""
+function initialize_component_list!(epv)
+	N = get_N(epv)
+	n = get_n(epv)
+	for i in 1:N
+		epvᵢ = get_eev(epv,i)
+		_indices = get_indices(epvᵢ)
+		for j in _indices # changer peut-être
+			push!(get_component_list(epm,j),i)
+		end 
+	end 
+end 
+
+
+	@inline get_component_list(pv :: Elemental_pv{T}) where T =  pv.component_list
+	@inline get_component_list(pv :: Elemental_pv{T}, i :: Int) where T =  @inbounds pv.component_list[i]
 
 	@inline get_eev_set(pv :: Elemental_pv{T}) where T = pv.eev_set
 	@inline get_eev(pv :: Elemental_pv{T}, i :: Int) where T = pv.eev_set[i]
@@ -23,12 +49,14 @@ module M_elemental_pv
 	@inline get_eev_value(pv :: Elemental_pv{T}, i :: Int, j :: Int) where T = get_vec(get_eev(pv,i))[j]
 	@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, j::Int, val:: T ) where T = set_vec_eev!(get_eev(pv,i),j,val)
 	@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, vec ::Vector{T} ) where T = set_vec_eev!(get_eev(pv,i),vec)
+
+
 	@inline (==)(ep1 :: Elemental_pv{T},ep2 :: Elemental_pv{T}) where T = (get_N(ep1) == get_N(ep2)) && (get_n(ep1) == get_n(ep2)) && (get_eev_set(ep1) == get_eev_set(ep2))
 	@inline similar(ep :: Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef,get_n(ep)))
 	@inline copy(ep :: Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), copy.(get_eev_set(ep)), Vector{T}(get_v(ep)))
 
 	"""
-		build_v!(pv)
+			build_v!(pv)
 	Build from pv the vector v according to the information of each {evᵢ}ᵢ
 	"""
 	function M_part_v.build_v!(epv :: Elemental_pv{T}) where T
@@ -137,8 +165,8 @@ module M_elemental_pv
 	end 
 	function epv_from_v!(epv_x :: Elemental_pv{T}, x :: Vector{T}) where T 
 		eev_set = get_eev_set(epv_x)
-		for (idx,val) in enumerate(eev_set)
-			set_eev!(epv_x, idx, x[get_indices(val)]) # mais le vecteur élément comme une copie de x 
+		for (idx,eev) in enumerate(eev_set)
+			set_eev!(epv_x, idx, x[get_indices(eev)]) # met le vecteur élément comme une copie de x 
 		end 		
 	end 
 

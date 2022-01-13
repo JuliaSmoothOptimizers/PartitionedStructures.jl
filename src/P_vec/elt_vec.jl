@@ -11,7 +11,7 @@ module M_elt_vec
 
 	@inline set_vec!(ev :: T, vec :: Vector{Y}) where T <: Elt_vec where Y = ev.vec = vec
 
-		
+	
 	export set_vec!, get_vec
 	export Elt_vec
 

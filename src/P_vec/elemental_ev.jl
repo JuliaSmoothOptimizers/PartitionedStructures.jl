@@ -14,7 +14,7 @@ module M_elemental_elt_vec
 		nie :: Int
 	end
 
-	# get_vec(eev :: Elemental_elt_vec{T}) where T = eev.vec
+	# get_vec(eev :: Elemental_elt_vec{T}) where T = eev.vec # define in the abstract type
 
 	@inline (==)(eev1 :: Elemental_elt_vec{T}, eev2 :: Elemental_elt_vec{T}) where T = (get_indices(eev1) == get_indices(eev2)) && (get_vec(eev1) == get_vec(eev2)) && (get_nie(eev1) == get_nie(eev2))		
 	@inline similar(eev :: Elemental_elt_vec{T}) where T = Elemental_elt_vec{T}(Vector{T}(undef,get_nie(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
