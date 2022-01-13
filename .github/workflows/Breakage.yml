@@ -13,10 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         pkg: [
-          "JuliaSmoothOptimizers/CaNNOLeS.jl",
-          "JuliaSmoothOptimizers/DCISolver.jl",
-          "JuliaSmoothOptimizers/JSOSolvers.jl",
-          "JuliaSmoothOptimizers/Percival.jl"
+          "paraynaud/PartitionnedStructures.jl"
         ]
         pkgversion: [latest, stable]
 
