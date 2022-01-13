@@ -9,7 +9,7 @@ FreeBSD: [![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers
 [![Build Status](https://api.cirrus-ci.com/github/paraynaud/PartitionnedStructures.jl.svg)](https://cirrus-ci.com/github/paraynaud/PartitionnedStructures.jl)
 
 [![Build Status](https://app.travis-ci.com/paraynaud/PartitionnedStructures.jl.svg?branch=main)](https://app.travis-ci.com/paraynaud/PartitionnedStructures.
-jl)
+jl)	
 
 [![Coverage Status](https://coveralls.io/repos/github/paraynaud/PartitionnedStructures.jl/badge.svg?branch=main)](https://coveralls.io/github/paraynaud/PartitionnedStructures.jl?branch=main)
 
