@@ -17,3 +17,8 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 PrettyTables = "1"
+StatsBase = "0.33"
+LoopVectorization = "0.12"
+Ipopt = "0.9"
+LDLFactorizations = "0.8"
+Revise = "3"
