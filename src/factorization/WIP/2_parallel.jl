@@ -44,7 +44,7 @@ using LinearAlgebra, Statistics
 	define the subproblem which must be solve for the i-th variable
 	"""
 	function subproblem!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, index :: Int, vector_bool:: Vector{Bool}, res :: Vector{T}) where T
-		comp_list = get_component_list(epm_A,index) # element list using tha i-th variable
+		comp_list = M_elemental_pm.get_component_list(epm_A,index) # element list using tha i-th variable
 		_x = Vector{T}(undef,length(comp_list))
 		ss_epm_A = get_eem_sub_set(epm_A, comp_list)
 		ss_epv_x = get_eevs(epv_x, comp_list)

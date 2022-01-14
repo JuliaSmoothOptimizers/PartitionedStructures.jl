@@ -146,7 +146,7 @@ module M_elemental_pm
 	function part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
 		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
-		
+		# mod(n,(nie-overlapping)) == mod(-overlapping,n) || error("la condition: mod(n,(nie-overlapping)) == overlapping doit être vérifiée")
 		eem_set = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)

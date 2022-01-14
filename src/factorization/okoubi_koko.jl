@@ -25,7 +25,7 @@ using Statistics, LinearAlgebra
 		end 
 		#procédure pour chaque coordonnée
 		for i in 1:n
-			_comp_list = get_component_list(epm_A,i) # element list using tha i-th variable
+			_comp_list = M_elemental_pm.get_component_list(epm_A,i) # element list using tha i-th variable
 			if length(_comp_list)==1 # in case only one element uses it
 				eev = get_eev(epv_x, _comp_list[1]) # retrieve elemental element vector
 				j = findfirst((index->index==i), eev.indices) # find the corresponding index 

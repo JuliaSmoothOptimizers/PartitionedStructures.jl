@@ -18,7 +18,9 @@ module M_elemental_pv
 	end
 	function Elemental_pv{T}(N :: Int, n :: Int, eev_set :: Vector{Elemental_elt_vec{T}}, v :: Vector{T}; perm::Vector{Int}=[1:n;]) where T
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
-		return Elemental_pv{T}(N,n,eev_set,v,component_list,perm)
+		epv = Elemental_pv{T}(N,n,eev_set,v,component_list,perm)
+		initialize_component_list!(epv)
+		return epv
 	end 
 
 
@@ -33,7 +35,7 @@ function initialize_component_list!(epv)
 		epvᵢ = get_eev(epv,i)
 		_indices = get_indices(epvᵢ)
 		for j in _indices # changer peut-être
-			push!(get_component_list(epm,j),i)
+			push!(get_component_list(epv,j),i)
 		end 
 	end 
 end 
@@ -146,7 +148,8 @@ end
 	function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
 		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
-
+		# mod(n,(nie-overlapping)) == overlapping || error("la condition: mod(n,(nie-overlapping)) == overlapping doit être vérifiée")
+		# mod(n,(nie-overlapping)) == mod(-overlapping,n) || error("la condition: mod(n,(nie-overlapping)) == overlapping doit être vérifiée")
 		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
 		N = length(eev_set)
 		v = Vector{T}(undef,n)
@@ -173,7 +176,7 @@ end
 
 export Elemental_pv
 
-export get_eev_set, get_eev, get_eev_value, get_eevs
+export get_eev_set, get_eev, get_eev_value, get_eevs, get_component_list
 export set_eev!
 export rand_epv, create_epv, ones_kchained_epv, part_vec
 
