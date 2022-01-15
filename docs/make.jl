@@ -9,7 +9,7 @@ using PartitionnedStructures.M_okoubi_koko , PartitionnedStructures.M_frontale, 
 
 makedocs(
   # modules = [PartitionnedStructures],
-	modules = [PartitionnedStructures, M_abstract_part_struct,M_abstract_element_struct,M_internal_elt_vec,M_internal_pv,M_elt_vec,M_elemental_elt_vec,M_elemental_pv,M_elt_mat,M_part_mat,M_elemental_pm,M_elemental_em,M_okoubi_koko,M_frontale, M_1_parallel, M_2_parallel, M_3_parallel],
+	modules = [PartitionnedStructures, M_abstract_part_struct,M_abstract_element_struct,M_internal_elt_vec,M_internal_pv,M_elt_vec,M_elemental_elt_vec,M_elemental_pv,M_elt_mat,M_part_mat,M_elemental_pm,M_elemental_em,M_okoubi_koko,M_frontale, M_1_parallel, M_2_parallel, M_3_parallel, M_utils],
   doctest = true,
   linkcheck = true,
   strict = true,
