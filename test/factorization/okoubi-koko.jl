@@ -1,12 +1,12 @@
 using LinearAlgebra: Matrix
-using PartitionnedStructures
-using PartitionnedStructures.M_elemental_pm
-using PartitionnedStructures.M_part_mat
+using PartitionedStructures
+using PartitionedStructures.M_elemental_pm
+using PartitionedStructures.M_part_mat
 
-using PartitionnedStructures.M_link
-using PartitionnedStructures.M_part_v
+using PartitionedStructures.M_link
+using PartitionedStructures.M_part_v
 
-using PartitionnedStructures.M_okoubi_koko
+using PartitionedStructures.M_okoubi_koko
 
 using LinearAlgebra
 

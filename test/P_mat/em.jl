@@ -1,5 +1,5 @@
-using PartitionnedStructures.M_elt_mat
-using PartitionnedStructures.M_elemental_em
+using PartitionedStructures.M_elt_mat
+using PartitionedStructures.M_elemental_em
 
 using StatsBase
 

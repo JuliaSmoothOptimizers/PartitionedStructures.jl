@@ -1,4 +1,4 @@
-using PartitionnedStructures.M_utils
+using PartitionedStructures.M_utils
 
 
 @testset "test utils" begin

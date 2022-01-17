@@ -1,8 +1,8 @@
-using PartitionnedStructures
-using PartitionnedStructures.M_elemental_elt_vec
-using PartitionnedStructures.M_internal_elt_vec
-using PartitionnedStructures.M_elt_vec
-using PartitionnedStructures.M_abstract_element_struct
+using PartitionedStructures
+using PartitionedStructures.M_elemental_elt_vec
+using PartitionedStructures.M_internal_elt_vec
+using PartitionedStructures.M_elt_vec
+using PartitionedStructures.M_abstract_element_struct
 
 using SparseArrays
 

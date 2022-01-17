@@ -1,1 +1,1 @@
-# PartitionnedStructures.jl Tutorial
+# PartitionedStructures.jl Tutorial

@@ -1,4 +1,4 @@
-module PartitionnedStructures
+module PartitionedStructures
 
 using LinearAlgebra
 

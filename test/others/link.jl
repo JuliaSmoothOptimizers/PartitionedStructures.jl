@@ -1,5 +1,5 @@
-using PartitionnedStructures
-using PartitionnedStructures.M_link, PartitionnedStructures.M_part_v
+using PartitionedStructures
+using PartitionedStructures.M_link, PartitionedStructures.M_part_v
 
 epm1,epv1 = create_epv_epm(;n=9,nie=5,overlapping=1,mul_m=5., mul_v=100.)
 epm2,epv2 = create_epv_epm(;n=9,nie=3,overlapping=0,mul_m=5., mul_v=100.)

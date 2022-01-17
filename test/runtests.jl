@@ -1,5 +1,5 @@
 using LinearAlgebra: Matrix
-using PartitionnedStructures
+using PartitionedStructures
 using Test
 # using BenchmarkTools, ProfileView
 # include("test/runtests.jl")
