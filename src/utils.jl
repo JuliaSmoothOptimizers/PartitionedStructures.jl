@@ -1,4 +1,4 @@
-module M_utils
+module Utils
 
 	using LinearAlgebra
 	my_and = (a :: Bool,b :: Bool) -> (a && b)
@@ -11,6 +11,7 @@ module M_utils
 	BFGS(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}; kwargs...) where Y <: Number = begin B_1=similar(B); BFGS!(s,y,B,B_1;kwargs...); B_1 end
 	BFGS(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}; kwargs...) where Y <: Number = begin B_1=similar(B); BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...); B_1 end 
 	BFGS!(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}; kwargs...) where Y <: Number = BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...)
+	BFGS!(s :: Vector{Y}, y :: Vector{Y}, B :: Symmetric{Y,Matrix{Y}}, B_1 :: Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number = BFGS!(s,y,B.data, B_1.data; kwargs...)
 	function BFGS!(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}; index=0, reset=4) where Y <: Number #Array that will store the next approximation of the Hessian
 		if dot(s,y) > 0  # curvature condition
 			Bs = B * s 
@@ -32,6 +33,7 @@ module M_utils
 	SR1(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}; kwargs...) where Y <: Number = begin B_1=similar(B); SR1!(s,y,B,B_1;kwargs...); B_1 end
 	SR1(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}; kwargs...) where Y <: Number = begin B_1=similar(B); SR1!(x_1 - x, g_1 - g, B, B_1; kwargs...); B_1 end 
 	SR1!(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}) where Y <: Number = SR1!(x_1 - x, g_1 - g, B, B_1)	
+	SR1!(s :: Vector{Y}, y :: Vector{Y}, B :: Symmetric{Y,Matrix{Y}}, B_1 :: Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number = SR1!(s,y,B.data, B_1.data; kwargs...)
 	function SR1!(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}; index=0, reset=4, ω = 1e-6) where Y <: Number
 		r = y .- B*s
 		if abs(dot(s,r)) > ω * norm(s,2) * norm(r,2)
@@ -45,9 +47,8 @@ module M_utils
 	end
 			
 	
-
 	
 
- 	export BFGS, SR1
+ 	export BFGS, BFGS!, SR1, SR1!
 	export my_and
 end

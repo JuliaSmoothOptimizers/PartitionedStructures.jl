@@ -1,11 +1,11 @@
-module M_elemental_pm
+module ModElemental_pm
 # Symmetric bloc elemental partitioned matrix
 
 	using SparseArrays
 	using LoopVectorization
 
 	using ..M_part_mat
-	using ..M_elt_mat, ..M_elemental_em, ..M_abstract_element_struct
+	using ..M_elt_mat, ..ModElemental_em, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
@@ -25,7 +25,7 @@ module M_elemental_pm
 	@inline get_eem_set(epm :: Elemental_pm{T}) where T = epm.eem_set
 	@inline get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = @inbounds epm.eem_set[i]
 	@inline get_eem_sub_set(epm :: Elemental_pm{T}, indices::Vector{Int}) where T = epm.eem_set[indices]
-	@inline get_eem_set_hie(epm :: Elemental_pm{T}, i::Int) where T = get_hie(get_eem_set(epm,i))
+	@inline get_eem_set_Bie(epm :: Elemental_pm{T}, i::Int) where T = get_Bie(get_eem_set(epm,i))
 
 	@inline get_spm(epm :: Elemental_pm{T}) where T = epm.spm
 	@inline get_spm(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.spm[i,j]
@@ -201,9 +201,9 @@ module M_elemental_pm
 		for i in 1:N
 			epmᵢ = get_eem_set(epm,i)
 			nie = get_nie(epmᵢ)
-			hie = get_hie(epmᵢ)
+			Bie = get_Bie(epmᵢ)
 			for i in 1:nie, j in 1:nie
-				val = hie[i,j]
+				val = Bie[i,j]
 				real_i = get_indices(epmᵢ,i) # epmᵢ.indices[i]
 				real_j = get_indices(epmᵢ,j) # epmᵢ.indices[j]
 				spm[real_i, real_j] += val 
@@ -261,6 +261,7 @@ module M_elemental_pm
 
 	
 	function Base.Matrix(epm :: Elemental_pm{T}) where T
+		set_spm!(epm)
 		sp_pm = get_spm(epm)
 		m = Matrix(sp_pm)
 		return m
@@ -271,7 +272,7 @@ module M_elemental_pm
 
 	export Elemental_pm
 
-	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_hie, get_eem_sub_set
+	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_Bie, get_eem_sub_set
 	export set_L!, set_L_to_spm!
 
 	export initialize_component_list!, correlated_var

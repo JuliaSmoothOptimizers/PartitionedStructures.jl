@@ -1,7 +1,7 @@
 module M_okoubi_koko
 
-using ..M_part_mat, ..M_part_v, ..M_elemental_pv, ..M_elemental_pm, ..M_elt_vec
-using ..M_link
+using ..M_part_mat, ..M_part_v, ..ModElemental_pv, ..ModElemental_pm, ..M_elt_vec
+using ..Link
 
 using Statistics, LinearAlgebra
 
@@ -21,11 +21,11 @@ using Statistics, LinearAlgebra
 
 		#résolution de chaque system linéaire élément
 		for i in [1:N;]
-			set_eev!(epv_x, i, get_eem_set_hie(epm_A,i)\get_eev_value(epv_b,i))
+			set_eev!(epv_x, i, get_eem_set_Bie(epm_A,i)\get_eev_value(epv_b,i))
 		end 
 		#procédure pour chaque coordonnée
 		for i in 1:n
-			_comp_list = M_elemental_pm.get_component_list(epm_A,i) # element list using tha i-th variable
+			_comp_list = ModElemental_pm.get_component_list(epm_A,i) # element list using tha i-th variable
 			if length(_comp_list)==1 # in case only one element uses it
 				eev = get_eev(epv_x, _comp_list[1]) # retrieve elemental element vector
 				j = findfirst((index->index==i), eev.indices) # find the corresponding index 

@@ -1,7 +1,7 @@
 module M_internal_pv
 
 	using ..M_elt_vec, ..M_internal_elt_vec, ..M_abstract_element_struct # element modules 
-	using ..M_part_v, ..M_elemental_pv	# partitoned modules
+	using ..M_part_v, ..ModElemental_pv	# partitoned modules
 	
 	using LinearAlgebra
 

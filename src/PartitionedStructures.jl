@@ -16,10 +16,8 @@ include("ab_ps_struct.jl")
 include("P_vec/_include.jl")
 include("P_mat/_include.jl")
 
-include("link.jl")
-
 #include related to factorization of partitionned matrices
-include("factorization/_include.jl")
+include("algorithms/_include.jl")
 
 
 end # module

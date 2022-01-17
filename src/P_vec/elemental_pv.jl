@@ -1,6 +1,6 @@
-module M_elemental_pv
+module ModElemental_pv
 
-	using ..M_elt_vec, ..M_elemental_elt_vec, ..M_abstract_element_struct	# element modules 
+	using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct	# element modules 
 	using ..M_part_v # partitoned modules
 
 	using SparseArrays
@@ -22,24 +22,6 @@ module M_elemental_pv
 		initialize_component_list!(epv)
 		return epv
 	end 
-
-
-	"""
-initialize_component_list!(epm)
-initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
-"""
-function initialize_component_list!(epv)
-	N = get_N(epv)
-	n = get_n(epv)
-	for i in 1:N
-		epvᵢ = get_eev(epv,i)
-		_indices = get_indices(epvᵢ)
-		for j in _indices # changer peut-être
-			push!(get_component_list(epv,j),i)
-		end 
-	end 
-end 
-
 
 	@inline get_component_list(pv :: Elemental_pv{T}) where T =  pv.component_list
 	@inline get_component_list(pv :: Elemental_pv{T}, i :: Int) where T =  @inbounds pv.component_list[i]
@@ -173,6 +155,22 @@ end
 		end 		
 	end 
 
+
+		"""
+		initialize_component_list!(epm)
+	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
+	"""
+	function initialize_component_list!(epv)
+	N = get_N(epv)
+	n = get_n(epv)
+	for i in 1:N
+		epvᵢ = get_eev(epv,i)
+		_indices = get_indices(epvᵢ)
+		for j in _indices # changer peut-être
+			push!(get_component_list(epv,j),i)
+		end 
+	end 
+	end 
 
 export Elemental_pv
 

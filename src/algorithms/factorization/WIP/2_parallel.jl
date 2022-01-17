@@ -1,8 +1,8 @@
 module M_2_parallel
 
-using ..M_part_mat, ..M_elt_mat, ..M_elemental_pm, ..M_elemental_em, ..M_abstract_element_struct
-using ..M_part_v, ..M_elemental_pv, ..M_elt_vec, ..M_elemental_elt_vec
-using ..M_link
+using ..M_part_mat, ..M_elt_mat, ..ModElemental_pm, ..ModElemental_em, ..M_abstract_element_struct
+using ..M_part_v, ..ModElemental_pv, ..M_elt_vec, ..ModElemental_ev
+using ..Link
 
 using LinearAlgebra, Statistics
 
@@ -24,7 +24,7 @@ using LinearAlgebra, Statistics
 		
 		#résolution de chaque system linéaire élément
 		for i in [1:N;]
-			set_eev!(epv_x, i, get_eem_set_hie(epm_A,i)\get_eev_value(epv_b,i))
+			set_eev!(epv_x, i, get_eem_set_Bie(epm_A,i)\get_eev_value(epv_b,i))
 		end 
 		#trouver les indices du gradient 
 		grad = Vector(epv_b)
@@ -44,7 +44,7 @@ using LinearAlgebra, Statistics
 	define the subproblem which must be solve for the i-th variable
 	"""
 	function subproblem!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, index :: Int, vector_bool:: Vector{Bool}, res :: Vector{T}) where T
-		comp_list = M_elemental_pm.get_component_list(epm_A,index) # element list using tha i-th variable
+		comp_list = ModElemental_pm.get_component_list(epm_A,index) # element list using tha i-th variable
 		_x = Vector{T}(undef,length(comp_list))
 		ss_epm_A = get_eem_sub_set(epm_A, comp_list)
 		ss_epv_x = get_eevs(epv_x, comp_list)
@@ -61,7 +61,7 @@ using LinearAlgebra, Statistics
 			_indices[idx] = findfirst((id->id==index), eev.indices) # find the corresponding index 
 			_x[idx] = get_vec(eev,_indices[idx]) # store the result
 			eem = get_eem_set(epm_A,val)
-			vec = get_hie(eem)[:,_indices[idx]] #la colonne de A associé à la variable xᵢ
+			vec = get_Bie(eem)[:,_indices[idx]] #la colonne de A associé à la variable xᵢ
 			indices = M_elt_mat.get_indices(eem)
 			nie = M_elt_mat.get_nie(eem)
 			_columns1[idx] = Elemental_elt_vec{T}(vec,indices,nie)
@@ -77,7 +77,7 @@ using LinearAlgebra, Statistics
 				if tmp != nothing
 					push!(other_scalars, get_vec(eev,tmp) - res[i]) # the difference between the element linear system solution and the current solution				
 					eem = get_eem_set(epm_A,val)
-					vec = get_hie(eem)[:,tmp] #la colonne de A associé à la variable xᵢ
+					vec = get_Bie(eem)[:,tmp] #la colonne de A associé à la variable xᵢ
 					indices = get_indices(eem)
 					nie = get_nie(eem)
 					push!(_columns2, Elemental_elt_vec{T}(vec,indices,nie))

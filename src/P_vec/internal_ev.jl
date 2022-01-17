@@ -3,7 +3,7 @@ module M_internal_elt_vec
 
 	using SparseArrays, LinearAlgebra
 
- 	using ..M_elt_vec, ..M_elemental_elt_vec, ..M_abstract_element_struct
+ 	using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct
 
 	import Base.==
 

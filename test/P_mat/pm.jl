@@ -1,6 +1,6 @@
 using PartitionedStructures.M_elt_vec
-using PartitionedStructures.M_elemental_em
-using PartitionedStructures.M_elemental_pm
+using PartitionedStructures.ModElemental_em
+using PartitionedStructures.ModElemental_pm
 
 using SparseArrays, StatsBase
 

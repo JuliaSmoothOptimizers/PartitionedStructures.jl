@@ -1,8 +1,8 @@
 using PartitionedStructures
-using PartitionedStructures.M_elemental_pm
+using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_part_mat
 using PartitionedStructures.M_1_parallel, PartitionedStructures.M_2_parallel, PartitionedStructures.M_3_parallel, PartitionedStructures.M_okoubi_koko
-using PartitionedStructures.M_link
+using PartitionedStructures.Link
 using PartitionedStructures.M_part_v
 
 using LinearAlgebra

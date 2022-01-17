@@ -1,9 +1,9 @@
 using LinearAlgebra: Matrix
 using PartitionedStructures
-using PartitionedStructures.M_elemental_pm
+using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_part_mat
 
-using PartitionedStructures.M_link
+using PartitionedStructures.Link
 using PartitionedStructures.M_part_v
 
 using PartitionedStructures.M_okoubi_koko

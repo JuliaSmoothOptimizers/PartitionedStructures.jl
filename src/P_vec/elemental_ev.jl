@@ -1,9 +1,9 @@
 # include("src/P_vec/elemental_ev.jl")
-module M_elemental_elt_vec
+module ModElemental_ev
 
 	using SparseArrays
 
- 	using ..M_elt_vec, ..M_utils, ..M_abstract_element_struct
+ 	using ..M_elt_vec, ..Utils, ..M_abstract_element_struct
 	
 	import Base.==, Base.copy, Base.similar
 	 
