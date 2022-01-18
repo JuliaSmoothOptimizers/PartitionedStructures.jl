@@ -145,9 +145,9 @@ module ModElemental_pm
 	"""
 	function part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
-		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
-		# mod(n,(nie-overlapping)) == mod(-overlapping,n) || error("la condition: mod(n,(nie-overlapping)) == overlapping doit être vérifiée")
-		eem_set = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
+		mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
+		indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
+		eem_set = map(i -> fixed_ones_eem(i,nie;T=T,mul=mul), indices)
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])

@@ -12,7 +12,7 @@ using LinearAlgebra
 
 
 # (epm,epv) = create_epv_epm()
-(epm,epv) = create_epv_epm(;n=13)
+(epm,epv) = create_epv_epm(;n=17, nie =7, overlapping=2)
 # (epm,epv) = create_epv_epm(;n=21)
 # (epm,epv) = create_epv_epm(;n=1033)
 # (epm,epv) = create_epv_epm(;n=1033)

@@ -129,10 +129,9 @@ module ModElemental_pv
 
 	function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
-		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
-		# mod(n,(nie-overlapping)) == overlapping || error("la condition: mod(n,(nie-overlapping)) == overlapping doit être vérifiée")
-		# mod(n,(nie-overlapping)) == mod(-overlapping,n) || error("la condition: mod(n,(nie-overlapping)) == overlapping doit être vérifiée")
-		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
+		mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds") 
+		indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
+		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), indices)
 		N = length(eev_set)
 		v = Vector{T}(undef,n)
 		epv = Elemental_pv{T}(N,n,eev_set,v)		
