@@ -1,7 +1,7 @@
-using PartitionnedStructures
-using PartitionnedStructures.M_elemental_pm
-using PartitionnedStructures.M_part_mat
-using PartitionnedStructures.M_frontale
+using PartitionedStructures
+using PartitionedStructures.ModElemental_pm
+using PartitionedStructures.M_part_mat
+using PartitionedStructures.M_frontale
 
 using LinearAlgebra
 

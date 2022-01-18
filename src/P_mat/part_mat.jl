@@ -11,6 +11,9 @@ module M_part_mat
 	@inline set_N!(pm :: T, N :: Int) where T <: Part_mat = pm.N = N
 	@inline set_n!(pm :: T, n :: Int ) where T <: Part_mat = pm.n = n
 	@inline set_permutation!(pm :: T, p :: Vector{Int}) where T <: Part_mat = pm.permutation = perm
+
+	PBFGS(pm :: T, s, y) where T <: Part_mat = @error("PFBGS non défini")
+
 	export Part_mat
 
 	export get_N, get_n, get_permutation

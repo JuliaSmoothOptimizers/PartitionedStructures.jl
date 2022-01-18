@@ -1,1 +1,1 @@
-# PartitionnedStructures.jl
+# PartitionedStructures.jl

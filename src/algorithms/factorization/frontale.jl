@@ -1,6 +1,6 @@
 module M_frontale
 
-	using ..M_part_mat, ..M_elemental_pm
+	using ..M_part_mat, ..ModElemental_pm
 
 	using LoopVectorization
 

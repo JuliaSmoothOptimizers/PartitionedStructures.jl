@@ -1,9 +1,9 @@
-module M_link
-	using ..M_part_mat, ..M_part_v, ..M_elemental_pv, ..M_elemental_pm
+module Link
+	using ..M_part_mat, ..M_part_v, ..ModElemental_pv, ..ModElemental_pm
 
 	@inline check_epv_epm(epm :: Elemental_pm{T}, epv :: Elemental_pv{T}) where T = get_N(epm) == get_N(epv) && get_n(epm) == get_n(epv)
 	#todo finish full_check_epv_epm en comparant les indices
-	@inline full_check_epv_epm(epm :: Elemental_pm{T}, epv :: Elemental_pv{T}) where T = check_epv_epm(epm,epv) && true 
+	@inline full_check_epv_epm(epm :: Elemental_pm{T}, epv :: Elemental_pv{T}) where T = check_epv_epm(epm,epv) && ModElemental_pm.get_component_list(epm) == ModElemental_pv.get_component_list(epv)
 
 
 
@@ -16,6 +16,7 @@ module M_link
 
 	#todo version trop courte
 	function mul_epm_epv!(epv_tmp :: Elemental_pv{T}, epm :: Elemental_pm{T}, epv :: Elemental_pv{T}) where T
+		
 		set_spm!()
 	end 
 
@@ -41,7 +42,7 @@ module M_link
 
 
 
-	export check_epv_epm
+	export check_epv_epm, full_check_epv_epm
 	export mul_epm_epv, mul_epm_epv!, mul_epm_vector
 	export create_epv_epm, create_epv_epm_rand
 end 

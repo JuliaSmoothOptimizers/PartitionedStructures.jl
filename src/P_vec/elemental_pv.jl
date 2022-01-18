@@ -1,6 +1,6 @@
-module M_elemental_pv
+module ModElemental_pv
 
-	using ..M_elt_vec, ..M_elemental_elt_vec, ..M_abstract_element_struct	# element modules 
+	using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct	# element modules 
 	using ..M_part_v # partitoned modules
 
 	using SparseArrays
@@ -18,26 +18,10 @@ module M_elemental_pv
 	end
 	function Elemental_pv{T}(N :: Int, n :: Int, eev_set :: Vector{Elemental_elt_vec{T}}, v :: Vector{T}; perm::Vector{Int}=[1:n;]) where T
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
-		return Elemental_pv{T}(N,n,eev_set,v,component_list,perm)
+		epv = Elemental_pv{T}(N,n,eev_set,v,component_list,perm)
+		initialize_component_list!(epv)
+		return epv
 	end 
-
-
-	"""
-initialize_component_list!(epm)
-initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
-"""
-function initialize_component_list!(epv)
-	N = get_N(epv)
-	n = get_n(epv)
-	for i in 1:N
-		epvᵢ = get_eev(epv,i)
-		_indices = get_indices(epvᵢ)
-		for j in _indices # changer peut-être
-			push!(get_component_list(epm,j),i)
-		end 
-	end 
-end 
-
 
 	@inline get_component_list(pv :: Elemental_pv{T}) where T =  pv.component_list
 	@inline get_component_list(pv :: Elemental_pv{T}, i :: Int) where T =  @inbounds pv.component_list[i]
@@ -145,9 +129,9 @@ end
 
 	function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
-		mod(n-overlapping,nie-overlapping) == 0 || error("n-(nie-overlapping) doit être multiple de nie-overlapping")
-
-		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), [1:nie-overlapping:n-(nie-overlapping);])
+		mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds") 
+		indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
+		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), indices)
 		N = length(eev_set)
 		v = Vector{T}(undef,n)
 		epv = Elemental_pv{T}(N,n,eev_set,v)		
@@ -171,9 +155,25 @@ end
 	end 
 
 
+		"""
+		initialize_component_list!(epm)
+	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
+	"""
+	function initialize_component_list!(epv)
+	N = get_N(epv)
+	n = get_n(epv)
+	for i in 1:N
+		epvᵢ = get_eev(epv,i)
+		_indices = get_indices(epvᵢ)
+		for j in _indices # changer peut-être
+			push!(get_component_list(epv,j),i)
+		end 
+	end 
+	end 
+
 export Elemental_pv
 
-export get_eev_set, get_eev, get_eev_value, get_eevs
+export get_eev_set, get_eev, get_eev_value, get_eevs, get_component_list
 export set_eev!
 export rand_epv, create_epv, ones_kchained_epv, part_vec
 

@@ -1,8 +1,8 @@
-using PartitionnedStructures.M_part_v
-using PartitionnedStructures.M_elemental_pv
-using PartitionnedStructures.M_internal_pv
-using PartitionnedStructures.M_elemental_elt_vec
-using PartitionnedStructures.M_abstract_element_struct
+using PartitionedStructures.M_part_v
+using PartitionedStructures.ModElemental_pv
+using PartitionedStructures.M_internal_pv
+using PartitionedStructures.ModElemental_ev
+using PartitionedStructures.M_abstract_element_struct
 
 using Test 
 # using BenchmarkTools, ProfileView

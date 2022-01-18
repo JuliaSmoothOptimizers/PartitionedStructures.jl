@@ -1,8 +1,8 @@
 module M_1_parallel
 
-using ..M_part_mat, ..M_elt_mat, ..M_elemental_pm, ..M_elemental_em
-using ..M_part_v, ..M_elemental_pv, ..M_elt_vec, ..M_elemental_elt_vec
-using ..M_link
+using ..M_part_mat, ..M_elt_mat, ..ModElemental_pm, ..ModElemental_em
+using ..M_part_v, ..ModElemental_pv, ..M_elt_vec, ..ModElemental_ev
+using ..Link
 
 using LinearAlgebra, Statistics
 # using Ipopt, ADNLPModels, NLPModelsIpopt 
@@ -25,12 +25,12 @@ using LinearAlgebra, Statistics
 
 		#résolution de chaque system linéaire élément
 		for i in [1:N;]
-			set_eev!(epv_x, i, get_eem_set_hie(epm_A,i)\get_eev_value(epv_b,i))
+			set_eev!(epv_x, i, get_eem_set_Bie(epm_A,i)\get_eev_value(epv_b,i))
 		end 
 		#procédure pour chaque coordonnée
 		# grad = Vector(epv_b); order = reverse(sortperm(grad)); for i in order # ne change rien car complètement parallèle.
 		for i in 1:n		
-			_comp_list = get_component_list(epm_A,i) # element list using tha i-th variable
+			_comp_list = ModElemental_pm.get_component_list(epm_A,i) # element list using tha i-th variable
 			if length(_comp_list)==1 # in case only one element uses it
 				eev = get_eev(epv_x, _comp_list[1]) # retrieve elemental element vector
 				j = findfirst((index->index==i), eev.indices) # find the corresponding index 
@@ -55,7 +55,7 @@ using LinearAlgebra, Statistics
 			_indices[idx] = findfirst((index->index==i), eev.indices) # find the corresponding index 
 			_x[idx] = get_vec(eev,_indices[idx]) # store the result
 			eem = get_eem_set(epm_A,val)
-			vec = get_hie(eem)[:,_indices[idx]] #la colonne de A associé à la variable xᵢ
+			vec = get_Bie(eem)[:,_indices[idx]] #la colonne de A associé à la variable xᵢ
 			indices = M_elt_mat.get_indices(eem)
 			nie = M_elt_mat.get_nie(eem)
 			_columns[idx] = Elemental_elt_vec{T}(vec,indices,nie)

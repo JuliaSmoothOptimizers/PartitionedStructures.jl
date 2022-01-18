@@ -1,9 +1,9 @@
-using PartitionnedStructures
-using PartitionnedStructures.M_elemental_pm
-using PartitionnedStructures.M_part_mat
-using PartitionnedStructures.M_1_parallel, PartitionnedStructures.M_2_parallel, PartitionnedStructures.M_3_parallel, PartitionnedStructures.M_okoubi_koko
-using PartitionnedStructures.M_link
-using PartitionnedStructures.M_part_v
+using PartitionedStructures
+using PartitionedStructures.ModElemental_pm
+using PartitionedStructures.M_part_mat
+using PartitionedStructures.M_1_parallel, PartitionedStructures.M_2_parallel, PartitionedStructures.M_3_parallel, PartitionedStructures.M_okoubi_koko
+using PartitionedStructures.Link
+using PartitionedStructures.M_part_v
 
 using LinearAlgebra
 
@@ -12,7 +12,7 @@ using LinearAlgebra
 
 
 # (epm,epv) = create_epv_epm()
-(epm,epv) = create_epv_epm(;n=13)
+(epm,epv) = create_epv_epm(;n=17, nie =7, overlapping=2)
 # (epm,epv) = create_epv_epm(;n=21)
 # (epm,epv) = create_epv_epm(;n=1033)
 # (epm,epv) = create_epv_epm(;n=1033)
