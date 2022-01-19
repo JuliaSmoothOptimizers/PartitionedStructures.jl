@@ -8,7 +8,11 @@ module ModElemental_pm
 	using ..M_elt_mat, ..ModElemental_em, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
+	import ..M_part_mat.set_spm!, ..M_part_mat.get_spm
+
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
+	
+	
 	
 	
 	mutable struct Elemental_pm{T} <: Part_mat{T}
@@ -55,7 +59,7 @@ module ModElemental_pm
 		no_perm = [1:n;]
 		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
-		set_spm!(epm)
+		# set_spm!(epm)
 		return epm
 	end 
 
@@ -72,7 +76,7 @@ module ModElemental_pm
 		no_perm= [1:n;]
 		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
-		set_spm!(epm)
+		# set_spm!(epm)
 		return epm
 	end 
 
@@ -91,7 +95,7 @@ module ModElemental_pm
 		no_perm= [1:n;]
 		epm = Elemental_pm{T}(N+n,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
-		set_spm!(epm)
+		# set_spm!(epm)
 		return epm
 	end 
 
@@ -111,7 +115,7 @@ module ModElemental_pm
 		N = Int(floor(n/nie))	
 		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
-		set_spm!(epm)
+		# set_spm!(epm)
 		return epm
 	end 
 
@@ -134,7 +138,7 @@ module ModElemental_pm
 		N = length(eem_set)
 		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)
-		set_spm!(epm)
+		# set_spm!(epm)
 		return epm
 	end 
 
@@ -155,7 +159,7 @@ module ModElemental_pm
 		N = length(eem_set)
 		epm = Elemental_pm{T}(N,n,eem_set,spm,L,component_list,no_perm)
 		initialize_component_list!(epm)		
-		set_spm!(epm)
+		# set_spm!(epm)
 		return epm
 	end 
 
@@ -267,7 +271,7 @@ module ModElemental_pm
 		return m
 	end 
 
-	SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = get_spm(epm)
+	SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = begin set_spm!(epm); get_spm(epm) end
 
 
 	export Elemental_pm

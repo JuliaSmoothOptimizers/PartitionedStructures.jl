@@ -11,10 +11,4 @@ module M_elt_mat
 
 	export get_mat
 	
-
-	# export get_indices, get_nie
-	# export set_indices!, set_nie!
-
-	# export max_indices, min_indices
-
 end
