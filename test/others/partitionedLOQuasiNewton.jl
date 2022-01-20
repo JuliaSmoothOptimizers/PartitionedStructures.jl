@@ -22,7 +22,7 @@ using LinearAlgebra
 	@test mapreduce((x -> x>0), my_and, eigvals(B1)) #test positive eigensvalues
 end 
 
-@testset "Convexity preservation test of PBFGS" begin 
+@testset "Convexity preservation test of PLBFGS" begin 
 	n_test=50
 	for i in 1:n_test
 	 	n = rand(20:100)

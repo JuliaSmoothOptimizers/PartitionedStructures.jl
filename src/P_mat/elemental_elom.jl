@@ -12,10 +12,8 @@ module ModElemental_elom
 		Bie :: LinearOperators.LBFGSOperator{T}  # LinearOperator
 	end
 
-	@inline get_Bie(eelom :: Elemental_elom{T}) where T = eelom.Bie
-	@inline M_elt_mat.get_mat(eelom :: Elemental_elom{T}) where T = get_Bie(eelom)
 		
-	@inline (==)(eelom1 :: Elemental_elom{T}, eelom2 :: Elemental_elom{T}) where T = (get_nie(eelom1)== get_nie(eelom2)) && (get_Bie(eelom1)== get_Bie(eelom2)) && (get_indices(eelom1)== get_indices(eelom2))
+	@inline (==)(eelom1 :: Elemental_elom{T}, eelom2 :: Elemental_elom{T}) where T = (get_nie(eelom1)== get_nie(eelom2)) && begin v=rand(get_nie(eelom1)); (get_Bie(eelom1) *v == get_Bie(eelom2)*v) end && (get_indices(eelom1)== get_indices(eelom2))
 	@inline copy(eelom :: Elemental_elom{T}) where T = Elemental_elom{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), deepcopy(get_Bie(eelom)))
 	@inline similar(eelom :: Elemental_elom{T}) where T = Elemental_elom{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), similar(get_Bie(eelom)))
 
