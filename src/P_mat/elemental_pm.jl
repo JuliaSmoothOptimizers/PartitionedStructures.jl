@@ -9,7 +9,6 @@ module ModElemental_pm
 
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!
-	# , ..M_part_mat.get_spm
 
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
 	
@@ -32,8 +31,6 @@ module ModElemental_pm
 	@inline get_eem_sub_set(epm :: Elemental_pm{T}, indices::Vector{Int}) where T = epm.eem_set[indices]
 	@inline get_eem_set_Bie(epm :: Elemental_pm{T}, i::Int) where T = get_Bie(get_eem_set(epm,i))
 
-	# @inline get_spm(epm :: Elemental_pm{T}) where T = epm.spm
-	# @inline get_spm(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.spm[i,j]
 	@inline get_L(epm :: Elemental_pm{T}) where T = epm.L
 	@inline get_L(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.L[i,j]
 	@inline get_component_list(epm :: Elemental_pm{T}) where T = epm.component_list

@@ -1,5 +1,5 @@
 module Link
-	using ..M_part_mat, ..M_part_v, ..ModElemental_pv, ..ModElemental_pm, ..ModElemental_plom
+	using ..M_part_mat, ..M_part_v, ..ModElemental_pv, ..ModElemental_pm, ..ModElemental_plom_bfgs, ..ModElemental_plom
 	using ..M_abstract_part_struct
 
 	
@@ -34,13 +34,18 @@ module Link
 		return (epm,epv)
 	end 
 
-	function create_epv_eplom(;n=9,nie=5,overlapping=1,range_mul_m=nie:2*nie, mul_v=100.)
+	function create_epv_eplom_bfgs(;n=9,nie=5,overlapping=1,range_mul_m=nie:2*nie, mul_v=100.)
 		eplom = PLBFGS_eplom(;n=n,nie=nie,overlapping=overlapping)
 		epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
 		return (eplom,epv)
 	end 
 
+	function create_epv_eplom(;n=9,nie=5,overlapping=1,range_mul_m=nie:2*nie, mul_v=100.)
+		eplom = PLBFGSR1_eplom(;n=n,nie=nie,overlapping=overlapping)
+		epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
+		return (eplom,epv)
+	end 
 	
 	export mul_epm_epv, mul_epm_epv!, mul_epm_vector
-	export create_epv_epm, create_epv_epm_rand, create_epv_eplom
+	export create_epv_epm, create_epv_epm_rand, create_epv_eplom_bfgs, create_epv_eplom
 end 

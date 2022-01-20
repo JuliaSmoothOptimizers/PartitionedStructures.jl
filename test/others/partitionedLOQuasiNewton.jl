@@ -9,7 +9,7 @@ using LinearAlgebra
 	n=10
 	nie=4
 	over=2
-	(eplom_B,epv_y) = create_epv_eplom(; n=n, nie=nie, overlapping=over)
+	(eplom_B,epv_y) = create_epv_eplom_bfgs(; n=n, nie=nie, overlapping=over)
 	s = ones(n)
 	B = Matrix(eplom_B)
 
@@ -31,9 +31,26 @@ end
 		while mod(n-nie,nie-over) != 0 
 			over +=1
 		end 
-		epm_B1,epv_y1 = create_epv_eplom(;n=n,nie=nie,overlapping=over,range_mul_m=rand()+1, mul_v=rand()*100)
+		epm_B1,epv_y1 = create_epv_eplom_bfgs(;n=n,nie=nie,overlapping=over,range_mul_m=rand()+1, mul_v=rand()*100)
 		s = 100 .* rand(n)
 		epm_B11 = PLBFGS(epm_B1,epv_y1,s) 
 		@test mapreduce((x -> x>0), my_and, eigvals(Matrix(epm_B11))) #test positive eigensvalues
+		@test Matrix(epm_B11) == transpose(Matrix(epm_B11))
 	end 
 end 
+
+
+@testset "Partitionned update test" begin
+	n=10
+	nie=4
+	over=2
+	eplom = PLBFGSR1_eplom(;n=n,nie=nie,overlapping=over)
+	eplom_B,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)
+	s = ones(n)
+	B = Matrix(eplom_B)
+	@test B == transpose(B)	
+	
+	eplom_B1 = Part_update(eplom_B, epv_y, s)
+	B1 = Matrix(eplom_B1)
+	@test isapprox(B1, transpose(B1))
+end

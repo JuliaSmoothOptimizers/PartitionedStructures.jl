@@ -2,19 +2,20 @@ module ModElemental_plom
 	using SparseArrays, LinearOperators
 
 	using ..M_part_mat
-	using ..M_elt_mat, ..M_abstract_element_struct, ..ModElemental_elom
+	using ..M_elt_mat, ..M_abstract_element_struct, ..ModElemental_elom_bfgs, ..ModElemental_elom_sr1
 	
 	import Base.==, Base.copy, Base.similar
-	import ..M_part_mat.set_spm!
-	#  ..M_part_mat.get_spm
+	import ..M_part_mat.set_spm!, ..M_part_mat.get_eelom_set
 
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
 
-	
-	mutable struct Elemental_plom{T} <: Part_mat{T}
+
+	elom_type{T} = Union{Elemental_elom_sr1{T}, Elemental_elom_bfgs{T}}
+
+	mutable struct Elemental_plom{T} <: Part_LO_mat{T}
 		N :: Int
 		n :: Int
-		eelom_set :: Vector{Elemental_elom{T}}
+		eelom_set :: Vector{elom_type{T}}
 		spm :: SparseMatrixCSC{T,Int}
 		L :: SparseMatrixCSC{T,Int}
 		component_list :: Vector{Vector{Int}}
@@ -27,8 +28,6 @@ module ModElemental_plom
 	@inline get_eelom_sub_set(eplom :: Elemental_plom{T}, indices::Vector{Int}) where T = eplom.eelom_set[indices]
 	@inline get_eelom_set_Bie(eplom :: Elemental_plom{T}, i::Int) where T = get_Bie(get_eelom_set(eplom,i))
 	
-	# @inline get_spm(eplom :: Elemental_plom{T}) where T = eplom.spm
-	# @inline get_spm(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.spm[i,j]
 	@inline get_L(eplom :: Elemental_plom{T}) where T = eplom.L
 	@inline get_L(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.L[i,j]
 	@inline get_component_list(eplom :: Elemental_plom{T}) where T = eplom.component_list
@@ -48,12 +47,12 @@ module ModElemental_plom
 		PLBFGS_eplom(N,n; type, nie)
 	Create a a partitionned limited memory matrix of N LBFGSLinearOperators blocks whose overlap next block coordinates by overlapping.
 	"""
-	function PLBFGS_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)		
+	function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)		
 		overlapping < nie || error("l'overlapping doit être plus faible que nie")
 		mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
 	
 		indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
-		eelom_set = map(i -> LBFGS_eelom(nie;T=T,index=i), indices)	
+		eelom_set = map(i -> rand() > prob ? LBFGS_eelom(nie;T=T,index=i) : LSR1_eelom(nie;T=T,index=i), indices)	
 		N = length(indices)
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)
@@ -69,8 +68,8 @@ module ModElemental_plom
 		PLBFGS_eplom_rand(N,n; type, nie)
 	Create a a partitionned limited memory matrix of N LBFGSLinearOperators blocs whose positions are randoms
 	"""
-	function PLBFGS_eplom_rand(N :: Int, n ::Int; T=Float64, nie::Int=5)		
-		eelom_set = map(i -> LBFGS_eelom_rand(nie;T=T,n=n), [1:N;])
+	function PLBFGSR1_eplom_rand(N :: Int, n ::Int; T=Float64, nie::Int=5, prob=0.5)		
+		eelom_set = map(i -> rand() > prob ? LBFGS_eelom_rand(nie;T=T,n=n) : LSR1_eelom_rand(nie;T=T,n=n), [1:N;])
 		spm = spzeros(T,n,n)
 		L = spzeros(T,n,n)
 		component_list = map(i -> Vector{Int}(undef,0), [1:n;])
@@ -134,7 +133,6 @@ module ModElemental_plom
 	
 	export initialize_component_list!
 	export set_L_to_spm!
-	# reset_spm!, set_spm!, 
 	
-	export PLBFGS_eplom, PLBFGS_eplom_rand
+	export PLBFGSR1_eplom, PLBFGSR1_eplom_rand
 end 
