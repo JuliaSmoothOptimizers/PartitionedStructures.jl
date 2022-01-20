@@ -9,8 +9,8 @@ module M_part_v
 	# @inline get_n(pv :: T ) where T <: Part_v = pv.n
 	@inline get_v(pv :: T ) where T <: Part_v = pv.v
 
-	@inline set_N!(pv :: T, N :: Int ) where T <: Part_v = pv.N = N
-	@inline set_n!(pv :: T, n :: Int ) where T <: Part_v = pv.n = n
+	# @inline set_N!(pv :: T, N :: Int ) where T <: Part_v = pv.N = N
+	# @inline set_n!(pv :: T, n :: Int ) where T <: Part_v = pv.n = n
 	@inline set_v!(pv :: T, v :: Vector{Y} ) where T <: Part_v{Y} where Y = pv.v = v
 	@inline set_v!(pv :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = pv.v[i] = value
 	@inline add_v!(pv :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = pv.v[i] += value

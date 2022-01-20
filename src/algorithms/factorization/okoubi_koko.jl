@@ -1,6 +1,6 @@
 module M_okoubi_koko
 
-using ..M_part_mat, ..M_part_v, ..ModElemental_pv, ..ModElemental_pm, ..M_elt_vec
+using ..M_part_mat, ..M_abstract_part_struct, ..M_part_v, ..ModElemental_pv, ..ModElemental_pm, ..M_elt_vec
 using ..Link
 
 using Statistics, LinearAlgebra

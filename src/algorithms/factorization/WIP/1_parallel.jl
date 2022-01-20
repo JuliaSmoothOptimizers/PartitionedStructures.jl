@@ -1,6 +1,6 @@
 module M_1_parallel
 
-using ..M_part_mat, ..M_elt_mat, ..ModElemental_pm, ..ModElemental_em
+using ..M_part_mat, ..M_elt_mat, ..ModElemental_pm, ..ModElemental_em, ..M_abstract_part_struct
 using ..M_part_v, ..ModElemental_pv, ..M_elt_vec, ..ModElemental_ev
 using ..Link
 

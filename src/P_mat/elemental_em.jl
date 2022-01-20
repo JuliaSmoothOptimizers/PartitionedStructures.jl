@@ -12,8 +12,6 @@ module ModElemental_em
 		Bie :: Symmetric{T,Matrix{T}} # size nᵢᴱ × nᵢᴱ
 	end
 
-	@inline get_Bie(eem :: Elemental_em{T}) where T = eem.Bie
-	@inline M_elt_mat.get_mat(eem :: Elemental_em{T}) where T = get_Bie(eem)
 	
 	@inline (==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_Bie(eem1)== get_Bie(eem2)) && (get_indices(eem1)== get_indices(eem2))
 	@inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_Bie(eem)))

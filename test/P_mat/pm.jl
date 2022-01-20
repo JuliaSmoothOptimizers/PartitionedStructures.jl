@@ -10,13 +10,16 @@ using SparseArrays, StatsBase
 	n = 10
 	nie = 3
 	pm1 = identity_epm(N,n; nie=nie)
+	set_spm!(pm1)
 	pm2 = ones_epm(N,n; nie=nie)
+	set_spm!(pm2)
 
 	@test Matrix(pm2.spm) == transpose(Matrix(pm2.spm))
 	@test sum(Matrix(pm2.spm)) == N * nie^2
 	@test sum(Matrix(pm1.spm)) == N * nie
 	# a = sparse([1:2:5;],[2:2:6;],ones(3))
 
+	
 	@test (@allocated reset_spm!(pm1)) == 0
 	# @test (@allocated set_spm!(pm1)) == 0 
 

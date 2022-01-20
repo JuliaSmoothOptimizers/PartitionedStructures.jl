@@ -2,20 +2,37 @@ module M_part_mat
 
 	using ..M_abstract_part_struct
 
+	using SparseArrays
+
 	abstract type Part_mat{T} <: Part_struct{T} end
+	abstract type Part_LO_mat{T} <: Part_mat{T} end
 
-	# @inline get_N(pm :: T ) where T <: Part_mat = pm.N
-	# @inline get_n(pm :: T ) where T <: Part_mat = pm.n
+
+	# Define in partitioned structure
+	set_spm!(pm :: T) where T <: Part_mat = @error("should not be called")
+	@inline get_spm(pm :: T) where T <: Part_mat = pm.spm
+	@inline get_spm(pm :: T, i :: Int, j :: Int) where T <: Part_mat = @inbounds get_spm(pm)[i,j]
+
 	@inline get_permutation(pm :: T) where T <: Part_mat = pm.permutation
-
-	@inline set_N!(pm :: T, N :: Int) where T <: Part_mat = pm.N = N
-	@inline set_n!(pm :: T, n :: Int ) where T <: Part_mat = pm.n = n
 	@inline set_permutation!(pm :: T, p :: Vector{Int}) where T <: Part_mat = pm.permutation = perm
 
-	PBFGS(pm :: T, s, y) where T <: Part_mat = @error("PFBGS non défini")
+	"""
+	reset_spm!(pm)
+	Reset the sparse matrix pm.spm
+	"""
+	@inline reset_spm!(pm :: T) where T <: Part_mat{Y} where Y <: Number  = pm.spm.nzval .= (Y)(0) #.nzval delete the 1 alloc
+	@inline hard_reset_spm!(pm :: T) where T <: Part_mat = pm.spm = spzeros(T,get_n(pm),get_n(pm))
+	@inline reset_L!(pm :: T) where T <: Part_mat{Y} where Y <: Number = pm.L.nzval .= (Y)(0) #.nzval delete the 1 alloc
+	@inline hard_reset_L!(pm :: T) where T <: Part_mat = pm.L = spzeros(T,get_n(pm),get_n(pm))
 
-	export Part_mat
 
-	export get_N, get_n, get_permutation
+	@inline get_eelom_set(plm::T) where T <: Part_LO_mat = @error("should not be called")
+
+	export Part_mat, Part_LO_mat
+
+	export get_N, get_n, get_permutation, get_spm
+	export set_spm!, reset_spm!, hard_reset_spm!, reset_L!, hard_reset_L!
 	export set_N!, set_n!, set_permutation!
+
+	export get_eelom_set
 end

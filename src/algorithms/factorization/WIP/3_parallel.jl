@@ -1,7 +1,7 @@
 module M_3_parallel
 
 using LinearAlgebra: norm2
-using ..M_part_mat, ..M_elt_mat, ..ModElemental_pm, ..ModElemental_em, ..M_abstract_element_struct
+using ..M_part_mat, ..M_elt_mat, ..ModElemental_pm, ..ModElemental_em, ..M_abstract_element_struct, ..M_abstract_part_struct
 using ..M_part_v, ..ModElemental_pv, ..M_elt_vec, ..ModElemental_ev
 using ..Link
 

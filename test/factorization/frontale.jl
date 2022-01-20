@@ -21,7 +21,7 @@ not_last && @testset "test frontal method" begin
 		L_chol = LLT.L
 
 		frontale!(pm)
-		L_frontale = Matrix(tril(get_L(pm)))
+		L_frontale = Matrix(tril(ModElemental_pm.get_L(pm)))
 		m_frontale = L_frontale * L_frontale'
 
 		@test norm(L_chol - L_frontale) ≤	1e-6 
@@ -69,7 +69,7 @@ LLT = cholesky(m)
 frontale!(pm)
 
 L_chol = LLT.L
-L_frontale = Matrix(tril(get_L(pm)))
+L_frontale = Matrix(tril(ModElemental_pm.get_L(pm)))
 m_frontale = L_frontale * L_frontale'
 
 @test norm(L_chol - L_frontale) ≤	1e-6 
