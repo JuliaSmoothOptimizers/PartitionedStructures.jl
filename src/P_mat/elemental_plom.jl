@@ -5,7 +5,8 @@ module ModElemental_plom
 	using ..M_elt_mat, ..M_abstract_element_struct, ..ModElemental_elom
 	
 	import Base.==, Base.copy, Base.similar
-	import ..M_part_mat.set_spm!, ..M_part_mat.get_spm
+	import ..M_part_mat.set_spm!
+	#  ..M_part_mat.get_spm
 
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
 
@@ -26,8 +27,8 @@ module ModElemental_plom
 	@inline get_eelom_sub_set(eplom :: Elemental_plom{T}, indices::Vector{Int}) where T = eplom.eelom_set[indices]
 	@inline get_eelom_set_Bie(eplom :: Elemental_plom{T}, i::Int) where T = get_Bie(get_eelom_set(eplom,i))
 	
-	@inline get_spm(eplom :: Elemental_plom{T}) where T = eplom.spm
-	@inline get_spm(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.spm[i,j]
+	# @inline get_spm(eplom :: Elemental_plom{T}) where T = eplom.spm
+	# @inline get_spm(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.spm[i,j]
 	@inline get_L(eplom :: Elemental_plom{T}) where T = eplom.L
 	@inline get_L(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.L[i,j]
 	@inline get_component_list(eplom :: Elemental_plom{T}) where T = eplom.component_list
@@ -35,7 +36,6 @@ module ModElemental_plom
 	
 	@inline set_L!(eplom :: Elemental_plom{T}, i :: Int, j :: Int, v :: T) where T = @inbounds eplom.L[i,j] = v
 	@inline set_L_to_spm!(eplom :: Elemental_plom{T}) where T = eplom.L = copy(eplom.spm)
-		
 		
 		
 	@inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
@@ -96,14 +96,6 @@ module ModElemental_plom
 		end 
 	end 
 	
-	"""
-			reset_spm!(eplom)
-	Reset the sparse matrix eplom.spm
-	"""
-	@inline reset_spm!(eplom :: Elemental_plom{T}) where T = eplom.spm.nzval .= (T)(0) #.nzval delete the 1 alloc
-	@inline hard_reset_spm!(eplom :: Elemental_plom{T}) where T = eplom.spm = spzeros(T,get_n(eplom),get_n(eplom))
-	@inline reset_L!(eplom :: Elemental_plom{T}) where T = eplom.L.nzval .= (T)(0) #.nzval delete the 1 alloc
-	@inline hard_reset_L!(eplom :: Elemental_plom{T}) where T = eplom.L = spzeros(T,get_n(eplom),get_n(eplom))
 	
 	"""
 			set_spm!(eplom)
@@ -141,7 +133,8 @@ module ModElemental_plom
 	export set_L!, set_L_to_spm!
 	
 	export initialize_component_list!
-	export reset_spm!, set_spm!, set_L_to_spm!
+	export set_L_to_spm!
+	# reset_spm!, set_spm!, 
 	
 	export PLBFGS_eplom, PLBFGS_eplom_rand
 end 

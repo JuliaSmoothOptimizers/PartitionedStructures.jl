@@ -19,5 +19,6 @@ include("P_mat/_include.jl")
 #include related to factorization of partitionned matrices
 include("algorithms/_include.jl")
 
+# no export for now
 
 end # module

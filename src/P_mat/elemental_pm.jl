@@ -8,7 +8,8 @@ module ModElemental_pm
 	using ..M_elt_mat, ..ModElemental_em, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
-	import ..M_part_mat.set_spm!, ..M_part_mat.get_spm
+	import ..M_part_mat.set_spm!
+	# , ..M_part_mat.get_spm
 
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
 	
@@ -31,8 +32,8 @@ module ModElemental_pm
 	@inline get_eem_sub_set(epm :: Elemental_pm{T}, indices::Vector{Int}) where T = epm.eem_set[indices]
 	@inline get_eem_set_Bie(epm :: Elemental_pm{T}, i::Int) where T = get_Bie(get_eem_set(epm,i))
 
-	@inline get_spm(epm :: Elemental_pm{T}) where T = epm.spm
-	@inline get_spm(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.spm[i,j]
+	# @inline get_spm(epm :: Elemental_pm{T}) where T = epm.spm
+	# @inline get_spm(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.spm[i,j]
 	@inline get_L(epm :: Elemental_pm{T}) where T = epm.L
 	@inline get_L(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.L[i,j]
 	@inline get_component_list(epm :: Elemental_pm{T}) where T = epm.component_list
@@ -180,17 +181,6 @@ module ModElemental_pm
 			end 
 		end 
 	end 
-
-
-	"""
-		reset_spm!(epm)
-	Reset the sparse matrix epm.spm
-	"""
-	@inline reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm.nzval .= (T)(0) #.nzval delete the 1 alloc
-	@inline hard_reset_spm!(epm :: Elemental_pm{T}) where T = epm.spm = spzeros(T,get_n(epm),get_n(epm))
-
-	@inline reset_L!(epm :: Elemental_pm{T}) where T = epm.L.nzval .= (T)(0) #.nzval delete the 1 alloc
-	@inline hard_reset_L!(epm :: Elemental_pm{T}) where T = epm.L = spzeros(T,get_n(epm),get_n(epm))
 
 
 	"""
