@@ -11,8 +11,8 @@ epm_B2,epv_y2 = create_epv_epm(;n=n,nie=3,overlapping=0,mul_m=5., mul_v=100.)
 
 s = ones(n)
 
-epm_B11 = PBFGS(epm_B1,epv_y1,s) 
-epm_B12 = PSR1(epm_B1,epv_y1,s) 
+epm_B11 = PBFGS_update(epm_B1,epv_y1,s) 
+epm_B12 = PSR1_update(epm_B1,epv_y1,s) 
 
 
 @test Matrix(epm_B1) == transpose(Matrix(epm_B1))
@@ -23,10 +23,10 @@ epm_B12 = PSR1(epm_B1,epv_y1,s)
 @test Matrix(epm_B11) == transpose(Matrix(epm_B11))
 @test Matrix(epm_B12) == transpose(Matrix(epm_B12))
 
-@test_throws DimensionMismatch PBFGS(epm_B1,epv_y2,s)
-@test_throws DimensionMismatch PSR1(epm_B1,epv_y2,s) 
+@test_throws DimensionMismatch PBFGS_update(epm_B1,epv_y2,s)
+@test_throws DimensionMismatch PSR1_update(epm_B1,epv_y2,s) 
 
-@testset "Convexity preservation test of PBFGS" begin 
+@testset "Convexity preservation test of PBFGS_update" begin 
 	n_test=50
 	for i in 1:n_test
 	 	n = rand(20:100)
@@ -37,7 +37,7 @@ epm_B12 = PSR1(epm_B1,epv_y1,s)
 		end 
 		epm_B1,epv_y1 = create_epv_epm(;n=n,nie=nie,overlapping=over,mul_m=rand()+1, mul_v=rand()*100)
 		s = 100 .* rand(n)
-		epm_B11 = PBFGS(epm_B1,epv_y1,s) 
+		epm_B11 = PBFGS_update(epm_B1,epv_y1,s) 
 		@test mapreduce((x -> x>0), my_and, eigvals(Matrix(epm_B11))) #test positive eigensvalues
 	end 
 end 

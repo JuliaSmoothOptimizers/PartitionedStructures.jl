@@ -7,12 +7,12 @@ module PartitionedQuasiNewton
 	
 	
 	""" 
-			PBFGS(epm_B, s, epv_y)
+			PBFGS_update(epm_B, s, epv_y)
 	Define the partitioned BFGS update of the partioned matrix epm_B, given the step s and the element gradient difference epv_y
 	"""
-	PBFGS(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epm_copy = copy(epm_B); PBFGS!(epm_copy,epv_y,s); return epm_copy end 
-	PBFGS!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epv_s = epv_from_v(s, epv_y); PBFGS!(epm_B, epv_y, epv_s) end
-	function PBFGS!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where T 
+	PBFGS_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epm_copy = copy(epm_B); PBFGS_update!(epm_copy,epv_y,s); return epm_copy end 
+	PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epv_s = epv_from_v(s, epv_y); PBFGS_update!(epm_B, epv_y, epv_s) end
+	function PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where T 
 		full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
 		full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
 		N = get_N(epm_B)
@@ -25,12 +25,12 @@ module PartitionedQuasiNewton
 	end
 
 	""" 
-			PSR1(epm_B, s, epv_y)
+			PSR1_update(epm_B, s, epv_y)
 	Define the partitioned BFGS update of the partioned matrix epm_B, given the step s and the element gradient difference epv_y
 	"""
-	PSR1(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epm_copy = copy(epm_B); PSR1!(epm_copy,epv_y,s); return epm_copy end 
-	PSR1!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epv_s = epv_from_v(s, epv_y); PSR1!(epm_B, epv_y, epv_s) end
-	function PSR1!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where T 
+	PSR1_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epm_copy = copy(epm_B); PSR1_update!(epm_copy,epv_y,s); return epm_copy end 
+	PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epv_s = epv_from_v(s, epv_y); PSR1_update!(epm_B, epv_y, epv_s) end
+	function PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where T 
 		full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
 		full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
 		N = get_N(epm_B)
@@ -43,7 +43,7 @@ module PartitionedQuasiNewton
 	end
 
 
-	export PBFGS, PFBSG!
-	export PSR1, PSR1!
+	export PBFGS_update, PBFGS_update!
+	export PSR1_update, PSR1_update!
 
 end 

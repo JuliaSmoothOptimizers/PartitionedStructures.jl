@@ -7,12 +7,12 @@ using ..ModElemental_plom, ..ModElemental_plom_bfgs, ..ModElemental_elom_bfgs
 
 
 	""" 
-			PLBFGS(eplom_B, s, epv_y)
+			PLBFGS_update(eplom_B, s, epv_y)
 	Define the partitioned BFGS update of the partioned matrix eplom_B, given the step s and the element gradient difference epv_y
 	"""
-	PLBFGS(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epm_copy = copy(eplom_B); PLBFGS!(epm_copy,epv_y,s); return epm_copy end 
-	PLBFGS!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epv_s = epv_from_v(s, epv_y); PLBFGS!(eplom_B, epv_y, epv_s) end
-	function PLBFGS!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where T 
+	PLBFGS_update(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epm_copy = copy(eplom_B); PLBFGS_update!(epm_copy,epv_y,s); return epm_copy end 
+	PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}) where T = begin epv_s = epv_from_v(s, epv_y); PLBFGS_update!(eplom_B, epv_y, epv_s) end
+	function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where T 
 		full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
 		full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
 		N = get_N(eplom_B)
@@ -46,7 +46,7 @@ using ..ModElemental_plom, ..ModElemental_plom_bfgs, ..ModElemental_elom_bfgs
 	end
 
 
-	export PLBFGS, PLBFGS!
+	export PLBFGS_update, PLBFGS_update!
 	export Part_update, Part_update!
 
 end 
