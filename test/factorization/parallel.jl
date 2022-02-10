@@ -37,26 +37,3 @@ println("résultats:")
 
 @show norm(s-s_okou), norm(s-s_par1), norm(s-s_par2), norm(s-s_par3)
 @show norm(s), norm(s_okou), norm(s_par1), norm(s_par2), norm(s_par3)
-
-# using Ipopt, ADNLPModels, NLPModelsIpopt 
-# x_base = ones(5)
-# f(x) = sum( (y -> y^2).(x_base.-x) )
-# x0 = zeros(5)
-# n=5
-
-# nlp = ADNLPModel(x -> f(x), x0)
-# res = ipopt(nlp)
-
-
-
-
-
-
-
-
-# model = Model(with_optimizer(Ipopt.Optimizer))
-# @variable(model, x[1:n])
-# register(model, :f, 1, f; autodiff = true)
-# @NLobjective(model, Min, f(x) )
-# optimize!(model)
-# value.(x)
