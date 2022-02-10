@@ -141,7 +141,6 @@ module ModElemental_pv
 
 	Base.Vector(pv :: Elemental_pv{T}) where T = begin build_v!(pv); get_v(pv) end 
 
-
 	function epv_from_v(x :: Vector{T}, shape_epv :: Elemental_pv{T}) where T 
 		epv_x = similar(shape_epv)
 		epv_from_v!(epv_x, x)
@@ -160,15 +159,15 @@ module ModElemental_pv
 	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
 	"""
 	function initialize_component_list!(epv)
-	N = get_N(epv)
-	n = get_n(epv)
-	for i in 1:N
-		epvᵢ = get_eev(epv,i)
-		_indices = get_indices(epvᵢ)
-		for j in _indices # changer peut-être
-			push!(get_component_list(epv,j),i)
+		N = get_N(epv)
+		n = get_n(epv)
+		for i in 1:N
+			epvᵢ = get_eev(epv,i)
+			_indices = get_indices(epvᵢ)
+			for j in _indices # changer peut-être
+				push!(get_component_list(epv,j),i)
+			end 
 		end 
-	end 
 	end 
 
 export Elemental_pv
