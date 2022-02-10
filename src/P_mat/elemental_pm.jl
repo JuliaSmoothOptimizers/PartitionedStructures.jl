@@ -2,7 +2,6 @@ module ModElemental_pm
 # Symmetric bloc elemental partitioned matrix
 
 	using SparseArrays
-	using LoopVectorization
 
 	using ..M_part_mat
 	using ..M_elt_mat, ..ModElemental_em, ..M_abstract_element_struct
@@ -10,10 +9,14 @@ module ModElemental_pm
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!
 
-	import Base.Matrix, SparseArrays.SparseMatrixCSC
-	
-	
-	
+	import Base.Matrix, SparseArrays.SparseMatrixCSC, Base.permute!
+
+
+	export Elemental_pm
+	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_Bie, get_eem_sub_set
+	export set_L!, set_L_to_spm!, reset_spm!, set_spm!, set_L_to_spm!
+	export initialize_component_list!, correlated_var
+	export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 	
 	mutable struct Elemental_pm{T} <: Part_mat{T}
 		N :: Int
@@ -162,7 +165,6 @@ module ModElemental_pm
 	end 
 
 
-
 	"""
 		initialize_component_list!(epm)
 	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
@@ -178,7 +180,6 @@ module ModElemental_pm
 			end 
 		end 
 	end 
-
 
 	"""
 		set_spm!(epm)
@@ -202,8 +203,6 @@ module ModElemental_pm
 		end 
 	end
 
-
-	import Base.permute! 
 	"""
 			permute!(epm,p)
 	apply the permutation p to the elemental partitionned matrix epm.
@@ -260,14 +259,4 @@ module ModElemental_pm
 
 	SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = begin set_spm!(epm); get_spm(epm) end
 
-
-	export Elemental_pm
-
-	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_Bie, get_eem_sub_set
-	export set_L!, set_L_to_spm!
-
-	export initialize_component_list!, correlated_var
-	export reset_spm!, set_spm!, set_L_to_spm!
-
-	export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 end

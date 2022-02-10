@@ -9,8 +9,7 @@ module ModElemental_plom_bfgs
 
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
 
-
-		mutable struct Elemental_plom_bfgs{T} <: Part_LO_mat{T}
+	mutable struct Elemental_plom_bfgs{T} <: Part_LO_mat{T}
 		N :: Int
 		n :: Int
 		eelom_set :: Vector{Elemental_elom_bfgs{T}}
@@ -19,7 +18,6 @@ module ModElemental_plom_bfgs
 		component_list :: Vector{Vector{Int}}
 		permutation :: Vector{Int} # n-size vector 
 	end
-	
 	
 	@inline get_eelom_set(eplom :: Elemental_plom_bfgs{T}) where T = eplom.eelom_set
 	@inline get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i::Int) where T = @inbounds eplom.eelom_set[i]

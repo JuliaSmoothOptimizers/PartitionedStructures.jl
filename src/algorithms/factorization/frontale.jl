@@ -2,8 +2,6 @@ module M_frontale
 
 	using ..M_part_mat, ..ModElemental_pm
 
-	using LoopVectorization
-
 	function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T	
 		if perm != [1:get_n(epm);]
 			permute!(epm, perm) # apply the permutation
@@ -29,7 +27,7 @@ module M_frontale
 			unique!(front) # without duplication
 			actualise_not_added!(front, not_added) # update of boolean list
 
-			@simd for j in front
+			for j in front
 				if j == _current_var # pivot (1st iter)
 					v = sqrt(get_L(epm,_current_var,_current_var))
 					set_L!(epm,_current_var,_current_var,v)
