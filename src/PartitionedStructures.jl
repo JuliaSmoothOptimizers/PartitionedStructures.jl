@@ -20,5 +20,6 @@ module PartitionedStructures
   using .ModElemental_pv, .ModElemental_ev, .ModElemental_em, .ModElemental_pm
 
   export Elemental_pv, Elemental_pm
+  export create_epv
 
 end # module
