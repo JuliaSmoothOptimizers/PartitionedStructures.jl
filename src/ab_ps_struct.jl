@@ -12,7 +12,8 @@ module M_abstract_part_struct
 	(==)(ps1 :: T, ps2 :: T) where T <: Part_struct = get_n(ps1)==get_n(ps2) && get_N(ps1)==get_N(ps2)
 
 	@inline check_epv_epm(epm :: Y, epv :: Z) where Y <: Part_struct where Z <: Part_struct = get_N(epm) == get_N(epv) && get_n(epm) == get_n(epv)
-	@inline full_check_epv_epm(epm :: Y, epv :: Z) where Y <: Part_struct where Z <: Part_struct = check_epv_epm(epm,epv) && get_component_list(epm) == get_component_list(epv)
+	@inline full_check_epv_epm(ep1 :: Y, ep2 :: Z) where Y <: Part_struct where Z <: Part_struct = check_epv_epm(ep1,ep2) && get_component_list(ep1) == get_component_list(ep2)
+
 
 	export Part_struct
 

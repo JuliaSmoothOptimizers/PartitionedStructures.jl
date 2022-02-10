@@ -9,10 +9,11 @@ module M_elt_vec
 	
 	@inline get_vec(ev :: T, i::Int) where T <: Elt_vec = ev.vec[i]
 
-	@inline set_vec!(ev :: T, vec :: Vector{Y}) where T <: Elt_vec where Y = ev.vec = vec
-
+	@inline set_vec!(ev :: T, vec :: Vector{Y}) where T <: Elt_vec where Y = ev.vec .= vec
+	@inline set_minus_vec!(ev :: T) where T <: Elt_vec = set_vec!(ev, - get_vec(ev))
+	@inline set_add_vec!(ev :: T, vec :: Vector{Y}) where {T <: Elt_vec, Y <:Number}= ev.vec .+= vec
 	
-	export set_vec!, get_vec
+	export set_vec!, get_vec, set_minus_vec!, set_add_vec!
 	export Elt_vec
 
 end

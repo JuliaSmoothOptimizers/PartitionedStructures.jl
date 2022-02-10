@@ -10,6 +10,7 @@ module M_part_v
 	@inline set_v!(pv :: T, v :: Vector{Y} ) where T <: Part_v{Y} where Y = pv.v = v
 	@inline set_v!(pv :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = pv.v[i] = value
 	@inline add_v!(pv :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = pv.v[i] += value
+	@inline add_v!(pv :: T, indices :: Vector{Int}, values :: Vector{Y}) where T <: Part_v{Y} where Y = get_v(pv)[indices] .+= values
 
 	@inline reset_v!(pv :: T ) where T <: Part_v{Y} where Y = pv.v .= (Y)(0)
 

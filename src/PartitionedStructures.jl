@@ -17,9 +17,14 @@ module PartitionedStructures
   #include related to factorization of partitionned matrices
   include("algorithms/_include.jl")
 
+	using .M_abstract_part_struct
   using .ModElemental_pv, .ModElemental_ev, .ModElemental_em, .ModElemental_pm
+  using .M_elt_vec, .M_part_v
 
   export Elemental_pv, Elemental_pm
-  export create_epv
+  export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv! # ModElemental_pv
+  export get_v, build_v!
+  export get_eev_value
+	export full_check_epv_epm
 
 end # module

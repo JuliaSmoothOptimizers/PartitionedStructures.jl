@@ -1,8 +1,8 @@
 module ModElemental_pv
 
 	using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct	# element modules 
-	using ..M_part_v # partitoned modules
-
+	using ..M_part_v, ..M_abstract_part_struct # partitoned modules
+	
 	using SparseArrays
 	
 	import Base.Vector
@@ -49,13 +49,42 @@ module ModElemental_pv
 		for i in 1:N
 			eevᵢ = get_eev(epv,i)
 			nᵢᴱ = get_nie(eevᵢ)			
+			# add_v!(epv, get_indices(eevᵢ), get_vec(eevᵢ))
 			for j in 1:nᵢᴱ
 				add_v!(epv, get_indices(eevᵢ,j), get_vec(eevᵢ,j))
 			end 
 		end 
 	end 
 
-	
+	# # function M_part_v.build_v!(epv :: Elemental_pv{T}) where T
+	# function build_v2!(epv :: Elemental_pv{T}) where T
+		# reset_v!(epv)
+		# N = get_N(epv)
+		# for i in 1:N
+			# eevᵢ = get_eev(epv,i)
+			# add_v!(epv, get_indices(eevᵢ), get_vec(eevᵢ))						
+		# end 
+	# end 
+	"""
+			minus_epv!(epv)
+	Build in place the -epv, by inversing the value of each elemental element vector.
+	"""
+	minus_epv!(epv :: Elemental_pv{T}) where T <: Number = map( (eev -> set_minus_vec!(eev)), get_eev_set(epv))
+
+	"""
+			add_epv!(epv1,epv2)
+	Build in place of epv2 the addition of epv1 and epv2.
+	Concretely each corresponding elemental vector will be add. 
+	"""
+	function add_epv!(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T <: Number
+		full_check_epv_epm(epv1,epv2) || @error("epv1 mismatch epv2 in add_epv!")
+		N = get_N(epv1)
+		for i in 1:N
+			vec1 = get_vec(get_eev(epv1,i))
+			set_add_vec!(get_eev(epv2,i), vec1)
+		end
+	end 
+
 	"""
 			create_elemental_pv(elt_ev_set)
 	create easily a pv from elt_ev_set (confort)
@@ -138,7 +167,6 @@ module ModElemental_pv
 		return epv
 	end
 
-
 	Base.Vector(pv :: Elemental_pv{T}) where T = begin build_v!(pv); get_v(pv) end 
 
 	function epv_from_v(x :: Vector{T}, shape_epv :: Elemental_pv{T}) where T 
@@ -151,8 +179,7 @@ module ModElemental_pv
 		for (idx,eev) in enumerate(eev_set)
 			set_eev!(epv_x, idx, x[get_indices(eev)]) # met le vecteur élément comme une copie de x 
 		end 		
-	end 
-
+	end
 
 		"""
 		initialize_component_list!(epm)
@@ -173,7 +200,7 @@ module ModElemental_pv
 export Elemental_pv
 
 export get_eev_set, get_eev, get_eev_value, get_eevs, get_component_list
-export set_eev!
+export set_eev!, minus_epv!, add_epv!
 export rand_epv, create_epv, ones_kchained_epv, part_vec
 
 export scale_epv, scale_epv!

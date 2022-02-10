@@ -1,7 +1,7 @@
 # include("src/P_vec/elemental_ev.jl")
 module M_internal_elt_vec
 
-	using SparseArrays, LinearAlgebra
+	using SparseArrays, LinearAlgebra, StatsBase
 
  	using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct
 
@@ -30,8 +30,8 @@ module M_internal_elt_vec
 	(==)(iev1 :: Internal_elt_vec{T}, iev2 :: Internal_elt_vec{T}) where T = (get_vec(iev1)==get_vec(iev2)) && (get_indices(iev1)==get_indices(iev2)) && (get_lin_comb(iev1) == get_lin_comb(iev2)) && (get_nie(iev1)==get_nie(iev2)) && (get_nii(iev1)==get_nii(iev2))
 
 
-	@inline new_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5) = Internal_elt_vec(rand(T,nᵢᴵ),rand(1:n,nᵢᴱ), sprand(T,nᵢᴵ, nᵢᴱ, prop), nᵢᴱ, nᵢᴵ, rand(T,nᵢᴱ))
-	@inline ones_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5) = Internal_elt_vec(ones(T,nᵢᴵ),rand(1:n,nᵢᴱ), sprand(T,nᵢᴵ, nᵢᴱ, prop), nᵢᴱ, nᵢᴵ, rand(T,nᵢᴱ))
+	@inline new_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5) = Internal_elt_vec(rand(T,nᵢᴵ),sample(1:n,nᵢᴱ,replace = false), sprand(T,nᵢᴵ, nᵢᴱ, prop), nᵢᴱ, nᵢᴵ, rand(T,nᵢᴱ))
+	@inline ones_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5) = Internal_elt_vec(ones(T,nᵢᴵ),sample(1:n,nᵢᴱ,replace = false), sprand(T,nᵢᴵ, nᵢᴱ, prop), nᵢᴱ, nᵢᴵ, rand(T,nᵢᴱ))
 	iev_from_sparse_vec(sv ::SparseVector{T,Y}) where {T,Y} = iev_from_eev(eev_from_sparse_vec(sv)) 
 
 	function iev_from_eev(eev :: Elemental_elt_vec{T}) where T 

@@ -27,7 +27,10 @@ end
 	# elemental
 	epv = ones_kchained_epv(N,k)
 	build_v!(epv)
-	epv_v = get_v(epv)
+	epv_v = copy(get_v(epv))
+	# ModElemental_pv.build_v2!(epv)
+	# epv_v2 = copy(get_v(epv))
+	# @show epv_v - epv_v2
 	@test sum(epv_v) == N*k
 
 	# internal
