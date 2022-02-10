@@ -5,9 +5,6 @@ using ..M_part_v, ..ModElemental_pv, ..M_elt_vec, ..ModElemental_ev
 using ..Link
 
 using LinearAlgebra, Statistics
-# using Ipopt, ADNLPModels, NLPModelsIpopt 
-# using JuMP
-# using BlackBoxOptim, NaturalES
 
 
 	function first_parallel(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T	
@@ -85,25 +82,6 @@ using LinearAlgebra, Statistics
 		else 			
 			xi_opt = xk + s2
 		end 
-		
-		# x = rand(T,length(comp_list))
-		# diff_comp_list = (i -> _x[i]-x[i]).([1:length(comp_list);])
-		# res = scale_epv(tmp_epv, diff_comp_list)
-		# @show x, diff_comp_list, res
-		#fonction à minimiser 
-		# sub_prob(xi::T) = norm(scale_epv(tmp_epv, (i -> _x[i]-xi).([1:length(comp_list);])))
-		# _bary = mean(_x)
-		# @show f(_bary)
-		# @show _bary, sub_prob(_bary)
-		# xi_opt = bboptimize(sub_prob; SearchRange = (_bary-10.0, _bary+10.0), NumDimensions = 1)
-		# xi_opt = optimize(sub_prob, _bary, 1,xNES)
-		# model = Model(with_optimizer(Ipopt.Optimizer))
-		# @variable(model, xi)
-		# f(xi) = sum( (y->y^2).(scale_epv(tmp_epv, (i -> _x[i]-xi).([1:length(comp_list);]))) )
-		# register(model, :f, 1, f; autodiff = true)
-		# @NLobjective(model, Min, f(xi) )
-		# optimize!(model)
-		# xi_opt = value(xi)
 
 		return xi_opt		
 	end 
