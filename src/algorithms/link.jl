@@ -6,7 +6,7 @@ module Link
 
 
 	export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
-	export create_epv_epm, create_epv_epm_rand, create_epv_eplom_bfgs, create_epv_eplom
+	export create_epv_epm, create_epv_epm_rand, create_epv_eplom_bfgs, create_epv_eplom, epv_from_epm
 	
 	function epv_from_epm(epm :: Elemental_pm{T}) where T 
 		N = get_N(epm)
@@ -34,16 +34,16 @@ module Link
 		mul_epm_vector!(g, epm, epv, x)
 		return g
 	end 	
-	function mul_epm_vector!(g :: Vector{T}, epm :: Elemental_pm{T}, x :: Vector{T}) where T 
+	function mul_epm_vector!(res :: Vector{T}, epm :: Elemental_pm{T}, x :: Vector{T}) where T 
 		epv = epv_from_epm(epm)
-		mul_epm_vector!(g,epm,epv,x)
+		mul_epm_vector!(res,epm,epv,x)
 	end
 
-	function mul_epm_vector!(g :: Vector{T}, epm :: Elemental_pm{T}, epv :: Elemental_pv{T}, x :: Vector{T}) where T 
+	function mul_epm_vector!(res :: Vector{T}, epm :: Elemental_pm{T}, epv :: Elemental_pv{T}, x :: Vector{T}) where T 
 		epv_from_v!(epv,x)
 		mul_epm_epv!(epv,epm,epv)
 		build_v!(epv)
-		g .= get_v(epv)
+		res .= get_v(epv)
 	end 
 
 	function mul_epm_epv(epm :: Elemental_pm{T}, epv :: Elemental_pv{T}) where T		

@@ -39,9 +39,7 @@ module ModElemental_plom_bfgs
 	@inline (==)(eplom1 :: Elemental_plom_bfgs{T}, eplom2 :: Elemental_plom_bfgs{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
 	@inline copy(eplom :: Elemental_plom_bfgs{T}) where T = Elemental_plom_bfgs{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 	@inline similar(eplom :: Elemental_plom_bfgs{T}) where T = Elemental_plom_bfgs{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
-	
-	
-	
+		
 	"""
 		PLBFGS_eplom(N,n; type, nie)
 	Create a a partitionned limited memory matrix of N LBFGSLinearOperators blocks whose overlap next block coordinates by overlapping.
