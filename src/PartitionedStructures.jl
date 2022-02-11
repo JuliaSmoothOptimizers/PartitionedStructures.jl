@@ -20,11 +20,13 @@ module PartitionedStructures
 	using .M_abstract_part_struct
   using .ModElemental_pv, .ModElemental_ev, .ModElemental_em, .ModElemental_pm
   using .M_elt_vec, .M_part_v
+	using .PartitionedQuasiNewton
 
   export Elemental_pv, Elemental_pm
   export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv! # ModElemental_pv
   export get_v, build_v!
   export get_eev_value
 	export full_check_epv_epm
+	export PBFGS_update!, PBFGS_update
 
 end # module

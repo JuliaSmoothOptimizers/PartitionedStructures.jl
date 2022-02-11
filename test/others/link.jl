@@ -23,3 +23,7 @@ epm4,epv4 = create_epv_epm(;n=9,nie=7,overlapping=6,mul_m=5., mul_v=100.)
 @test check_epv_epm(epm2,epv4)
 @test full_check_epv_epm(epm2,epv4)	== false
 
+x = ones(9)
+epm4_x = mul_epm_vector(epm4,x)
+@test Matrix(epm4) * x == epm4_x
+

@@ -1,12 +1,18 @@
 module ModElemental_pv
 
 	using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct	# element modules 
-	using ..M_part_v, ..M_abstract_part_struct # partitoned modules
-	
+	using ..M_part_v, ..M_abstract_part_struct # partitoned modules	
 	using SparseArrays
 	
 	import Base.Vector
 	import Base.==, Base.similar, Base.copy
+
+	export Elemental_pv
+	export get_eev_set, get_eev, get_eev_value, get_eevs
+	export set_eev!, minus_epv!, add_epv!
+	export rand_epv, create_epv, ones_kchained_epv, part_vec	
+	export scale_epv, scale_epv!
+	export epv_from_v, epv_from_v!
 
 	mutable struct Elemental_pv{T} <: Part_v{T}
 		N :: Int
@@ -22,9 +28,6 @@ module ModElemental_pv
 		initialize_component_list!(epv)
 		return epv
 	end 
-
-	@inline get_component_list(pv :: Elemental_pv{T}) where T =  pv.component_list
-	@inline get_component_list(pv :: Elemental_pv{T}, i :: Int) where T =  @inbounds pv.component_list[i]
 
 	@inline get_eev_set(pv :: Elemental_pv{T}) where T = pv.eev_set
 	@inline get_eev(pv :: Elemental_pv{T}, i :: Int) where T = pv.eev_set[i]
@@ -196,14 +199,5 @@ module ModElemental_pv
 			end 
 		end 
 	end 
-
-export Elemental_pv
-
-export get_eev_set, get_eev, get_eev_value, get_eevs, get_component_list
-export set_eev!, minus_epv!, add_epv!
-export rand_epv, create_epv, ones_kchained_epv, part_vec
-
-export scale_epv, scale_epv!
-export epv_from_v, epv_from_v!
 
 end

@@ -1,13 +1,18 @@
 module ModElemental_plom_bfgs
 	using SparseArrays, LinearOperators
-
-	using ..M_part_mat
+	using ..M_part_mat, ..M_abstract_part_struct
 	using ..M_elt_mat, ..M_abstract_element_struct, ..ModElemental_elom_bfgs
 	
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!, ..M_part_mat.get_eelom_set
-
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
+
+	export Elemental_plom_bfgs
+	export get_eelom_set, get_spm, get_L, get_eelom_set_Bie, get_eelom_sub_set
+	export set_L!, set_L_to_spm!	
+	export initialize_component_list!
+	export set_L_to_spm!	
+	export PLBFGS_eplom, PLBFGS_eplom_rand
 
 	mutable struct Elemental_plom_bfgs{T} <: Part_LO_mat{T}
 		N :: Int
@@ -26,8 +31,6 @@ module ModElemental_plom_bfgs
 	
 	@inline get_L(eplom :: Elemental_plom_bfgs{T}) where T = eplom.L
 	@inline get_L(eplom :: Elemental_plom_bfgs{T}, i :: Int, j :: Int) where T = @inbounds eplom.L[i,j]
-	@inline get_component_list(eplom :: Elemental_plom_bfgs{T}) where T = eplom.component_list
-	@inline get_component_list(eplom :: Elemental_plom_bfgs{T},i::Int) where T = @inbounds eplom.component_list[i]
 	
 	@inline set_L!(eplom :: Elemental_plom_bfgs{T}, i :: Int, j :: Int, v :: T) where T = @inbounds eplom.L[i,j] = v
 	@inline set_L_to_spm!(eplom :: Elemental_plom_bfgs{T}) where T = eplom.L = copy(eplom.spm)
@@ -122,13 +125,4 @@ module ModElemental_plom_bfgs
 
 	SparseArrays.SparseMatrixCSC(eplom :: Elemental_plom_bfgs{T}) where T = begin set_spm!(eplom); get_spm(eplom) end 
 
-
-	export Elemental_plom_bfgs
-	export get_eelom_set, get_spm, get_L, get_component_list, get_eelom_set_Bie, get_eelom_sub_set
-	export set_L!, set_L_to_spm!
-	
-	export initialize_component_list!
-	export set_L_to_spm!
-	
-	export PLBFGS_eplom, PLBFGS_eplom_rand
 end 

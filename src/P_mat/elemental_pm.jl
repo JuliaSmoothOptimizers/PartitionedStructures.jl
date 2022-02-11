@@ -2,18 +2,15 @@ module ModElemental_pm
 # Symmetric bloc elemental partitioned matrix
 
 	using SparseArrays
-
-	using ..M_part_mat
+	using ..M_part_mat, ..M_abstract_part_struct
 	using ..M_elt_mat, ..ModElemental_em, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!
-
 	import Base.Matrix, SparseArrays.SparseMatrixCSC, Base.permute!
 
-
 	export Elemental_pm
-	export get_eem_set, get_spm, get_L, get_component_list, get_eem_set_Bie, get_eem_sub_set
+	export get_eem_set, get_spm, get_L, get_eem_set_Bie, get_eem_sub_set
 	export set_L!, set_L_to_spm!, reset_spm!, set_spm!, set_L_to_spm!
 	export initialize_component_list!, correlated_var
 	export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
@@ -36,13 +33,9 @@ module ModElemental_pm
 
 	@inline get_L(epm :: Elemental_pm{T}) where T = epm.L
 	@inline get_L(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.L[i,j]
-	@inline get_component_list(epm :: Elemental_pm{T}) where T = epm.component_list
-	@inline get_component_list(epm :: Elemental_pm{T},i::Int) where T = @inbounds epm.component_list[i]
 
 	@inline set_L!(epm :: Elemental_pm{T}, i :: Int, j :: Int, v :: T) where T = @inbounds epm.L[i,j] = v
 	@inline set_L_to_spm!(epm :: Elemental_pm{T}) where T = epm.L = copy(epm.spm)
-	
-	
 	
 	@inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
 	@inline copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),copy.(get_eem_set(epm)),copy(get_spm(epm)), copy(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
