@@ -1,10 +1,13 @@
 module ModElemental_em
 
 	using LinearAlgebra
-	
 	using ..M_elt_mat, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
+
+	export Elemental_em
+	export get_Bie
+	export identity_eem, ones_eem, fixed_ones_eem, one_size_bloc, create_id_eem
 
 	mutable struct Elemental_em{T} <: Elt_mat{T}
 		nie :: Int # nᵢᴱ
@@ -18,6 +21,14 @@ module ModElemental_em
 	@inline similar(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)))
 
 	# function creating elemental element matrix 
+
+	function create_id_eem(elt_var::Vector{Int}; type=Float64)
+	  nie = length(elt_var)
+	  Bie = zeros(type,nie,nie)
+	  [Bie[i,i]=1 for i in 1:nie]  
+	  eem = Elemental_em{type}(nie, elt_var, Symmetric(Bie))
+	  return eem
+	end
 
 	function identity_eem(nie :: Int; T=Float64, n=nie^2) 
 		indices = rand(1:n, nie)
@@ -47,11 +58,5 @@ module ModElemental_em
 
 	import Base.permute!
 	permute!(eem :: Elemental_em{T}, p :: Vector{Int}) where T = eem.indices .= p
-
-
-	export Elemental_em
-
-	export get_Bie
-	export identity_eem, ones_eem, fixed_ones_eem, one_size_bloc
 
 end 

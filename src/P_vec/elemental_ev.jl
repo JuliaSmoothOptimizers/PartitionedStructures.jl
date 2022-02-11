@@ -38,15 +38,20 @@ module ModElemental_ev
 	end
 	sparse_vec_from_eev(eev :: Elemental_elt_vec{T}; n::Int=maximum(get_indices(eev))) where T = sparsevec(get_indices(eev), get_vec(eev), n)
 		
-	
+	function create_eev(elt_var::Vector{Int}; type=Float64)
+	  nie = length(elt_var)
+	  eev_value = rand(nie)
+	  eev = Elemental_elt_vec{type}(eev_value, elt_var, nie)
+	  return eev
+	end 
+
 # type
 	export Elemental_elt_vec
 
-	# export get_vec
 	export set_vec_eev!
 # comfort
 	export new_eev, ones_eev, specific_ones_eev
 # interface with SparseArrays
-	export eev_from_sparse_vec, sparse_vec_from_eev
+	export eev_from_sparse_vec, sparse_vec_from_eev, create_eev
 
 end

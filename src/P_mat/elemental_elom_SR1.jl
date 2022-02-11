@@ -1,7 +1,7 @@
 module ModElemental_elom_sr1
 	using LinearOperators
 
-	using PartitionedStructures.M_elt_mat, ..M_abstract_element_struct
+	using ..M_elt_mat, ..M_abstract_element_struct
 
 	import Base.==, Base.copy, Base.similar
 

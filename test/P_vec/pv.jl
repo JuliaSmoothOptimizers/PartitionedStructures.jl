@@ -80,6 +80,14 @@ end
 	@test epv2 != epv
 end
 
+@testset "pv PartiallySeparableNLPModels" begin
+	N = 15
+	n = 20
+	nie = 5
+	element_variables = map( (i -> rand(1:n,nie) ),1:N)
+	create_epv(element_variables, n)
+
+end
 
 # bi = @benchmark build_v!(ipv)
 # be = @benchmark build_v!(epv)

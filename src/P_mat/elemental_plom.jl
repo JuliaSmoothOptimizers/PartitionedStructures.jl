@@ -6,15 +6,14 @@ module ModElemental_plom
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!, ..M_part_mat.get_eelom_set
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
+	import ..M_abstract_part_struct.initialize_component_list!
 
 	export Elemental_plom
 	export get_eelom_set, get_spm, get_L, get_eelom_set_Bie, get_eelom_sub_set
 	export set_L!, set_L_to_spm!	
-	export initialize_component_list!
 	export set_L_to_spm!
 	
 	export PLBFGSR1_eplom, PLBFGSR1_eplom_rand
-
 
 	elom_type{T} = Union{Elemental_elom_sr1{T}, Elemental_elom_bfgs{T}}
 
@@ -27,7 +26,6 @@ module ModElemental_plom
 		component_list :: Vector{Vector{Int}}
 		permutation :: Vector{Int} # n-size vector 
 	end
-	
 	
 	@inline get_eelom_set(eplom :: Elemental_plom{T}) where T = eplom.eelom_set
 	@inline get_eelom_set(eplom :: Elemental_plom{T}, i::Int) where T = @inbounds eplom.eelom_set[i]
@@ -44,9 +42,7 @@ module ModElemental_plom
 	@inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
 	@inline copy(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 	@inline similar(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
-	
-	
-	
+		
 	"""
 		PLBFGS_eplom(N,n; type, nie)
 	Create a a partitionned limited memory matrix of N LBFGSLinearOperators blocks whose overlap next block coordinates by overlapping.
@@ -67,7 +63,6 @@ module ModElemental_plom
 		return eplom
 	end 
 	
-	
 	"""
 		PLBFGS_eplom_rand(N,n; type, nie)
 	Create a a partitionned limited memory matrix of N LBFGSLinearOperators blocs whose positions are randoms
@@ -83,12 +78,11 @@ module ModElemental_plom
 		return eplom
 	end 
 	
-	
 	"""
 			initialize_component_list!(eplom)
 	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
 	"""
-	function initialize_component_list!(eplom)
+	function initialize_component_list!(eplom::Elemental_plom)
 		N = get_N(eplom)
 		for i in 1:N
 			eelomᵢ = get_eelom_set(eplom,i)
@@ -98,7 +92,6 @@ module ModElemental_plom
 			end 
 		end 
 	end 
-	
 	
 	"""
 			set_spm!(eplom)
@@ -119,7 +112,6 @@ module ModElemental_plom
 			spm[indicesᵢ,indicesᵢ] .+= value_Bie			
 		end 
 	end
-
 
 	function Base.Matrix(eplom :: Elemental_plom{T}) where T
 		set_spm!(eplom)

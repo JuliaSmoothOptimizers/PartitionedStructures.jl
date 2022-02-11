@@ -6,6 +6,7 @@ module ModElemental_pv
 	
 	import Base.Vector
 	import Base.==, Base.similar, Base.copy
+	import ..M_abstract_part_struct.initialize_component_list!
 
 	export Elemental_pv
 	export get_eev_set, get_eev, get_eev_value, get_eevs
@@ -98,6 +99,11 @@ module ModElemental_pv
 		v = zeros(T,n)
 		Elemental_pv{T}(N, n, eev_set, v)
 	end	
+	function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type=Float64)
+		eev_set = map((elt_var -> create_eev(elt_var,type=type)), vec_elt_var)  
+		epv = create_epv(eev_set; n=n)
+		return epv
+	end 
 
 	function scale_epv(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T <: Number
 		get_N(epv)==length(scalars) || error("scale_epv, N != length(scalars")
@@ -188,7 +194,7 @@ module ModElemental_pv
 		initialize_component_list!(epm)
 	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
 	"""
-	function initialize_component_list!(epv)
+	function initialize_component_list!(epv::Elemental_pv)
 		N = get_N(epv)
 		n = get_n(epv)
 		for i in 1:N

@@ -43,6 +43,13 @@ using SparseArrays, StatsBase
 
 end 
 
+@testset "pm PartiallySeparableNLPModels" begin
+	N = 15
+	n = 20
+	nie = 5
+	element_variables = map( (i -> rand(1:n,nie) ),1:N)
+	identity_epm(element_variables,N,n)
+end 
 # N = 3
 # n = 5
 # nie = 2

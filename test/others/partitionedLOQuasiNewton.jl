@@ -1,6 +1,5 @@
 using PartitionedStructures
 using PartitionedStructures.Link, PartitionedStructures.M_part_v, PartitionedStructures.PartitionedLOQuasiNewton
-
 using PartitionedStructures.Utils
 
 using LinearAlgebra

@@ -8,11 +8,12 @@ module ModElemental_pm
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!
 	import Base.Matrix, SparseArrays.SparseMatrixCSC, Base.permute!
+	import ..M_abstract_part_struct.initialize_component_list!
 
 	export Elemental_pm
 	export get_eem_set, get_spm, get_L, get_eem_set_Bie, get_eem_sub_set
 	export set_L!, set_L_to_spm!, reset_spm!, set_spm!, set_L_to_spm!
-	export initialize_component_list!, correlated_var
+	export correlated_var
 	export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 	
 	mutable struct Elemental_pm{T} <: Part_mat{T}
@@ -40,6 +41,18 @@ module ModElemental_pm
 	@inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
 	@inline copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),copy.(get_eem_set(epm)),copy(get_spm(epm)), copy(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
 	@inline similar(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)),copy(get_n(epm)),similar.(get_eem_set(epm)),similar(get_spm(epm)), similar(get_L(epm)),copy(get_component_list(epm)),copy(get_permutation(epm)))
+
+
+	function identity_epm(element_variables::Vector{Vector{Int}}, N :: Int, n ::Int; type=Float64)
+	  eem_set = map( (elt_var -> create_id_eem(elt_var;type=type)), element_variables)
+	  spm = spzeros(type,n,n)
+	  L = spzeros(type,n,n)
+	  component_list = map(i -> Vector{Int}(undef,0), [1:n;])
+	  no_perm = [1:n;]
+	  epm = Elemental_pm{type}(N,n,eem_set,spm,L,component_list,no_perm)
+	  initialize_component_list!(epm)
+	  return epm
+	end 
 
 	"""
 		identity_epm(N,n; type, nie)
@@ -162,7 +175,7 @@ module ModElemental_pm
 		initialize_component_list!(epm)
 	initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
 	"""
-	function initialize_component_list!(epm)
+	function initialize_component_list!(epm::Elemental_pm)
 		N = get_N(epm)
 		n = get_n(epm)
 		for i in 1:N

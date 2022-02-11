@@ -54,3 +54,12 @@ end
 	B = Matrix(eplom_B)
 	@test B == transpose(B)
 end
+
+
+@testset "eplom_bfgs PartiallySeparableNLPModels" begin
+	N = 15
+	n = 20
+	nie = 5
+	element_variables = map( (i -> rand(1:n,nie) ),1:N)
+	identity_eplom_lbfgs(element_variables, N, n)
+end
