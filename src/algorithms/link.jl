@@ -6,7 +6,7 @@ module Link
 
 
 	export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
-	export create_epv_epm, create_epv_epm_rand, create_epv_eplom_bfgs, create_epv_eplom, epv_from_epm
+	export create_epv_epm, create_epv_epm_rand, create_epv_eplom_bfgs, create_epv_eplom, epv_from_epm, epv_from_eplom
 	
 	function epv_from_epm(epm :: Elemental_pm{T}) where T 
 		N = get_N(epm)
@@ -24,6 +24,24 @@ module Link
 		epv = Elemental_pv{T}(N, n, eev_set, v, component_list,perm)
 		return epv
 	end
+
+	function epv_from_eplom(eplom :: Elemental_plom_bfgs{T}) where T 
+		N = get_N(eplom)
+		n = get_n(eplom)
+		eev_set = Vector{Elemental_elt_vec{T}}(undef,N)
+		for i in 1:N
+			eelomi = get_eeplom_set(eplom,i)
+			indices = get_indices(eelomi)
+			nie = get_nie(eelomi)
+			eev_set[i] = Elemental_elt_vec{T}(rand(T,nie), indices, nie)
+		end 
+		component_list = M_abstract_part_struct.get_component_list(eplom)
+		v = rand(T,n)
+		perm = [1:n;]
+		epv = Elemental_pv{T}(N, n, eev_set, v, component_list,perm)
+		return epv
+	end
+	
 	
 	function mul_epm_vector(epm :: Elemental_pm{T}, x :: Vector{T}) where T 
 		epv = epv_from_epm(epm)
