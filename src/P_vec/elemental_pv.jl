@@ -6,7 +6,7 @@ module ModElemental_pv
 	
 	import Base.Vector
 	import Base.==, Base.similar, Base.copy
-	import ..M_abstract_part_struct.initialize_component_list!
+	import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 	export Elemental_pv
 	export get_eev_set, get_eev, get_eev_value, get_eevs
@@ -32,6 +32,8 @@ module ModElemental_pv
 
 	@inline get_eev_set(pv :: Elemental_pv{T}) where T = pv.eev_set
 	@inline get_eev(pv :: Elemental_pv{T}, i :: Int) where T = pv.eev_set[i]
+	@inline get_ee_struct(pv :: Elemental_pv{T}) where T = get_eev_set(pv)
+	@inline get_ee_struct(pv :: Elemental_pv{T}, i :: Int) where T = get_eev(pv,i)
 	@inline get_eevs(pv :: Elemental_pv{T}, indices :: Vector{Int}) where T = pv.eev_set[indices]
 	@inline get_eev_value(pv :: Elemental_pv{T}, i :: Int) where T = get_vec(get_eev(pv,i))
 	@inline get_eev_value(pv :: Elemental_pv{T}, i :: Int, j :: Int) where T = get_vec(get_eev(pv,i))[j]

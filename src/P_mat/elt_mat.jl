@@ -8,7 +8,6 @@ module M_elt_mat
 	@inline get_Bie(elt_mat :: T) where T <: Elt_mat = elt_mat.Bie
 
 	export Elt_mat 
-
 	export get_Bie
 	
 end

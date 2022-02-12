@@ -8,7 +8,7 @@ module ModElemental_pm
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!
 	import Base.Matrix, SparseArrays.SparseMatrixCSC, Base.permute!
-	import ..M_abstract_part_struct.initialize_component_list!
+	import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 	export Elemental_pm
 	export get_eem_set, get_spm, get_L, get_eem_set_Bie, get_eem_sub_set
@@ -29,6 +29,8 @@ module ModElemental_pm
 	#getter/setter
 	@inline get_eem_set(epm :: Elemental_pm{T}) where T = epm.eem_set
 	@inline get_eem_set(epm :: Elemental_pm{T}, i::Int) where T = @inbounds epm.eem_set[i]
+	@inline get_ee_struct(epm :: Elemental_pm{T}) where T = get_eem_set(epm)
+	@inline get_ee_struct(epm :: Elemental_pm{T}, i::Int) where T = get_eem_set(epm,i)
 	@inline get_eem_sub_set(epm :: Elemental_pm{T}, indices::Vector{Int}) where T = epm.eem_set[indices]
 	@inline get_eem_set_Bie(epm :: Elemental_pm{T}, i::Int) where T = get_Bie(get_eem_set(epm,i))
 

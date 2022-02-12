@@ -6,7 +6,7 @@ module ModElemental_plom
 	import Base.==, Base.copy, Base.similar
 	import ..M_part_mat.set_spm!, ..M_part_mat.get_eelom_set
 	import Base.Matrix, SparseArrays.SparseMatrixCSC
-	import ..M_abstract_part_struct.initialize_component_list!
+	import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 	export Elemental_plom
 	export get_eelom_set, get_spm, get_L, get_eelom_set_Bie, get_eelom_sub_set
@@ -29,6 +29,8 @@ module ModElemental_plom
 	
 	@inline get_eelom_set(eplom :: Elemental_plom{T}) where T = eplom.eelom_set
 	@inline get_eelom_set(eplom :: Elemental_plom{T}, i::Int) where T = @inbounds eplom.eelom_set[i]
+	@inline get_ee_struct(eplom :: Elemental_plom{T}) where T = get_eelom_set(eplom)
+	@inline get_ee_struct(eplom :: Elemental_plom{T}, i::Int) where T = get_eelom_set(eplom,i)
 	@inline get_eelom_sub_set(eplom :: Elemental_plom{T}, indices::Vector{Int}) where T = eplom.eelom_set[indices]
 	@inline get_eelom_set_Bie(eplom :: Elemental_plom{T}, i::Int) where T = get_Bie(get_eelom_set(eplom,i))
 	

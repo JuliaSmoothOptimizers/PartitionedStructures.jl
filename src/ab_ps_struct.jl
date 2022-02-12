@@ -6,7 +6,7 @@ module M_abstract_part_struct
 	export Part_struct
 	export get_n, get_N, get_component_list
 	export check_epv_epm, full_check_epv_epm
-	export initialize_component_list!
+	export initialize_component_list!, get_ee_struct
 
 	abstract type Part_struct{T} end 
 
@@ -21,4 +21,5 @@ module M_abstract_part_struct
 	@inline full_check_epv_epm(ep1 :: Y, ep2 :: Z) where Y <: Part_struct where Z <: Part_struct = check_epv_epm(ep1,ep2) && get_component_list(ep1) == get_component_list(ep2)
 
 	initialize_component_list!(ps::T) where T <: Part_struct = @error("should not be called")
+	get_ee_struct(ps::T) where T <: Part_struct = @error("should not be called")
 end
