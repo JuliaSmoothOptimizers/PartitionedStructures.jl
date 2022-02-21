@@ -24,7 +24,7 @@ module ModElemental_ev
 	@inline specific_ones_eev(nie::Int,index::Int; T=Float64, mul::Float64=1.) = Elemental_elt_vec((xi -> mul*xi).(rand(T,nie)), [index:index+nie-1;], nie)
 	
 	@inline set_vec_eev!(eev :: Elemental_elt_vec{T}, i :: Int, val :: T) where T = eev.vec[i] = val
-	@inline set_vec_eev!(eev :: Elemental_elt_vec{T}, vec :: Vector{T}) where T = eev.vec = vec
+	@inline set_vec_eev!(eev :: Elemental_elt_vec{T}, vec :: Vector{T}) where T = eev.vec .= vec
 
 
 	"""

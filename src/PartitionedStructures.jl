@@ -29,7 +29,7 @@ module PartitionedStructures
 	export Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs
 	export create_eev, create_id_eem
 	export identity_eplom_lbfgs, identity_epm
-  export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv! # ModElemental_pv
+  export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv!, epv_from_epv! # ModElemental_pv
   export get_v, build_v!
   export get_eev_value
 	export full_check_epv_epm

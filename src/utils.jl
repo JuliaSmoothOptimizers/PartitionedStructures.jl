@@ -1,8 +1,11 @@
 module Utils
 
 	using LinearAlgebra
-	my_and = (a :: Bool,b :: Bool) -> (a && b)
 
+	export BFGS, BFGS!, SR1, SR1!
+	export my_and
+
+	my_and = (a :: Bool,b :: Bool) -> (a && b)
 
 	"""
 			BFGS(s, y, B)
@@ -15,14 +18,17 @@ module Utils
 	function BFGS!(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}; index=0, reset=4) where Y <: Number #Array that will store the next approximation of the Hessian
 		if dot(s,y) > 0  # curvature condition
 			Bs = B * s 
-			terme1 =  y * y' / dot(y,s)
-			terme2 = Bs * Bs' / dot(Bs,s)
+			terme1 =  (y * y') ./ dot(y,s)
+			terme2 = (Bs * Bs') ./ dot(Bs,s)
 			B_1 .= B .+ terme1 .- terme2
+			return 1 
 		elseif index < reset #
 			B_1 .= B 
+			return 0
 		else
 			n = length(s)
 			B_1 .= reshape([ (i==j ? (Y)(1) : (Y)(0)) for i = 1:n for j =1:n], n, n)
+			return 0
 		end 
 	end
 
@@ -45,10 +51,5 @@ module Utils
 			B_1 .= reshape([ (i==j ? (Y)(1) : (Y)(0)) for i = 1:n for j =1:n], n, n)
 		end 
 	end
-			
-	
-	
 
- 	export BFGS, BFGS!, SR1, SR1!
-	export my_and
 end

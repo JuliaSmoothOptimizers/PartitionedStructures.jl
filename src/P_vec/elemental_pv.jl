@@ -13,7 +13,7 @@ module ModElemental_pv
 	export set_eev!, minus_epv!, add_epv!
 	export rand_epv, create_epv, ones_kchained_epv, part_vec	
 	export scale_epv, scale_epv!
-	export epv_from_v, epv_from_v!
+	export epv_from_v, epv_from_v!, epv_from_epv!
 
 	mutable struct Elemental_pv{T} <: Part_v{T}
 		N :: Int
@@ -191,6 +191,13 @@ module ModElemental_pv
 			set_eev!(epv_x, idx, x[get_indices(eev)]) # met le vecteur élément comme une copie de x 
 		end 		
 	end
+
+	function epv_from_epv!(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T
+		full_check_epv_epm(epv1,epv2) || @error("differents partitioned structures between eplom_B and epv_y")
+		for idx in 1:get_N(epv1)
+			set_eev!(epv1, idx, get_eev_value(epv2, idx))
+		end		
+	end 
 
 		"""
 		initialize_component_list!(epm)

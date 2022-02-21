@@ -86,9 +86,33 @@ end
 	nie = 5
 	element_variables = map( (i -> rand(1:n,nie) ),1:N)
 	create_epv(element_variables, n)
-
 end
 
+@testset "set_epv" begin
+
+	N = 100
+	k = 4
+	epv1 = ones_kchained_epv(N,k)
+	epv2 = similar(epv1)
+
+	epv1 = epv2 
+	epv2.eev_set[1].vec[1] = 1.0
+
+	@test epv1.eev_set[1].vec[1] == 1.
+
+	epv1 = ones_kchained_epv(N,k)
+	epv2 = similar(epv1)
+	epv1 = copy(epv2)
+	epv2.eev_set[1].vec[1] = 1.1
+	@test epv1.eev_set[1].vec[1] != 1.1
+
+	epv1 = ones_kchained_epv(N,k)
+	epv2 = similar(epv1)
+	PartitionedStructures.epv_from_epv!(epv1,epv2)
+	epv2.eev_set[1].vec[1] = 1.0
+	@test epv1.eev_set[1].vec[1] != 1.
+
+end
 # bi = @benchmark build_v!(ipv)
 # be = @benchmark build_v!(epv)
 # ProfileView.@profview @benchmark build_v!(ipv)
