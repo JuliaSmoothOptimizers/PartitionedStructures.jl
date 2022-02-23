@@ -1,9 +1,13 @@
+# unsupported right now
 module M_internal_pv
 
+	using LinearAlgebra
 	using ..M_elt_vec, ..M_internal_elt_vec, ..M_abstract_element_struct # element modules 
 	using ..M_part_v, ..ModElemental_pv	# partitoned modules
 	
-	using LinearAlgebra
+	export Internal_pv
+	export get_iev, get_iev_set
+	export create_ipv, ipv_from_epv, rand_ipv
 
 	mutable struct Internal_pv{T} <: Part_v{T}
 		N :: Int
@@ -64,13 +68,5 @@ module M_internal_pv
 		end
 		# return get_v(ipv)
 	end
-
-
-
-
-export Internal_pv
-
-export get_iev, get_iev_set
-export rand_ipv, create_ipv, ipv_from_epv
 	
 end
