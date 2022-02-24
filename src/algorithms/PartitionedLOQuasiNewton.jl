@@ -1,6 +1,6 @@
 module PartitionedLOQuasiNewton
 
-	using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat
+	using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
 	using ..Utils
 	using ..ModElemental_ev, ..ModElemental_pv
 	using ..ModElemental_plom, ..ModElemental_plom_bfgs, ..ModElemental_elom_bfgs

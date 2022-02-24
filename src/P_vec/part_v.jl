@@ -7,7 +7,7 @@ module M_part_v
 	export set_N!, set_n!, set_v!	
 	export add_v!, build_v!, build_v, reset_v!
 
-	# we assume that each type T <: Part_v{T} possess at least a field N and n 
+	"Abstract type representing partitioned vectors."
 	abstract type Part_v{T} <: Part_struct{T} end 
 		
 	@inline get_v(pv :: T ) where T <: Part_v = pv.v

@@ -11,12 +11,12 @@ module ModElemental_plom
 	export Elemental_plom
 	export get_eelom_set, get_spm, get_L, get_eelom_set_Bie, get_eelom_sub_set
 	export set_L!, set_L_to_spm!	
-	export set_L_to_spm!
 	
 	export PLBFGSR1_eplom, PLBFGSR1_eplom_rand
 
 	elom_type{T} = Union{Elemental_elom_sr1{T}, Elemental_elom_bfgs{T}}
 
+	"Type that represents an element partitioned matrix defined with elemental element linear operators LBFGS/LSR1"
 	mutable struct Elemental_plom{T} <: Part_LO_mat{T}
 		N :: Int
 		n :: Int
@@ -33,13 +33,11 @@ module ModElemental_plom
 	@inline get_ee_struct(eplom :: Elemental_plom{T}, i::Int) where T = get_eelom_set(eplom,i)
 	@inline get_eelom_sub_set(eplom :: Elemental_plom{T}, indices::Vector{Int}) where T = eplom.eelom_set[indices]
 	@inline get_eelom_set_Bie(eplom :: Elemental_plom{T}, i::Int) where T = get_Bie(get_eelom_set(eplom,i))
-	
 	@inline get_L(eplom :: Elemental_plom{T}) where T = eplom.L
 	@inline get_L(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.L[i,j]
 	
 	@inline set_L!(eplom :: Elemental_plom{T}, i :: Int, j :: Int, v :: T) where T = @inbounds eplom.L[i,j] = v
-	@inline set_L_to_spm!(eplom :: Elemental_plom{T}) where T = eplom.L = copy(eplom.spm)
-		
+	@inline set_L_to_spm!(eplom :: Elemental_plom{T}) where T = eplom.L .= eplom.spm
 		
 	@inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
 	@inline copy(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))

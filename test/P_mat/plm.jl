@@ -61,5 +61,5 @@ end
 	n = 20
 	nie = 5
 	element_variables = map( (i -> rand(1:n,nie) ),1:N)
-	identity_eplom_lbfgs(element_variables, N, n)
+	identity_eplom_LBFGS(element_variables, N, n)
 end

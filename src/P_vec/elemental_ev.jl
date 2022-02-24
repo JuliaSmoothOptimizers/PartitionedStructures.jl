@@ -10,6 +10,7 @@ module ModElemental_ev
 	export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
 	 
 	# we assume that the values of vec are associate to indices.
+	"Type that reprenents elemental element vector."
 	mutable struct Elemental_elt_vec{T} <: Elt_vec{T}
 		vec :: Vector{T} # length(vec) == nᵢᴱ
 		indices :: Vector{Int} # length(indices) == nᵢᴱ

@@ -15,6 +15,7 @@ module ModElemental_pv
 	export scale_epv, scale_epv!
 	export epv_from_epv!, epv_from_v, epv_from_v! 
 
+	"A type that represent elemental partitioned vector."
 	mutable struct Elemental_pv{T} <: Part_v{T}
 		N :: Int
 		n :: Int
@@ -113,7 +114,7 @@ module ModElemental_pv
 	end 
 
 	function scale_epv!(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T  
-		get_N(scale_epv)==length(scalars) || error("scale_epv, N != length(scalars")
+		get_N(epv)==length(scalars) || error("epv, N != length(scalars")
 		reset_v!(epv)
 		N = get_N(epv)
 		for i in 1:N
@@ -154,7 +155,7 @@ module ModElemental_pv
 	end
 
 	function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
-		overlapping < nie || error("the overlapping must be less than nie")
+		overlapping < nie || error("the overlapping must be lower than nie")
 		mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds") 
 		indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
 		eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), indices)
@@ -170,7 +171,7 @@ module ModElemental_pv
 			epv_from_v(x, epv)
 	Define a new elemental partitioned vector from `x` that have the same structure than epv.
 	The value of each elemental element vector comes from the corresponding indices of `x`.
-	Usefull to define $$U_i x, \; \forall x$$.
+	Usefull to define Uᵢ x, ∀ x.
 	"""
 	function epv_from_v(x :: Vector{T}, shape_epv :: Elemental_pv{T}) where T 
 		epv_x = similar(shape_epv)
@@ -181,7 +182,7 @@ module ModElemental_pv
 	"""
 			epv_from_v!(epv, x)
 	Set the values of the element partitioned vector epv to `x`.
-	Usefull to define $$U_i x, \; \forall x$$.
+	Usefull to define Uᵢ x, ∀ x.
 	"""
 	function epv_from_v!(epv_x :: Elemental_pv{T}, x :: Vector{T}) where T 
 		for idx in 1:get_N(epv_x)

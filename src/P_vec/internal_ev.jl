@@ -14,6 +14,7 @@ module M_internal_elt_vec
 	
 	# distinguish from internal_elt_vec
 	# Be careful with the order of the indices
+	"Type that represents internal element vector."
 	mutable struct Internal_elt_vec{T} <: Elt_vec{T}
 		vec :: Vector{T} # size nᵢᴵ
 		indices :: Vector{Int} # size nᵢᴱ

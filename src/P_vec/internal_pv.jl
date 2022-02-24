@@ -2,13 +2,15 @@
 module M_internal_pv
 
 	using LinearAlgebra
-	using ..M_elt_vec, ..M_internal_elt_vec, ..M_abstract_element_struct # element modules 
+	using ..M_abstract_element_struct, ..M_abstract_part_struct
+	using ..M_elt_vec, ..M_internal_elt_vec # element modules 
 	using ..M_part_v, ..ModElemental_pv	# partitoned modules
 	
 	export Internal_pv
 	export get_iev, get_iev_set
 	export create_ipv, ipv_from_epv, rand_ipv
 
+	"Type that represents internal partitioned vectors."
 	mutable struct Internal_pv{T} <: Part_v{T}
 		N :: Int
 		n :: Int

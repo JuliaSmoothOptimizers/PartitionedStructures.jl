@@ -1,7 +1,7 @@
 module PartitionedQuasiNewton
 
 	using LinearAlgebra
-	using ..M_abstract_part_struct, ..M_elt_vec
+	using ..M_abstract_part_struct, ..M_elt_vec, ..M_elt_mat
 	using ..Utils, ..Link
 	using ..ModElemental_em, ..ModElemental_ev
 	using ..ModElemental_pm, ..ModElemental_pv

@@ -5,8 +5,8 @@ module M_elt_vec
 	export Elt_vec
 	export get_vec, set_vec! 
 	export set_add_vec!, set_minus_vec!
-	
-	# we assume that each type T <: Elt_vec{T} possess at least a field vec and indices
+
+	"Abstract type representing element vectors."
 	abstract type Elt_vec{T} <: Element_struct{T} end
 
 	#generic getter/setter
