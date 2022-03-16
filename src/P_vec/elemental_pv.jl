@@ -10,7 +10,7 @@ module ModElemental_pv
 
   export Elemental_pv
   export get_eev_set, get_eev, get_eev_value, get_eevs
-  export set_eev!, minus_epv!, add_epv!
+  export set_eev!, minus_epv!, add_epv!, prod_epv
   export create_epv, ones_kchained_epv, part_vec, rand_epv	
   export scale_epv, scale_epv!
   export epv_from_epv!, epv_from_v, epv_from_v! 
@@ -89,6 +89,18 @@ module ModElemental_pv
       set_add_vec!(get_eev(epv2,i), vec1)
     end
   end 
+
+	function prod_epv(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T <: Number
+		full_check_epv_epm(epv1,epv2) || @error("epv1 mismatch epv2 in add_epv!")
+    N = get_N(epv1)
+		c = 0 
+    for i in 1:N
+			vec1 = get_vec(get_eev(epv1,i))
+			vec2 = get_vec(get_eev(epv2,i))
+			c += dot(vec1,vec2)
+		end 
+		return c
+	end
 
   """
       create_elemental_pv(elt_ev_set)
