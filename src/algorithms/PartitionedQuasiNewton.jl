@@ -26,7 +26,7 @@ module PartitionedQuasiNewton
       yi = get_vec(get_eev(epv_y,i))
       acc += BFGS!(si, yi, Bi, Bi; kwargs...)
     end 
-    print("PBFGS, update $(acc)/$(N) elements")
+    println("PBFGS, update $(acc)/$(N) elements")
   end
 
   """ 

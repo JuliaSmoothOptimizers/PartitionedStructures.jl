@@ -16,7 +16,7 @@ module Utils
   BFGS!(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}; kwargs...) where Y <: Number = BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...)
   BFGS!(s :: Vector{Y}, y :: Vector{Y}, B :: Symmetric{Y,Matrix{Y}}, B_1 :: Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number = BFGS!(s,y,B.data, B_1.data; kwargs...)
   function BFGS!(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}; index=0, reset=4) where Y <: Number #Array that will store the next approximation of the Hessian
-    if dot(s,y) > 0  # curvature condition
+    if dot(s,y) > eps(Y)  # curvature condition
       Bs = B * s 
       terme1 =  (y * y') ./ dot(y,s)
       terme2 = (Bs * Bs') ./ dot(Bs,s)

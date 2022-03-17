@@ -1,6 +1,6 @@
 module PartitionedLOQuasiNewton
 	using LinearAlgebra
-	
+
   using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
   using ..Utils
   using ..ModElemental_ev, ..ModElemental_pv
@@ -23,9 +23,9 @@ module PartitionedLOQuasiNewton
     for i in 1:N
       Bi = get_Bie(get_eelom_set(eplom_B, i))
       si = get_vec(get_eev(epv_s,i))
-      yi = get_vec(get_eev(epv_y,i))
-      push!(Bi, si, yi)
-			dot(si,yi) > eps(T) && acc +=1
+      yi = get_vec(get_eev(epv_y,i))			
+			(dot(si,yi) > eps(T)) && (acc += 1)
+      push!(Bi, si, yi)			
     end 
 		println("PLBFGS, update $(acc)/$(N) elements")
   end
