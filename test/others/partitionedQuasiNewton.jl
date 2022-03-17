@@ -1,7 +1,7 @@
 using LinearAlgebra
 using PartitionedStructures
 using PartitionedStructures.M_part_v
-using PartitionedStructures.Link, PartitionedStructures.Utils
+using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
 using PartitionedStructures.PartitionedQuasiNewton
 
 n=9

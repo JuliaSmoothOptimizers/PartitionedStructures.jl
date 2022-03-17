@@ -22,7 +22,7 @@ module PartitionedStructures
   using .ModElemental_ev, .ModElemental_em, .ModElemental_elom_bfgs
   using .ModElemental_pv, .ModElemental_pm, .ModElemental_plom_bfgs
   using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
-  using .Link
+  using .Link, .Instances
 
   export Part_mat
   export Elemental_pv, Elemental_pm, Elemental_plom_bfgs
@@ -34,7 +34,8 @@ module PartitionedStructures
   export get_eev_value
   export full_check_epv_epm
   export PBFGS_update!, PBFGS_update, PLBFGS_update, PLBFGS_update!
-  export epv_from_epm, epv_from_eplom, mul_epm_vector, mul_epm_vector!, mul_epm_epv
+  export eplom_lbfgs_from_epv, epm_from_epv, epv_from_eplom, epv_from_epm
+	export mul_epm_vector, mul_epm_vector!, mul_epm_epv
   export initialize_component_list!
 
 end # module

@@ -2,7 +2,7 @@ using LinearAlgebra, LinearOperators, SparseArrays
 using PartitionedStructures
 using PartitionedStructures.ModElemental_elom_bfgs, PartitionedStructures.ModElemental_elom_sr1
 using PartitionedStructures.ModElemental_plom, PartitionedStructures.ModElemental_plom_bfgs
-using PartitionedStructures.Link, PartitionedStructures.Utils
+using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
 
 @testset "test elemental element linear operator matrix" begin
   for index in 3:3:15
