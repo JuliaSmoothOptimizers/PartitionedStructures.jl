@@ -1,5 +1,6 @@
 module PartitionedLOQuasiNewton
-
+	using LinearAlgebra
+	
   using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
   using ..Utils
   using ..ModElemental_ev, ..ModElemental_pv
