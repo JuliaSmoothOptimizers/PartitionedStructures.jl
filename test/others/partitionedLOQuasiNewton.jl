@@ -1,6 +1,6 @@
 using LinearAlgebra
 using PartitionedStructures
-using PartitionedStructures.Link, PartitionedStructures.Utils
+using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
 using PartitionedStructures.M_part_v, PartitionedStructures.PartitionedLOQuasiNewton
 
 @testset "PLBFGS first test" begin

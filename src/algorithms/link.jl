@@ -1,13 +1,15 @@
 module Link
+  using LinearAlgebra, SparseArrays
+
   using ..M_part_mat, ..M_part_v
-  using ..ModElemental_pv, ..ModElemental_plom_bfgs, ..ModElemental_plom, ..ModElemental_pm
-  using ..ModElemental_ev
+  using ..ModElemental_em, ..ModElemental_ev
+  using ..ModElemental_pv, ..ModElemental_plom_bfgs, ..ModElemental_plom, ..ModElemental_pm  
   using ..M_abstract_element_struct, ..M_abstract_part_struct
 
-  export epv_from_epm
+  export eplom_lbfgs_from_epv, epm_from_epv, epv_from_eplom, epv_from_epm
   export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
-  export create_epv_eplom_bfgs, create_epv_eplom, create_epv_epm, create_epv_epm_rand
-    
+  
+  epv_from_eplom(eplom) = epv_from_epm(eplom)
   """
       epv_from_epm(epm)
   Create an elemental partitioned vector with the same partitioned structure than `epm`.
@@ -29,6 +31,49 @@ module Link
     return epv
   end
   
+  """
+      epm_from_epv(epm)
+  Create an elemental partitioned matrix with the same partitioned structure than `epv`.
+  Each elemental element matrix is set with an identity matrix.
+  """
+  function epm_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
+    N = get_N(epv)
+    n = get_n(epv)
+    eem_set = Vector{Elemental_em{Y}}(undef,N)
+    for i in 1:N
+      eesi = get_ee_struct(epv,i)
+      indices = get_indices(eesi)
+      nie = get_nie(eesi)
+      Bie = zeros(Y, nie, nie)
+      [Bie[i, i]=1 for i in 1:nie]          
+      eem_set[i] = Elemental_em{Y}(nie, indices, Symmetric(Bie))
+    end 
+    component_list = M_abstract_part_struct.get_component_list(epv)    
+    perm = [1:n;]
+    spm = spzeros(n, n)
+    L = spzeros(n, n)        
+    epm = Elemental_pm{Y}(N, n, eem_set, spm, L, component_list, perm)
+    return epm
+  end
+
+  """
+      eplom_lbfgs_from_epv(epm)
+  Create an elemental partitioned linear operator matrix with the same partitioned structure than `epv`.
+  Each elemental element linear operator is set with an LBFGS operator.
+  """
+  function eplom_lbfgs_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
+    N = get_N(epv)
+    n = get_n(epv)
+    eelom_indices_set = Vector{Vector{Int}}(undef,N)
+    for i in 1:N
+      eesi = get_ee_struct(epv,i)
+      indices = get_indices(eesi)
+      eelom_indices_set[i] = indices    
+    end 
+    eplom = identity_eplom_LBFGS(eelom_indices_set, N, n; T=Y)
+    return eplom
+  end
+
   """
       mul_epm_vector(epm, x)
   Compute the product between the elemental partitioned matrix `epm` and the vector `x`.

@@ -3,7 +3,7 @@ using PartitionedStructures
 using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_part_mat
 using PartitionedStructures.M_1_parallel, PartitionedStructures.M_2_parallel, PartitionedStructures.M_3_parallel, PartitionedStructures.M_okoubi_koko
-using PartitionedStructures.Link
+using PartitionedStructures.Instances, PartitionedStructures.Link
 using PartitionedStructures.M_part_v
 
 # (epm,epv) = create_epv_epm()
