@@ -18,12 +18,15 @@ module PartitionedLOQuasiNewton
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
+		acc = 0
     for i in 1:N
       Bi = get_Bie(get_eelom_set(eplom_B, i))
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))
       push!(Bi, si, yi)
+			dot(si,yi) > eps(T) && acc +=1
     end 
+		println("PLBFGS, update $(acc)/$(N) elements")
   end
 
   """
