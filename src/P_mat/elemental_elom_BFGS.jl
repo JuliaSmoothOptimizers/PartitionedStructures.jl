@@ -7,6 +7,7 @@ module ModElemental_elom_bfgs
 
   export Elemental_elom_bfgs
   export init_eelom_LBFGS, LBFGS_eelom, LBFGS_eelom_rand
+	export reset_eelom_bfgs!
 
   "Type that represents an elemental element linear operator LBFGS"
   mutable struct Elemental_elom_bfgs{T} <: Elt_mat{T}
@@ -51,5 +52,14 @@ module ModElemental_elom_bfgs
     eelom = Elemental_elom_bfgs{T}(nie, indices, Bie)
     return eelom
   end 
+
+	"""
+			reset_eelom_bfgs!(eelom)
+	
+	Reset the LBFGS linear operator of the elemental element linear operator matrix.
+	"""
+	function reset_eelom_bfgs!(eelom::Elemental_elom_bfgs{T}) where T <: Number
+		eelom.Bie = LinearOperators.LBFGSOperator(T, eelom.nie)
+	end
 
 end 
