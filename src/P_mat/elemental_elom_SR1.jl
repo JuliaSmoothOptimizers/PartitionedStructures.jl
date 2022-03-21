@@ -7,6 +7,7 @@ module ModElemental_elom_sr1
 
   export Elemental_elom_sr1
   export init_eelom_LSR1, LSR1_eelom_rand, LSR1_eelom
+	export reset_eelom_sr1!
 
   "Type that represents elemental element linear operator LSR1"
   mutable struct Elemental_elom_sr1{T} <: Elt_mat{T}
@@ -51,5 +52,14 @@ module ModElemental_elom_sr1
     eelom = Elemental_elom_sr1{T}(nie, indices, Bie)
     return eelom
   end 
+
+	"""
+			reset_eelom_sr1!(eelom)
+	
+	Reset the LSR1 linear operator of the elemental element linear operator matrix.
+	"""
+	function reset_eelom_sr1!(eelom::Elemental_elom_sr1{T}) where T <: Number
+		eelom.Bie = LinearOperators.LSR1Operator(T, eelom.nie)
+	end
 
 end 
