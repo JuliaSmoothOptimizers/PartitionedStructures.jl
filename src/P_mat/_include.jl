@@ -12,4 +12,5 @@ include("elemental_elom_SR1.jl")
 
 
 include("elemental_plom_BFGS.jl")
+include("elemental_plom_SR1.jl")
 include("elemental_plom.jl")

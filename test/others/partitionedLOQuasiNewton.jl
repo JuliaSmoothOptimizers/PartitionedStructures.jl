@@ -37,6 +37,23 @@ end
   end 
 end
 
+@testset "PLSR1 first test" begin
+  n=10
+  nie=4
+  over=2
+  (eplom_B,epv_y) = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
+  s = ones(n)
+  B = Matrix(eplom_B)
+
+  eplom_B1 = PLSR1_update(eplom_B,epv_y,s)
+  B1 = Matrix(eplom_B1)
+
+  @test B == transpose(B)
+	@test isapprox(B1, transpose(B1))
+	@test B != B1
+
+end 
+
 @testset "Partitionned update test" begin
   n=10
   nie=4

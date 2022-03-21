@@ -25,11 +25,23 @@ using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedSt
   @test A == transpose(A)
 end 
 
-@testset "test elemental partitioned linear operator matrix" begin
+@testset "test elemental partitioned linear operator matrix (PBFGS operator)" begin
   n=10
   nie=4
   over=2
   (eplom_B,epv_y) = create_epv_eplom_bfgs(; n=n, nie=nie, overlapping=over)
+  B = Matrix(eplom_B)
+  @test B == transpose(B)
+
+  @test mapreduce((x -> x>0), my_and, eigvals(B)) # test definite positiveness
+end
+
+
+@testset "test elemental partitioned linear operator matrix (PLSR1 operator)" begin
+  n=10
+  nie=4
+  over=2
+  (eplom_B,epv_y) = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
   B = Matrix(eplom_B)
   @test B == transpose(B)
 
@@ -55,4 +67,13 @@ end
   nie = 5
   element_variables = map( (i -> rand(1:n,nie) ),1:N)
   identity_eplom_LBFGS(element_variables, N, n)
+end
+
+
+@testset "eplom_sr1 PartiallySeparableNLPModels" begin
+  N = 15
+  n = 20
+  nie = 5
+  element_variables = map( (i -> rand(1:n,nie) ),1:N)
+  identity_eplom_LSR1(element_variables, N, n)
 end
