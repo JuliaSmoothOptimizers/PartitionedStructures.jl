@@ -3,9 +3,12 @@ module Utils
   using LinearAlgebra
 
   export BFGS, BFGS!, SR1, SR1!
-  export my_and
+  export my_and, max_indices, min_indices
 
   my_and = (a :: Bool,b :: Bool) -> (a && b)
+	max_indices(elt_vars :: Vector{Vector{T}}) where T <: Number = isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars)) 
+	min_indices(elt_vars :: Vector{Vector{T}}) where T <: Number = isempty(elt_vars) ? 0 : minimum(minimum.(elt_vars)) 
+
 
   """
       BFGS(s, y, B)
