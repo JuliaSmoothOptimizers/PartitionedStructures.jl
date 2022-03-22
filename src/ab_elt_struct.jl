@@ -1,6 +1,6 @@
 module M_abstract_element_struct
 
-	using ..utils
+	using ..Utils
 
   export Element_struct
   export get_indices, get_nie
