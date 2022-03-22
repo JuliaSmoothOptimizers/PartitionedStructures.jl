@@ -39,12 +39,14 @@ module PartitionedQuasiNewton
     full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
+		acc = 0
     for i in 1:N
       Bi = get_Bie(get_eem_set(epm_B, i))
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))
-      SR1!(si, yi, Bi, Bi)
+      acc += SR1!(si, yi, Bi, Bi)
     end 
+		println("PSR1, update $(acc)/$(N) elements")
   end
 
 end 

@@ -14,7 +14,8 @@ module PartitionedStructures
   include("P_mat/_include.jl")
 
   #include related to factorization of partitionned matrices
-  include("algorithms/_include.jl")
+	include("methods/_include.jl")
+  include("factorizations/_include.jl")
 
   using .M_abstract_part_struct, .M_abstract_element_struct
   using .M_elt_vec, .M_elt_mat
@@ -22,7 +23,7 @@ module PartitionedStructures
   using .ModElemental_ev, .ModElemental_em, .ModElemental_elom_bfgs
   using .ModElemental_pv, .ModElemental_pm, .ModElemental_plom_bfgs, .ModElemental_plom_sr1
   using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
-  using .Link, .Instances
+  using .Link, .Instances, .PartMatInterface
 
   export Part_mat
   export Elemental_pv, Elemental_pm, Elemental_plom_bfgs
@@ -34,6 +35,7 @@ module PartitionedStructures
   export get_eev_value
   export full_check_epv_epm
   export PBFGS_update!, PBFGS_update, PLBFGS_update, PLBFGS_update!, PLSR1_update, PLSR1_update!
+	export update, update!
   export epm_from_epv, eplom_lbfgs_from_epv, create_epv_eplom, epv_from_eplom, epv_from_epm
 	export mul_epm_vector, mul_epm_vector!, mul_epm_epv
   export initialize_component_list!
