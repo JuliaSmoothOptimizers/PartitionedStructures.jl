@@ -10,7 +10,7 @@ module ModElemental_elom_bfgs
 	export reset_eelom_bfgs!
 
   "Type that represents an elemental element linear operator LBFGS"
-  mutable struct Elemental_elom_bfgs{T} <: Elt_mat{T}
+  mutable struct Elemental_elom_bfgs{T} <: LOEltMat{T}
     nie :: Int # nᵢᴱ
     indices :: Vector{Int} # size nᵢᴱ
     Bie :: LinearOperators.LBFGSOperator{T}

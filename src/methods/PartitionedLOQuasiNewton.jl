@@ -1,14 +1,16 @@
 module PartitionedLOQuasiNewton
-	using LinearAlgebra
+	using LinearOperators, LinearAlgebra
 
   using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
+	using ..M_abstract_element_struct
   using ..Utils
   using ..ModElemental_ev, ..ModElemental_pv
-  using ..ModElemental_elom_bfgs, ..ModElemental_plom
+  using ..ModElemental_elom_bfgs, ..ModElemental_elom_sr1, ..ModElemental_plom
 	using ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1
   
   export PLBFGS_update, PLBFGS_update!
 	export PLSR1_update, PLSR1_update!
+	export PLSE_update, PLSE_update!
   export Part_update, Part_update!
 
   """ 
@@ -86,6 +88,56 @@ module PartitionedLOQuasiNewton
       yi = get_vec(get_eev(epv_y,i))
       push!(Bi, si, yi)
     end 
+  end
+
+	"""
+      PLSE_update(eplom_B, epv_y, s)
+  Perform the partitionned update of eplom_B.
+  eplom_B is build from LBFGS or LSR1 elemental element matrices.
+  The update performed on eachh element matrix correspond to the linear operator associated.
+  """
+  PLSE_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T = begin epm_copy = copy(eplom_B); PLSE_update!(epm_copy,epv_y,s); return epm_copy end 
+  PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T = begin epv_s = epv_from_v(s, epv_y); PLSE_update!(eplom_B, epv_y, epv_s) end
+  function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6) where Y <: Part_LO_mat{T} where T 
+    full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
+    full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
+    N = get_N(eplom_B)
+		acc_lbfgs = 0
+		acc_lsr1 = 0
+		acc_reset = 0
+    for i in 1:N
+			eelom = get_eelom_set(eplom_B, i)
+      Bi = get_Bie(eelom)
+      si = get_vec(get_eev(epv_s,i))
+      yi = get_vec(get_eev(epv_y,i))			
+			ri = yi .- Bi*si
+			if isa(Bi, LBFGSOperator{T})
+				if dot(si, yi) > eps(T)  # curvature condition
+					push!(Bi, si, yi)			
+					acc_lbfgs += 1 
+				elseif abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
+					indices = get_indices(eelom)
+					eelom = init_eelom_LSR1(indices)
+					Bi = get_Bie(eelom)
+					push!(Bi, si, yi)	
+					acc_lsr1 += 1
+				else 
+					reset_eelom_bfgs!(eelom)
+					acc_reset += 1
+				end
+			else # isa(Bi, LSR1Operator{T})				
+				if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
+					push!(Bi, si, yi)			
+					acc_lsr1 += 1	
+				else
+					indices = get_indices(eelom)
+					eelom = init_eelom_LBFGS(indices)
+					acc_reset += 1
+				end 
+			end
+			set_eelom_set!(eplom_B, i, eelom)
+		end 
+		println("LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N) ")
   end
 
 end 

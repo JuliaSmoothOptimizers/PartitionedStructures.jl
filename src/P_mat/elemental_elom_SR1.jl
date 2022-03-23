@@ -10,7 +10,7 @@ module ModElemental_elom_sr1
 	export reset_eelom_sr1!
 
   "Type that represents elemental element linear operator LSR1"
-  mutable struct Elemental_elom_sr1{T} <: Elt_mat{T}
+  mutable struct Elemental_elom_sr1{T} <: LOEltMat{T}
     nie :: Int # nᵢᴱ
     indices :: Vector{Int} # size nᵢᴱ
     Bie :: LinearOperators.LSR1Operator{T}

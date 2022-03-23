@@ -8,7 +8,7 @@ module ModElemental_em
   export Elemental_em
   export identity_eem, create_id_eem, fixed_ones_eem, ones_eem, one_size_bloc
 
-  mutable struct Elemental_em{T} <: Elt_mat{T}
+  mutable struct Elemental_em{T} <: DenseEltMat{T}
     nie :: Int # nᵢᴱ
     indices :: Vector{Int} # size nᵢᴱ
     Bie :: Symmetric{T, Matrix{T}} # size nᵢᴱ × nᵢᴱ

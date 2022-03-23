@@ -8,6 +8,7 @@ module M_part_mat
   export hard_reset_L!, reset_L!
   export set_N!, set_n!, set_permutation!	
   export get_eelom_set, get_ee_struct_Bie
+	export set_eelom_set!
 
   "Abstract type representing partitioned matrix"
   abstract type Part_mat{T} <: Part_struct{T} end
@@ -54,5 +55,6 @@ module M_part_mat
   @inline hard_reset_L!(pm :: T) where T <: Part_mat = pm.L = spzeros(T, get_n(pm), get_n(pm))
 
   @inline get_eelom_set(plm :: T) where T <: Part_LO_mat = @error("should not be called")
+	@inline set_eelom_set!(plm :: T) where T <: Part_LO_mat = @error("should not be called")
   @inline get_ee_struct_Bie(pm :: T, i :: Int) where T <: Part_mat = get_Bie(get_ee_struct(pm, i))
 end

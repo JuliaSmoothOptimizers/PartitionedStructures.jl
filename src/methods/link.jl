@@ -3,10 +3,11 @@ module Link
 
   using ..M_part_mat, ..M_part_v
   using ..ModElemental_em, ..ModElemental_ev
-  using ..ModElemental_pv, ..ModElemental_plom_bfgs, ..ModElemental_plom, ..ModElemental_pm  
+  using ..ModElemental_pv, ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1, ..ModElemental_plom, ..ModElemental_pm  
   using ..M_abstract_element_struct, ..M_abstract_part_struct
 
-  export eplom_lbfgs_from_epv, epm_from_epv, epv_from_eplom, epv_from_epm
+  export eplom_lbfgs_from_epv, eplom_lsr1_from_epv, eplom_lose_from_epv, epm_from_epv
+	export epv_from_eplom, epv_from_epm
   export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
   
   @inline epv_from_eplom(eplom) = epv_from_epm(eplom)
@@ -89,6 +90,24 @@ module Link
       eelom_indices_set[i] = indices    
     end 
     eplom = identity_eplom_LSR1(eelom_indices_set, N, n; T=Y)
+    return eplom
+  end
+	
+	"""
+			eplom_lsr1_from_epv(epm)
+  Create an elemental partitioned linear operator matrix with the same partitioned structure than `epv`.
+  Each elemental element linear operator is set with an LSR1 operator.
+  """
+  function eplom_lose_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
+    N = get_N(epv)
+    n = get_n(epv)
+    eelom_indices_set = Vector{Vector{Int}}(undef,N)
+    for i in 1:N
+      eesi = get_ee_struct(epv,i)
+      indices = get_indices(eesi)
+      eelom_indices_set[i] = indices    
+    end 
+    eplom = identity_eplom_LOSE(eelom_indices_set, N, n; T=Y)
     return eplom
   end
 

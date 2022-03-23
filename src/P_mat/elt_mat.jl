@@ -2,11 +2,13 @@ module M_elt_mat
 
   using ..M_abstract_element_struct
 
-  export Elt_mat
+  export Elt_mat, DenseEltMat, LOEltMat
   export get_Bie
 
   "Abstract type representing element matrix"
   abstract type Elt_mat{T} <: Element_struct{T} end
+	abstract type DenseEltMat{T} <: Elt_mat{T} end
+	abstract type LOEltMat{T} <: Elt_mat{T} end
 
   """
       get_Bie(elt_mat) 
