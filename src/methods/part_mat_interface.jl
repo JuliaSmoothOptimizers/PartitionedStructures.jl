@@ -17,6 +17,7 @@ module PartMatInterface
 	@inline function update!(epm :: T, epv_res :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; name=:pbfgs) where T <: Part_mat{Y} where Y <: Number
 		(name == :pbfgs) && PBFGS_update!(epm, epv_res, epv_s)
 		(name == :psr1) && PSR1_update!(epm, epv_res, epv_s)
+		(name == :pse) && PSE_update!(epm, epv_res, epv_s)
 	end
 	
 	@inline update!(epm :: Elemental_plom{Y}, epv_res :: Elemental_pv{Y}, s :: Vector{Y}) where Y <: Number = update!(epm, epv_res, epv_from_v(s, epv_res))
@@ -28,7 +29,7 @@ module PartMatInterface
 	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_res :: Elemental_pv{Y}, s :: Vector{Y}) where Y <: Number = update!(epm, epv_res, epv_from_v(s, epv_res))
 	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_res :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}) where  Y <: Number = PLBFGS_update!(epm, epv_res, epv_s)
 	
-	@inline update!(epm :: Elemental_plom{Y}, epv_res :: Elemental_pv{Y}, s :: Vector{Y}) where Y <: Number = update!(epm, epv_res, epv_from_v(s, epv_res))
-	@inline update!(epm :: Elemental_plom{Y}, epv_res :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}) where  Y <: Number = Part_update!(epm, epv_res, epv_s)
+	# @inline update!(epm :: Elemental_plom{Y}, epv_res :: Elemental_pv{Y}, s :: Vector{Y}) where Y <: Number = update!(epm, epv_res, epv_from_v(s, epv_res))
+	# @inline update!(epm :: Elemental_plom{Y}, epv_res :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}) where  Y <: Number = Part_update!(epm, epv_res, epv_s)
 				
 end
