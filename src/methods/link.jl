@@ -98,7 +98,7 @@ module Link
   Create an elemental partitioned linear operator matrix with the same partitioned structure than `epv`.
   Each elemental element linear operator is set with an LSR1 operator.
   """
-  function eplom_lose_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
+  function eplom_lose_from_epv(epv :: Elemental_pv{T}) where T <: Number
     N = get_N(epv)
     n = get_n(epv)
     eelom_indices_set = Vector{Vector{Int}}(undef,N)
@@ -107,7 +107,7 @@ module Link
       indices = get_indices(eesi)
       eelom_indices_set[i] = indices    
     end 
-    eplom = identity_eplom_LOSE(eelom_indices_set, N, n; T=Y)
+    eplom = identity_eplom_LOSE(eelom_indices_set, N, n; T=T)
     return eplom
   end
 
