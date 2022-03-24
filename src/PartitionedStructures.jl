@@ -20,14 +20,14 @@ module PartitionedStructures
   using .M_abstract_part_struct, .M_abstract_element_struct
   using .M_elt_vec, .M_elt_mat
   using .M_part_v, .M_part_mat
-  using .ModElemental_ev, .ModElemental_em, .ModElemental_elom_bfgs
+  using .ModElemental_ev, .ModElemental_em, .ModElemental_elom_bfgs, .ModElemental_elom_sr1
   using .ModElemental_pv, .ModElemental_pm, .ModElemental_plom_bfgs, .ModElemental_plom_sr1
   using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
   using .Link, .Instances, .PartMatInterface
 
 	export initialize_component_list!
 
-	export Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs
+	export Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs, Elemental_elom_sr1
   export create_eev, create_id_eem
 	export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv!, epv_from_epv! # ModElemental_pv
 	export get_v, build_v!

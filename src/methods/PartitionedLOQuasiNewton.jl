@@ -117,8 +117,9 @@ module PartitionedLOQuasiNewton
 					acc_lbfgs += 1 
 				elseif abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
 					indices = get_indices(eelom)
-					eelom = init_eelom_LSR1(indices)
+					eelom = init_eelom_LSR1(indices; T=T)
 					Bi = get_Bie(eelom)
+					set_eelom_set!(eplom_B, i, eelom)
 					push!(Bi, si, yi)	
 					acc_lsr1 += 1
 				else 
@@ -131,11 +132,10 @@ module PartitionedLOQuasiNewton
 					acc_lsr1 += 1	
 				else
 					indices = get_indices(eelom)
-					eelom = init_eelom_LBFGS(indices)
+					eelom = init_eelom_LBFGS(indices; T=T)
 					acc_reset += 1
 				end 
 			end
-			set_eelom_set!(eplom_B, i, eelom)
 		end 
 		println("LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N) ")
   end

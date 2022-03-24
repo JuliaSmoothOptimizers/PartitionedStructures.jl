@@ -19,7 +19,20 @@ using PartitionedStructures.Instances
 		mat_PLBFGS = update(eplom_bfgs, epv_y, s)
 		eplom_sr1,epv_y = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
 		mat_PSR1 = update(eplom_sr1, epv_y, s)
-		eplom_bfgs_sr1,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)		
+		eplom_bfgs_sr1,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)
 		mat_PLBFGS_SR1 = update(eplom_bfgs_sr1, epv_y, s)
+	end
+
+	@testset "partitioned linear operators update!" begin
+		n=10
+		nie=4
+		over=2
+		s = ones(n)
+		eplom_bfgs,epv_y = create_epv_eplom_bfgs(; n=n, nie=nie, overlapping=over)
+		mat_PLBFGS = update!(eplom_bfgs, epv_y, s)
+		eplom_sr1,epv_y = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
+		mat_PSR1 = update!(eplom_sr1, epv_y, s)
+		eplom_bfgs_sr1,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)
+		mat_PLBFGS_SR1 = update!(eplom_bfgs_sr1, epv_y, s)
 	end
 end
