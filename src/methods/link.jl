@@ -94,7 +94,7 @@ module Link
   end
 	
 	"""
-			eplom_lsr1_from_epv(epm)
+			eplom_lose_from_epv(epm)
   Create an elemental partitioned linear operator matrix with the same partitioned structure than `epv`.
   Each elemental element linear operator is set with an LSR1 operator.
   """
