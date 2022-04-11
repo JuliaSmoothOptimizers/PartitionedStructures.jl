@@ -36,3 +36,32 @@ using PartitionedStructures.Instances
 		mat_PLBFGS_SR1 = update!(eplom_bfgs_sr1, epv_y, s)
 	end
 end
+
+@testset "General update" begin
+	n = 150
+	N = 100
+	ni = 9
+	sp_vec_elt(ni::Int, n; p=ni/n ) = sprand(Float64, n, p)
+	vec_sp_eev = map(i -> sp_vec_elt(ni, n), 1:N)
+	# map!(x -> x .= 100*x .- 50, vec_sp_eev)
+	# map(spx -> map!(val -> val = val*100 - 50, spx.nzval), vec_sp_eev)
+	map(spx -> begin spx.nzval .*= 100; spx.nzval .-= 50 end, vec_sp_eev)
+	epv = create_epv(vec_sp_eev)
+	build_v!(epv)
+	y = get_v(epv)
+	epm = epm_from_epv(epv)
+	eplom_lbfgs = eplom_lbfgs_from_epv(epv)
+	eplom_sr1 = eplom_lsr1_from_epv(epv)
+	eplom_lose = eplom_lose_from_epv(epv)
+
+	# B = Matrix(epm_bfgs)
+	s = ones(n)
+
+	epm_bfgs = PBFGS_update(epm, epv, s)
+	epm_sr1 = PSR1_update(epm, epv, s)
+	epm_se = PSE_update(epm, epv, s)
+	epm_plbfgs = PLBFGS_update(eplom_lbfgs, epv, s)
+	epm_plsr1 = PLSR1_update(eplom_sr1, epv, s)
+	epm_plse = PLSE_update(eplom_lose, epv, s)
+
+end

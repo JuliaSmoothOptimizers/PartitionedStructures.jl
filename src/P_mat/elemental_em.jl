@@ -12,11 +12,12 @@ module ModElemental_em
     nie :: Int # nᵢᴱ
     indices :: Vector{Int} # size nᵢᴱ
     Bie :: Symmetric{T, Matrix{T}} # size nᵢᴱ × nᵢᴱ
+		counter :: Counter_elt_mat
   end
 
   @inline (==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_Bie(eem1)== get_Bie(eem2)) && (get_indices(eem1)== get_indices(eem2))
-  @inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_Bie(eem)))
-  @inline similar(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)))
+  @inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_Bie(eem)), copy(get_cem(eem)))
+  @inline similar(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)), copy(get_cem(eem)))
 
   """
       create_id_eem(indices; T=T)
@@ -26,7 +27,8 @@ module ModElemental_em
     nie = length(elt_var)
     Bie = zeros(T, nie, nie)
     [Bie[i, i]=1 for i in 1:nie]  
-    eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie))
+		counter = Counter_elt_mat()
+		eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter)
     return eem
   end
 
@@ -38,7 +40,8 @@ module ModElemental_em
     indices = rand(1:n, nie)
     Bie = zeros(T, nie, nie)
     [Bie[i, i]=1 for i in 1:nie]		
-    eem = Elemental_em{T}(nie, indices, Symmetric(Bie))
+		counter = Counter_elt_mat()
+    eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter)
     return eem
   end 
 
@@ -49,7 +52,8 @@ module ModElemental_em
   function ones_eem(nie :: Int; T=Float64, n=nie^2) 
     indices = rand(1:n, nie)
     Bie = ones(T, nie, nie)		
-    eem = Elemental_em{T}(nie, indices, Symmetric(Bie))
+		counter = Counter_elt_mat()
+    eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter)
     return eem
   end 
 
@@ -62,7 +66,8 @@ module ModElemental_em
     indices = [i:(i+nie-1);]
     Bie = ones(T, nie, nie)		
     [Bie[i, i] = mul for i in 1:nie]
-    eem = Elemental_em{T}(nie, indices, Symmetric(Bie))
+		counter = Counter_elt_mat()
+    eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter)
     return eem
   end 
 
@@ -70,7 +75,7 @@ module ModElemental_em
       one_size_bloc(i)
   Define a elemental element matrix of type `T` of size one at the index `i`.
   """
-  one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)))
+  one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
 
   permute!(eem :: Elemental_em{T}, p :: Vector{Int}) where T = eem.indices .= p
 

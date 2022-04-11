@@ -28,8 +28,5 @@ module PartMatInterface
 		
 	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_y :: Elemental_pv{Y}, s :: Vector{Y}; kwargs...) where Y <: Number = update!(epm, epv_y, epv_from_v(s, epv_y); kwargs...)
 	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLBFGS_update!(epm, epv_y, epv_s)
-	
-	# @inline update!(epm :: Elemental_plom{Y}, epv_y :: Elemental_pv{Y}, s :: Vector{Y}) where Y <: Number = update!(epm, epv_y, epv_from_v(s, epv_y))
-	# @inline update!(epm :: Elemental_plom{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}) where  Y <: Number = Part_update!(epm, epv_y, epv_s)
 				
 end

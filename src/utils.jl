@@ -31,7 +31,7 @@ module Utils
     else
       n = length(s)
       B_1 .= reshape([ (i==j ? (Y)(1) : (Y)(0)) for i = 1:n for j =1:n], n, n)
-      return 0
+      return -1
     end 
   end
 
@@ -54,7 +54,7 @@ module Utils
     else
       n = length(s)
       B_1 .= reshape([ (i==j ? (Y)(1) : (Y)(0)) for i = 1:n for j =1:n], n, n)
-			return 0
+			return -1
     end 
   end
 
@@ -78,10 +78,13 @@ module Utils
 			if abs(dot(s,r)) > ω * norm(s,2) * norm(r,2)
 				B_1 .= B .+ ((r * r')./dot(s,r))
 				return 1			
+			elseif index < reset #
+				B_1 .= B
+				return 0
 			else
 				n = length(s)
 				B_1 .= reshape([ (i==j ? (Y)(1) : (Y)(0)) for i = 1:n for j =1:n], n, n)
-				return 0
+				return -1
 			end 
 		end
 	end 

@@ -3,7 +3,7 @@ module PartitionedLOQuasiNewton
 
   using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
 	using ..M_abstract_element_struct
-  using ..Utils
+  using ..Utils, ..Link
   using ..ModElemental_ev, ..ModElemental_pv
   using ..ModElemental_elom_bfgs, ..ModElemental_elom_sr1, ..ModElemental_plom
 	using ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1
@@ -23,23 +23,25 @@ module PartitionedLOQuasiNewton
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
-		acc_up = 0
-		acc_reset = 0
     for i in 1:N      
 			eelomi = get_eelom_set(eplom_B, i)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))			
 			if (dot(si,yi) > eps(T))
-				acc_up += 1
 				Bi = get_Bie(eelomi)
-      	push!(Bi, si, yi)			
+      	push!(Bi, si, yi)		
+				update = 1	
 			else 
-				acc_reset += 1
 				reset_eelom_bfgs!(eelomi)
+				update = -1
 			end 
+			cem = get_cem(eelomi)
+			update_counter_elt_mat!(cem, update)
     end 
-		println(" PLBFGS, update $(acc_up)/$(N) elements et reset $(acc_reset)/$(N) ")
-  end
+		str = string_counters_iter(eplom_B)
+		println(str)
+		return eplom_B
+	end
 
 	""" 
       PLSR1_update(eplom_B, s, epv_y)
@@ -51,8 +53,6 @@ module PartitionedLOQuasiNewton
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
-		acc_up = 0
-		acc_reset = 0
     for i in 1:N      
 			eelomi = get_eelom_set(eplom_B, i)
       si = get_vec(get_eev(epv_s,i))
@@ -60,14 +60,18 @@ module PartitionedLOQuasiNewton
 			Bi = get_Bie(eelomi)
 			ri = yi .- Bi*si
     	if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
-				acc_up += 1
-      	push!(Bi, si, yi)			
+      	push!(Bi, si, yi)
+				update = 1
 			else 
-				acc_reset += 1
 				reset_eelom_sr1!(eelomi)
-			end 
+				update = -1
+			end
+			cem = get_cem(eelomi)
+			update_counter_elt_mat!(cem, update)
     end 
-		println(" PLSR1, update $(acc_up)/$(N) elements et reset $(acc_reset)/$(N) ")
+		str = string_counters_iter(eplom_B)
+		println(str)
+		return eplom_B
   end
 
   """
@@ -138,6 +142,7 @@ module PartitionedLOQuasiNewton
 			end
 		end 
 		println("LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N) ")
+		return eplom_B
   end
 
 end 

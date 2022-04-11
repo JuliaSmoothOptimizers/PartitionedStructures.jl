@@ -1,5 +1,6 @@
 using LinearAlgebra, LinearOperators, SparseArrays
 using PartitionedStructures
+using PartitionedStructures.M_elt_mat
 using PartitionedStructures.ModElemental_elom_bfgs, PartitionedStructures.ModElemental_elom_sr1
 using PartitionedStructures.ModElemental_plom, PartitionedStructures.ModElemental_plom_bfgs
 using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
@@ -11,8 +12,9 @@ using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedSt
       indices = [index:1:index+nie-1;]
       Bie_bfgs = LinearOperators.LBFGSOperator(T, nie)
       Bie_sr1 = LinearOperators.LSR1Operator(T, nie)
-      @test Elemental_elom_bfgs{T}(nie,indices,Bie_bfgs) == LBFGS_eelom(nie;T=T, index=index)
-      @test Elemental_elom_sr1{T}(nie,indices,Bie_sr1) == LSR1_eelom(nie;T=T, index=index)
+			counter = Counter_elt_mat()
+      @test Elemental_elom_bfgs{T}(nie,indices,Bie_bfgs, counter) == LBFGS_eelom(nie;T=T, index=index)
+      @test Elemental_elom_sr1{T}(nie,indices,Bie_sr1, counter) == LSR1_eelom(nie;T=T, index=index)
     end
   end
 
