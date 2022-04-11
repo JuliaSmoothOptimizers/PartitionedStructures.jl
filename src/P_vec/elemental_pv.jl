@@ -14,6 +14,7 @@ module ModElemental_pv
   export create_epv, ones_kchained_epv, part_vec, rand_epv	
   export scale_epv, scale_epv!
   export epv_from_epv!, epv_from_v, epv_from_v! 
+	export prod_part_vectors
 
   "A type that represent elemental partitioned vector."
   mutable struct Elemental_pv{T} <: Part_v{T}
@@ -216,5 +217,23 @@ module ModElemental_pv
       end 
     end 
   end 
+
+	function prod_part_vectors(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T
+    full_check_epv_epm(epv1,epv2) || @error("differents partitioned structures between eplom_B and epv_y")
+		N = get_N(epv1)
+		acc = (T)(0)
+		res = Vector{T}(undef, N)
+    for idx in 1:N
+			eev1 = get_eev(epv1,idx)
+			eev2 = get_eev(epv2,idx)
+
+			vec1 = get_vec(eev1)
+			vec2 = get_vec(eev2)
+			yts = dot(vec1, vec2)
+      res[idx] = yts
+			acc += yts
+    end	
+		return acc, res
+	end
 
 end

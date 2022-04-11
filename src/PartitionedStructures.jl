@@ -50,6 +50,7 @@ module PartitionedStructures
 	export create_epv_eplom, epv_from_eplom, epv_from_epm
 	export mul_epm_vector, mul_epm_vector!, mul_epm_epv  
 	export Counter_elt_mat, string_counters_iter, string_counters_total
+	export prod_part_vectors
 
 
 end # module
