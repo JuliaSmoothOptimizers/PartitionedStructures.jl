@@ -19,7 +19,7 @@ module PartitionedLOQuasiNewton
   """
   PLBFGS_update(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(eplom_B); PLBFGS_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PLBFGS_update!(eplom_B, epv_y, epv_s; kwargs...) end
-  function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true) where T 
+  function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
@@ -49,7 +49,7 @@ module PartitionedLOQuasiNewton
   """
   PLSR1_update(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(eplom_B); PLSR1_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PLSR1_update!(eplom_B, epv_y, epv_s; kwargs...) end
-  function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true) where T 
+  function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, kwargs...) where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
@@ -82,7 +82,7 @@ module PartitionedLOQuasiNewton
   """
   Part_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T = begin epm_copy = copy(eplom_B); Part_update!(epm_copy,epv_y,s); return epm_copy end 
   Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T = begin epv_s = epv_from_v(s, epv_y); Part_update!(eplom_B, epv_y, epv_s) end
-  function Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}) where Y <: Part_LO_mat{T} where T 
+  function Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; kwargs...) where Y <: Part_LO_mat{T} where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
@@ -102,7 +102,7 @@ module PartitionedLOQuasiNewton
   """
   PLSE_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T = begin epm_copy = copy(eplom_B); PLSE_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T = begin epv_s = epv_from_v(s, epv_y); PLSE_update!(eplom_B, epv_y, epv_s; kwargs...) end
-  function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true) where Y <: Part_LO_mat{T} where T 
+  function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, kwargs...) where Y <: Part_LO_mat{T} where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)

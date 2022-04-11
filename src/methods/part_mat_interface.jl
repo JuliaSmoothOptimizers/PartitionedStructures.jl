@@ -14,19 +14,19 @@ module PartMatInterface
 	end 
 	
 	@inline update!(epm :: T, epv_y :: Elemental_pv{Y}, s :: Vector{Y}; kwargs...) where T <: Part_mat{Y} where Y <: Number= update!(epm, epv_y, epv_from_v(s, epv_y); kwargs...)
-	@inline function update!(epm :: T, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; name=:pbfgs) where T <: Part_mat{Y} where Y <: Number
-		(name == :pbfgs) && PBFGS_update!(epm, epv_y, epv_s)
-		(name == :psr1) && PSR1_update!(epm, epv_y, epv_s)
-		(name == :pse) && PSE_update!(epm, epv_y, epv_s)
+	@inline function update!(epm :: T, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; name=:pbfgs, kwargs...) where T <: Part_mat{Y} where Y <: Number
+		(name == :pbfgs) && PBFGS_update!(epm, epv_y, epv_s; kwargs...)
+		(name == :psr1) && PSR1_update!(epm, epv_y, epv_s; kwargs...)
+		(name == :pse) && PSE_update!(epm, epv_y, epv_s; kwargs...)
 	end
 	
 	@inline update!(epm :: Elemental_plom{Y}, epv_y :: Elemental_pv{Y}, s :: Vector{Y}; kwargs...) where Y <: Number = update!(epm, epv_y, epv_from_v(s, epv_y); kwargs...)
-	@inline update!(epm :: Elemental_plom{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLSE_update!(epm, epv_y, epv_s)
+	@inline update!(epm :: Elemental_plom{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLSE_update!(epm, epv_y, epv_s; kwargs...)
 	
 	@inline update!(epm :: Elemental_plom_sr1{Y}, epv_y :: Elemental_pv{Y}, s :: Vector{Y}; kwargs...) where Y <: Number = update!(epm, epv_y, epv_from_v(s, epv_y); kwargs...)
-	@inline update!(epm :: Elemental_plom_sr1{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLSR1_update!(epm, epv_y, epv_s)
+	@inline update!(epm :: Elemental_plom_sr1{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLSR1_update!(epm, epv_y, epv_s; kwargs...)
 		
 	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_y :: Elemental_pv{Y}, s :: Vector{Y}; kwargs...) where Y <: Number = update!(epm, epv_y, epv_from_v(s, epv_y); kwargs...)
-	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLBFGS_update!(epm, epv_y, epv_s)
+	@inline update!(epm :: Elemental_plom_bfgs{Y}, epv_y :: Elemental_pv{Y}, epv_s :: Elemental_pv{Y}; kwargs...) where  Y <: Number = PLBFGS_update!(epm, epv_y, epv_s; kwargs...)
 				
 end
