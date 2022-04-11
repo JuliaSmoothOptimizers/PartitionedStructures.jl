@@ -16,7 +16,7 @@ module PartitionedQuasiNewton
   """
   PBFGS_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(epm_B); PBFGS_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PBFGS_update!(epm_B, epv_y, epv_s; kwargs...) end
-  function PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; kwargs...) where T 
+  function PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T 
     full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
@@ -30,8 +30,8 @@ module PartitionedQuasiNewton
 			cem = get_cem(eemi)
 			update_counter_elt_mat!(cem, update)
     end 
-		str = string_counters_iter(epm_B)
-		println(str)
+		verbose && (str = string_counters_iter(epm_B))
+		verbose && (println(str))
 		return epm_B
 	end
 
@@ -41,7 +41,7 @@ module PartitionedQuasiNewton
   """
   PSR1_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(epm_B); PSR1_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PSR1_update!(epm_B, epv_y, epv_s; kwargs...) end
-  function PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; kwargs...) where T 
+  function PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T 
     full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
@@ -55,8 +55,8 @@ module PartitionedQuasiNewton
 			cem = get_cem(eemi)
 			update_counter_elt_mat!(cem, update)
     end 
-		str = string_counters_iter(epm_B)
-		println(str)
+		verbose && (str = string_counters_iter(epm_B))
+		verbose && (println(str))
 		return epm_B
   end
 
@@ -66,7 +66,7 @@ module PartitionedQuasiNewton
   """
   PSE_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(epm_B); PSE_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PSE_update!(epm_B, epv_y, epv_s; kwargs...) end
-  function PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; kwargs...) where T 
+  function PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T 
     full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
@@ -81,8 +81,8 @@ module PartitionedQuasiNewton
 			cem = get_cem(eemi)
 			update_counter_elt_mat!(cem, update)
     end 
-		str = string_counters_iter(epm_B)
-		println(str)
+		verbose && (str = string_counters_iter(epm_B))
+		verbose && (println(str))
 		return epm_B
   end
 
