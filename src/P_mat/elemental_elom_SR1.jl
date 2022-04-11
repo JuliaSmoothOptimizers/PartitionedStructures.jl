@@ -7,7 +7,7 @@ module ModElemental_elom_sr1
 
   export Elemental_elom_sr1
   export init_eelom_LSR1, LSR1_eelom_rand, LSR1_eelom
-	export index_eelom_sr1!
+	export reset_eelom_sr1!
 
   "Type that represents elemental element linear operator LSR1"
   mutable struct Elemental_elom_sr1{T} <: LOEltMat{T}
