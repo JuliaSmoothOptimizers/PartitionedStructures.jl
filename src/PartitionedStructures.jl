@@ -41,7 +41,6 @@ module PartitionedStructures
   export PBFGS_update!, PBFGS_update
 	export PSR1_update!, PSR1_update
 	export PSE_update, PSE_update!  
-
 	export PLBFGS_update, PLBFGS_update!
 	export PLSR1_update, PLSR1_update!
 	export PLSE_update, PLSE_update!  
@@ -50,5 +49,7 @@ module PartitionedStructures
   export epm_from_epv, eplom_lbfgs_from_epv, eplom_lose_from_epv, eplom_lsr1_from_epv
 	export create_epv_eplom, epv_from_eplom, epv_from_epm
 	export mul_epm_vector, mul_epm_vector!, mul_epm_epv  
+	export Counter_elt_mat, string_counters_iter, string_counters_total
+
 
 end # module

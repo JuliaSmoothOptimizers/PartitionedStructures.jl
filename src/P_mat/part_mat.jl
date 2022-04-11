@@ -57,4 +57,5 @@ module M_part_mat
   @inline get_eelom_set(plm :: T) where T <: Part_LO_mat = @error("should not be called")
 	@inline set_eelom_set!(plm :: T) where T <: Part_LO_mat = @error("should not be called")
   @inline get_ee_struct_Bie(pm :: T, i :: Int) where T <: Part_mat = get_Bie(get_ee_struct(pm, i))
+
 end

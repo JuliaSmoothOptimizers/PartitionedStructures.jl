@@ -1,6 +1,7 @@
 module Link
   using LinearAlgebra, SparseArrays
 
+	using ..M_elt_mat
   using ..M_part_mat, ..M_part_v
   using ..ModElemental_em, ..ModElemental_ev
   using ..ModElemental_pv, ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1, ..ModElemental_plom, ..ModElemental_pm  
@@ -9,7 +10,8 @@ module Link
   export eplom_lbfgs_from_epv, eplom_lsr1_from_epv, eplom_lose_from_epv, epm_from_epv
 	export epv_from_eplom, epv_from_epm
   export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
-  
+	export string_counters_iter, string_counters_total
+	
   @inline epv_from_eplom(eplom) = epv_from_epm(eplom)
   """
       epv_from_epm(epm)
@@ -38,22 +40,15 @@ module Link
   Each elemental element matrix is set with an identity matrix.
   """
   function epm_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
-    N = get_N(epv)
+		N = get_N(epv)
     n = get_n(epv)
-    eem_set = Vector{Elemental_em{Y}}(undef,N)
+    eelom_indices_set = Vector{Vector{Int}}(undef,N)
     for i in 1:N
       eesi = get_ee_struct(epv,i)
       indices = get_indices(eesi)
-      nie = get_nie(eesi)
-      Bie = zeros(Y, nie, nie)
-      [Bie[i, i]=1 for i in 1:nie]          
-      eem_set[i] = Elemental_em{Y}(nie, indices, Symmetric(Bie))
+      eelom_indices_set[i] = indices    
     end 
-    component_list = M_abstract_part_struct.get_component_list(epv)    
-    perm = [1:n;]
-    spm = spzeros(n, n)
-    L = spzeros(n, n)        
-    epm = Elemental_pm{Y}(N, n, eem_set, spm, L, component_list, perm)
+    epm = identity_epm(eelom_indices_set, N, n; T=Y)
     return epm
   end
 
@@ -171,6 +166,36 @@ module Link
       set_eev!(epv_res, i,Bie*vie)
     end
   end 
+
+	function string_counters_iter(pm :: T) where T <: Part_mat
+		epm_vectors = get_ee_struct(pm)
+		counters = (epm -> epm.counter).(epm_vectors)
+		update = 0
+		untouch = 0
+		reset = 0
+		for counter in counters
+			(up, un, re) = iter_info(counter)
+			update += up
+			untouch += un
+			reset += re
+		end 
+		println("Partitioned update ", T, " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+	end
+
+	function string_counters_total(pm :: T) where T <: Part_mat
+		epm_vectors = get_ee_struct(pm)
+		counters = (epm -> epm.counter).(epm_vectors)
+		update = 0
+		untouch = 0
+		reset = 0
+		for counter in counters
+			(up, un, re) =  total_info(counter)
+			update += up
+			untouch += un
+			reset += re
+		end 
+		println("Partitioned update ", T, " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+	end
 
 
 end 
