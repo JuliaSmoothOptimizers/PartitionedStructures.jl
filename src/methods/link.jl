@@ -183,8 +183,7 @@ module Link
       untouch += (un>0 ? 1 : 0)
       reset += (re>0 ? 1 : 0)
     end 
-    N = get_N(pm)
-    # println("Partitioned update ", T, " with ", N, " elements;", " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+    N = get_N(pm)    
 		str = "\n $(name); structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
 		return str
   end
