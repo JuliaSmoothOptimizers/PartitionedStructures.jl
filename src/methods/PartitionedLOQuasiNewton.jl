@@ -19,18 +19,21 @@ module PartitionedLOQuasiNewton
   """
   PLBFGS_update(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(eplom_B); PLBFGS_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PLBFGS_update!(eplom_B, epv_y, epv_s; kwargs...) end
-  function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T 
+  function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, reset=true, kwargs...) where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
     for i in 1:N      
 			eelomi = get_eelom_set(eplom_B, i)
       si = get_vec(get_eev(epv_s,i))
-      yi = get_vec(get_eev(epv_y,i))			
+      yi = get_vec(get_eev(epv_y,i))
+			index = get_index(eelomi)
 			if (dot(si,yi) > eps(T))
 				Bi = get_Bie(eelomi)
       	push!(Bi, si, yi)		
 				update = 1	
+			elseif index < reset # Bi is not updated nor reset				
+				update = 0
 			else 
 				reset_eelom_bfgs!(eelomi)
 				update = -1
@@ -38,8 +41,8 @@ module PartitionedLOQuasiNewton
 			cem = get_cem(eelomi)
 			update_counter_elt_mat!(cem, update)
     end 
-		str = string_counters_iter(eplom_B)
-		println(str)
+		verbose && (str = string_counters_iter(eplom_B))
+		verbose && (println(str))
 		return eplom_B
 	end
 
@@ -49,7 +52,7 @@ module PartitionedLOQuasiNewton
   """
   PLSR1_update(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(eplom_B); PLSR1_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PLSR1_update!(eplom_B, epv_y, epv_s; kwargs...) end
-  function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, kwargs...) where T 
+  function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
@@ -59,9 +62,12 @@ module PartitionedLOQuasiNewton
       yi = get_vec(get_eev(epv_y,i))
 			Bi = get_Bie(eelomi)
 			ri = yi .- Bi*si
+			index = get_index(eelomi)
     	if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
       	push!(Bi, si, yi)
 				update = 1
+			elseif index < reset # Bi is not updated nor reset				
+				update = 0
 			else 
 				reset_eelom_sr1!(eelomi)
 				update = -1
@@ -102,12 +108,13 @@ module PartitionedLOQuasiNewton
   """
   PLSE_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T = begin epm_copy = copy(eplom_B); PLSE_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T = begin epv_s = epv_from_v(s, epv_y); PLSE_update!(eplom_B, epv_y, epv_s; kwargs...) end
-  function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, kwargs...) where Y <: Part_LO_mat{T} where T 
+  function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where Y <: Part_LO_mat{T} where T 
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
 		acc_lbfgs = 0
 		acc_lsr1 = 0
+		acc_untouched = 0
 		acc_reset = 0
     for i in 1:N
 			eelom = get_eelom_set(eplom_B, i)
@@ -115,6 +122,7 @@ module PartitionedLOQuasiNewton
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))			
 			ri = yi .- Bi*si
+			index = get_index(eelom)
 			if isa(Bi, LBFGSOperator{T})
 				if dot(si, yi) > eps(T)  # curvature condition
 					push!(Bi, si, yi)			
@@ -126,6 +134,8 @@ module PartitionedLOQuasiNewton
 					set_eelom_set!(eplom_B, i, eelom)
 					push!(Bi, si, yi)	
 					acc_lsr1 += 1
+				elseif index < reset
+					acc_untouched += 1
 				else 
 					reset_eelom_bfgs!(eelom)
 					acc_reset += 1
@@ -134,6 +144,8 @@ module PartitionedLOQuasiNewton
 				if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
 					push!(Bi, si, yi)			
 					acc_lsr1 += 1	
+				elseif index < reset
+					acc_untouched += 1
 				else
 					indices = get_indices(eelom)
 					eelom = init_eelom_LBFGS(indices; T=T)
@@ -141,7 +153,7 @@ module PartitionedLOQuasiNewton
 				end 
 			end
 		end 
-		verbose && println("LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N) ")
+		verbose && println("LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N), untouched $(acc_untouched)/$(N), reset $(acc_reset)/$(N)")
 		return eplom_B
   end
 
