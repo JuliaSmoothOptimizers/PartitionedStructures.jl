@@ -29,9 +29,9 @@ module PartitionedQuasiNewton
       update = BFGS!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
 			cem = get_cem(eemi)
 			update_counter_elt_mat!(cem, update)
-    end 
+    end
 		verbose && (str = string_counters_iter(epm_B))
-		verbose && (println(str))
+		verbose && (print(str))
 		return epm_B
 	end
 
@@ -56,7 +56,7 @@ module PartitionedQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(epm_B))
-		verbose && (println(str))
+		verbose && (print(str))
 		return epm_B
   end
 
@@ -82,7 +82,7 @@ module PartitionedQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(epm_B))
-		verbose && (println(str))
+		verbose && (print(str))
 		return epm_B
   end
 

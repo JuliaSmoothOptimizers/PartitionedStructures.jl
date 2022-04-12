@@ -42,7 +42,7 @@ module PartitionedLOQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(eplom_B))
-		verbose && (println(str))
+		verbose && (print(str))
 		return eplom_B
 	end
 
@@ -76,7 +76,7 @@ module PartitionedLOQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(eplom_B))
-		verbose && (println(str))
+		verbose && (print(str))
 		return eplom_B
   end
 

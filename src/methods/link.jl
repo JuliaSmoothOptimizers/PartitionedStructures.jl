@@ -171,7 +171,7 @@ module Link
       string_counters_iter(pm)
   Produce a string that summarize the partitioned update applied onto `pm` at the last iterate.
   """
-  function string_counters_iter(pm :: T) where T <: Part_mat
+  function string_counters_iter(pm :: T; name=:PQN) where T <: Part_mat
     epm_vectors = get_ee_struct(pm)
     counters = (epm -> epm.counter).(epm_vectors)
     update = 0
@@ -184,14 +184,16 @@ module Link
       reset += (re>0 ? 1 : 0)
     end 
     N = get_N(pm)
-    println("Partitioned update ", T, " with ", N, " elements;", " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+    # println("Partitioned update ", T, " with ", N, " elements;", " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+		str = "\n $(name); structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
+		return str
   end
 
   """
       string_counters_total(pm)
   Produce a string that summarize the partitioned update applied onto `pm` from its allocation.
   """
-  function string_counters_total(pm :: T) where T <: Part_mat
+  function string_counters_total(pm :: T; name=:PQN) where T <: Part_mat
     epm_vectors = get_ee_struct(pm)
     counters = (epm -> epm.counter).(epm_vectors)
     update = 0
@@ -204,7 +206,8 @@ module Link
       reset += re
     end 
     N = get_N(pm)
-    println("Partitioned update ", T, " with ", N, " elements;", " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+		str = "\n $(name); structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
+		return str
   end
 
 end 
