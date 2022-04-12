@@ -170,16 +170,18 @@ module Link
 	function string_counters_iter(pm :: T) where T <: Part_mat
 		epm_vectors = get_ee_struct(pm)
 		counters = (epm -> epm.counter).(epm_vectors)
+		@show length(counters)
 		update = 0
 		untouch = 0
 		reset = 0
 		for counter in counters
 			(up, un, re) = iter_info(counter)
-			update += up
-			untouch += un
-			reset += re
+			update += (up>0 ? 1 : 0)
+			untouch += (un>0 ? 1 : 0)
+			reset += (re>0 ? 1 : 0)
 		end 
-		println("Partitioned update ", T, " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+		N = get_N(pm)
+		println("Partitioned update ", T, " with ", N, " elements;", " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
 	end
 
 	function string_counters_total(pm :: T) where T <: Part_mat
@@ -189,12 +191,13 @@ module Link
 		untouch = 0
 		reset = 0
 		for counter in counters
-			(up, un, re) =  total_info(counter)
-			update += up
-			untouch += un
-			reset += re
+			(up, un, re) = total_info(counter)
+			update += (up>0 ? 1 : 0)
+			untouch += (un>0 ? 1 : 0)
+			reset += (re>0 ? 1 : 0)
 		end 
-		println("Partitioned update ", T, " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
+		N = get_N(pm)
+		println("Partitioned update ", T, " with ", N, " elements;", " update: ", update, ", untouch: ", untouch, ", reset: ", reset)
 	end
 
 
