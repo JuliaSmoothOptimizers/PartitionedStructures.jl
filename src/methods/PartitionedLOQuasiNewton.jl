@@ -42,7 +42,7 @@ module PartitionedLOQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(eplom_B))
-		verbose && (print(str))
+		verbose && (print("\n PLBFGS"*str))
 		return eplom_B
 	end
 
@@ -76,7 +76,7 @@ module PartitionedLOQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(eplom_B))
-		verbose && (print(str))
+		verbose && (print("\n PLSR1"*str))
 		return eplom_B
   end
 
@@ -153,7 +153,7 @@ module PartitionedLOQuasiNewton
 				end 
 			end
 		end 
-		verbose && println("LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N), untouched $(acc_untouched)/$(N), reset $(acc_reset)/$(N)")
+		verbose && println("PLSE : LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N), untouched $(acc_untouched)/$(N), reset $(acc_reset)/$(N)")
 		return eplom_B
   end
 

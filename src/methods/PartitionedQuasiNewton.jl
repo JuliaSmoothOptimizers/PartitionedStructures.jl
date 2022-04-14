@@ -31,7 +31,7 @@ module PartitionedQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end
 		verbose && (str = string_counters_iter(epm_B))
-		verbose && (print(str))
+		verbose && (print("\n PBFGS"*str))
 		return epm_B
 	end
 
@@ -56,7 +56,7 @@ module PartitionedQuasiNewton
 			update_counter_elt_mat!(cem, update)
     end 
 		verbose && (str = string_counters_iter(epm_B))
-		verbose && (print(str))
+		verbose && (print("\n PSR1"*str))
 		return epm_B
   end
 
