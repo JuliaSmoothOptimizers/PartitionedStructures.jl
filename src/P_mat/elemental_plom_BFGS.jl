@@ -44,8 +44,8 @@ module ModElemental_plom_bfgs
       identity_eplom_LBFGS(vec_indices, N, n; T=T)
   Create an elemental partitionned limited memory of `N` elemental element linear operators matrices whose the positions are given by `vec_indices`.
   """
-  function identity_eplom_LBFGS(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)		
-    eelom_set = map( (elt_var -> init_eelom_LBFGS(elt_var; T=T)), element_variables)
+  function identity_eplom_LBFGS(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64, kwargs...)		
+    eelom_set = map( (elt_var -> init_eelom_LBFGS(elt_var; T=T, kwargs...)), element_variables)
     spm = spzeros(T, n, n)
     L = spzeros(T, n, n)
     component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
@@ -59,12 +59,12 @@ module ModElemental_plom_bfgs
       PLBFGS_eplom(N, n; type, nie)
   Create an elemental partitionned limited memory of `N` elemental element linear operators matrices which are overlapping the next block coordinates by `overlapping`.
   """
-  function PLBFGS_eplom(; n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1)		
+  function PLBFGS_eplom(; n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1, kwargs...)		
     overlapping < nie || error("the overlapping must be lower than nie")
     mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
   
     indices = filter(x -> x <= n-nie+1, vcat(1, (x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
-    eelom_set = map(i -> LBFGS_eelom(nie; T=T, index=i), indices)	
+    eelom_set = map(i -> LBFGS_eelom(nie; T=T, index=i, kwargs...), indices)	
     N = length(indices)
     spm = spzeros(T, n, n)
     L = spzeros(T, n, n)
@@ -79,8 +79,8 @@ module ModElemental_plom_bfgs
       PLBFGS_eplom_rand(N, n; type, nie)
   Create an elemental partitionned limited memory matrix of `N` elemental element linear operators matrices whose positions are random.
   """
-  function PLBFGS_eplom_rand(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
-    eelom_set = map(i -> LBFGS_eelom_rand(nie; T=T, n=n), [1:N;])
+  function PLBFGS_eplom_rand(N :: Int, n :: Int; T=Float64, nie :: Int=5, kwargs...)		
+    eelom_set = map(i -> LBFGS_eelom_rand(nie; T=T, n=n, kwargs...), [1:N;])
     spm = spzeros(T, n, n)
     L = spzeros(T, n, n)
     component_list = map(i -> Vector{Int}(undef, 0), [1:n;])

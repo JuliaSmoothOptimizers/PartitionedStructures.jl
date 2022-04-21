@@ -32,6 +32,11 @@ module PartitionedLOQuasiNewton
 				Bi = get_Bie(eelomi)
       	push!(Bi, si, yi)		
 				update = 1	
+			elseif eelomi.damping
+				Bi = get_Bie(eelomi)
+				Bs = eelomi.Bs
+      	push!(Bi, si, yi, Bs)		
+				update = 2
 			elseif index < reset # Bi is not updated nor reset				
 				update = 0
 			else 

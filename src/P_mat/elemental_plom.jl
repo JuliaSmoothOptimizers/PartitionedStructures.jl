@@ -45,8 +45,8 @@ module ModElemental_plom
   @inline similar(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
     
 
-	function identity_eplom_LOSE(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
-		eelom_set = map( (elt_var -> init_eelom_LBFGS(elt_var; T=T)), element_variables)
+	function identity_eplom_LOSE(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64, kwargs...)
+		eelom_set = map( (elt_var -> init_eelom_LBFGS(elt_var; T=T, kwargs...)), element_variables)
     spm = spzeros(T, n, n)
     L = spzeros(T, n, n)
     component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
