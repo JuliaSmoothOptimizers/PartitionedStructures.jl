@@ -10,7 +10,6 @@ module M_elt_mat
 
 	import Base.copy, Base.similar
 
-
   "Abstract type representing element matrix"
   abstract type Elt_mat{T} <: Element_struct{T} end
 	abstract type DenseEltMat{T} <: Elt_mat{T} end
@@ -25,7 +24,6 @@ module M_elt_mat
 	@inline get_counter_elt_mat(elt_mat :: T) where T <: Elt_mat = elt_mat.counter
 	@inline get_cem(elt_mat :: T) where T <: Elt_mat = elt_mat.counter
 
-
 	@inline get_index(elt_mat :: T) where T <: Elt_mat = get_current_untouched(elt_mat.counter)
 	"""
 			Counter_elt_mat
@@ -35,19 +33,21 @@ module M_elt_mat
 	mutable struct Counter_elt_mat
 		total_update :: Int # count the total of update perform by the element linear operator
 		current_update :: Int # count how many time by the element linear operator
+		total_damped :: Int
+		current_damped :: Int
 		total_untouched :: Int
 		current_untouched :: Int # must be ≤ reset defined in the update
 		total_reset :: Int
 		current_reset :: Int # ≤ 1 as long as reset ≥ 2 in any update performed		
 	end 
-	Counter_elt_mat() = Counter_elt_mat(0,0,0,0,0,0)
-	copy(cem :: Counter_elt_mat) = Counter_elt_mat(cem.total_update, cem.current_update, cem.total_untouched, cem.current_untouched, cem.total_reset, cem.current_reset)
+	Counter_elt_mat() = Counter_elt_mat(0,0,0,0,0,0,0,0)
+	copy(cem :: Counter_elt_mat) = Counter_elt_mat(cem.total_update, cem.current_update, cem.total_damped, cem.current_damped, cem.total_untouched, cem.current_untouched, cem.total_reset, cem.current_reset)
 	similar(cem :: Counter_elt_mat) = Counter_elt_mat()
 
 	get_current_untouched(cem :: Counter_elt_mat) = cem.current_untouched
 
-	iter_info(cem :: Counter_elt_mat) = (cem.current_update, cem.current_untouched, cem.current_reset)
-	total_info(cem :: Counter_elt_mat) = (cem.total_update, cem.total_untouched, cem.current_reset)
+	iter_info(cem :: Counter_elt_mat) = (cem.current_update, cem.current_damped, cem.current_untouched, cem.current_reset)
+	total_info(cem :: Counter_elt_mat) = (cem.total_update, cem.total_damped, cem.total_untouched, cem.current_reset)
 
 	"""
 		update_counter_elt_mat!(cem, qn)
@@ -57,18 +57,27 @@ module M_elt_mat
 		if qn == 1
 			cem.total_update += 1
 			cem.current_update += 1
+			cem.current_damped = 0
 			cem.current_untouched = 0
 			cem.current_reset = 0			
 		elseif qn == 0
 			cem.total_untouched += 1
 			cem.current_untouched += 1
 			cem.current_update = 0
+			cem.current_damped = 0
 			cem.current_reset = 0
-		else # qn == -1
+		elseif qn == -1
 			cem.total_reset += 1
 			cem.current_reset += 1
 			cem.current_untouched = 0
 			cem.current_update = 0
+			cem.current_damped = 0
+		else qn == 2 
+			cem.total_damped += 1
+			cem.current_damped += 1
+			cem.current_untouched = 0
+			cem.current_update = 0
+			cem.current_reset = 0
 		end
 	end
 

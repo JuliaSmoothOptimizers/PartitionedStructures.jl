@@ -57,7 +57,7 @@ module Link
   Create an elemental partitioned linear operator matrix with the same partitioned structure than `epv`.
   Each elemental element linear operator is set with an LBFGS operator.
   """
-  function eplom_lbfgs_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
+  function eplom_lbfgs_from_epv(epv :: T; kwargs...) where T <: Elemental_pv{Y} where Y <: Number
     N = get_N(epv)
     n = get_n(epv)
     eelom_indices_set = Vector{Vector{Int}}(undef, N)
@@ -66,7 +66,7 @@ module Link
       indices = get_indices(eesi)
       eelom_indices_set[i] = indices    
     end 
-    eplom = identity_eplom_LBFGS(eelom_indices_set, N, n; T=Y)
+    eplom = identity_eplom_LBFGS(eelom_indices_set, N, n; T=Y, kwargs...)
     return eplom
   end
 
@@ -93,7 +93,7 @@ module Link
   Create an elemental partitioned linear operator matrix with the same partitioned structure than `epv`.
   Each elemental element linear operator is set with an LSR1 operator.
   """
-  function eplom_lose_from_epv(epv :: Elemental_pv{T}) where T <: Number
+  function eplom_lose_from_epv(epv :: Elemental_pv{T}; kwargs...) where T <: Number
     N = get_N(epv)
     n = get_n(epv)
     eelom_indices_set = Vector{Vector{Int}}(undef, N)
@@ -102,7 +102,7 @@ module Link
       indices = get_indices(eesi)
       eelom_indices_set[i] = indices    
     end 
-    eplom = identity_eplom_LOSE(eelom_indices_set, N, n; T=T)
+    eplom = identity_eplom_LOSE(eelom_indices_set, N, n; T=T, kwargs...)
     return eplom
   end
 
@@ -177,14 +177,16 @@ module Link
     update = 0
     untouch = 0
     reset = 0
+		damped = 0
     for counter in counters
-      (up, un, re) = iter_info(counter)
+      (up, da, un, re) = iter_info(counter)
       update += (up>0 ? 1 : 0)
+			damped += (da>0 ? 1 : 0)
       untouch += (un>0 ? 1 : 0)
       reset += (re>0 ? 1 : 0)
     end 
     N = get_N(pm)    
-		str = "\t structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
+		str = "\t structure: $(T) based from $(N) elements; update: $(update), damped:$(damped), untouch: $(untouch), reset: $(reset) \n"
 		return str
   end
 
@@ -196,16 +198,18 @@ module Link
     epm_vectors = get_ee_struct(pm)
     counters = (epm -> epm.counter).(epm_vectors)
     update = 0
+		damped = 0
     untouch = 0
     reset = 0
     for counter in counters
-      (up, un, re) = total_info(counter)
+      (up, da, un, re) = total_info(counter)
       update += up
+			damped += da
       untouch += un
       reset += re
     end 
     N = get_N(pm)
-		str = "\t structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
+		str = "\t structure: $(T) based from $(N) elements; update: $(update), damped:$(damped), untouch: $(untouch), reset: $(reset) \n"
 		return str
   end
 

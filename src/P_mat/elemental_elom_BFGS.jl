@@ -15,21 +15,25 @@ module ModElemental_elom_bfgs
     indices :: Vector{Int} # size nᵢᴱ
     Bie :: LinearOperators.LBFGSOperator{T}
 		counter :: Counter_elt_mat
+		Bs :: Vector{T}
+		damping :: Bool
   end
 
-  @inline (==)(eelom1 :: Elemental_elom_bfgs{T}, eelom2 :: Elemental_elom_bfgs{T}) where T = (get_nie(eelom1)== get_nie(eelom2)) && begin v=rand(get_nie(eelom1)); (get_Bie(eelom1) *v == get_Bie(eelom2)*v) end && (get_indices(eelom1)== get_indices(eelom2))
-  @inline copy(eelom :: Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), deepcopy(get_Bie(eelom)), copy(get_cem(eelom)))
-  @inline similar(eelom :: Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), similar(get_Bie(eelom)), copy(get_cem(eelom)))
+  @inline (==)(eelom1 :: Elemental_elom_bfgs{T}, eelom2 :: Elemental_elom_bfgs{T}) where T = (get_nie(eelom1)== get_nie(eelom2)) && begin v=rand(get_nie(eelom1)); (get_Bie(eelom1) *v == get_Bie(eelom2)*v) end && (get_indices(eelom1) == get_indices(eelom2))
+  @inline copy(eelom :: Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), deepcopy(get_Bie(eelom)), copy(get_cem(eelom)), copy(eelom.Bs), copy(eelom.damping))
+  @inline similar(eelom :: Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), similar(get_Bie(eelom)), copy(get_cem(eelom)), similar(eelom.Bs), copy(eelom.damping))
 
   """
       init_eelom_LBFGS(indices; T=T)
   Define a `Elemental_elom_bfgs` of type `Elemental_elom_sr1` based from the vector `indices`.
   """	
-  function init_eelom_LBFGS(elt_var :: Vector{Int}; T=Float64)
+  function init_eelom_LBFGS(elt_var :: Vector{Int}; T=Float64, damped=false)
     nie = length(elt_var)
-    Bie = LinearOperators.LBFGSOperator(T, nie)
+		damping = damped
+    Bie = LinearOperators.LBFGSOperator(T, nie; damped=damping)
 		counter = Counter_elt_mat()
-    eelom = Elemental_elom_bfgs{T}(nie, elt_var, Bie, counter)
+		Bs = Vector{T}(undef,nie)
+    eelom = Elemental_elom_bfgs{T}(nie, elt_var, Bie, counter, Bs, damping)		
     return eelom
   end 
 
@@ -37,11 +41,13 @@ module ModElemental_elom_bfgs
       LBFGS_eelom_rand(nie, T=T, n=n)
   Create a `Elemental_elom_bfgs` of type `T` with `nie` random indices within the range `1:n`.
   """
-  function LBFGS_eelom_rand(nie :: Int; T=Float64, n=nie^2)
+  function LBFGS_eelom_rand(nie :: Int; T=Float64, n=nie^2, damped=false)
     indices = rand(1:n, nie) 		
-    Bie = LinearOperators.LBFGSOperator(T, nie)
+		damping = damped
+    Bie = LinearOperators.LBFGSOperator(T, nie; damped=damping)
 		counter = Counter_elt_mat()
-    eelom = Elemental_elom_bfgs{T}(nie, indices, Bie, counter)
+		Bs = Vector{T}(undef,nie)
+    eelom = Elemental_elom_bfgs{T}(nie, indices, Bie, counter, Bs, damping)
     return eelom
   end 
 
@@ -49,11 +55,13 @@ module ModElemental_elom_bfgs
       LBFGS_eelom(nie, T=T, index=index)
   Create a `Elemental_elom_bfgs` of type `T` of size `nie`, the indices are in the range `index:index+nie-1`.
   """
-  function LBFGS_eelom(nie :: Int; T=Float64, index=1)
+  function LBFGS_eelom(nie :: Int; T=Float64, index=1, damped=false)
     indices = [index:1:index+nie-1;]
-    Bie = LinearOperators.LBFGSOperator(T, nie)
+		damping = damped
+    Bie = LinearOperators.LBFGSOperator(T, nie; damped=damping)
 		counter = Counter_elt_mat()
-    eelom = Elemental_elom_bfgs{T}(nie, indices, Bie, counter)
+		Bs = Vector{T}(undef,nie)
+    eelom = Elemental_elom_bfgs{T}(nie, indices, Bie, counter, Bs, damping)
     return eelom
   end 
 
@@ -63,7 +71,7 @@ module ModElemental_elom_bfgs
 	Reset the LBFGS linear operator of the elemental element linear operator matrix.
 	"""
 	function reset_eelom_bfgs!(eelom::Elemental_elom_bfgs{T}) where T <: Number
-		eelom.Bie = LinearOperators.LBFGSOperator(T, eelom.nie)
+		eelom.Bie = LinearOperators.LBFGSOperator(T, eelom.nie; damped=eelom.damping)
 	end
 
 end 

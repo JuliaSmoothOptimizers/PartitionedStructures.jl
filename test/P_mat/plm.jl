@@ -13,8 +13,10 @@ using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedSt
       Bie_bfgs = LinearOperators.LBFGSOperator(T, nie)
       Bie_sr1 = LinearOperators.LSR1Operator(T, nie)
 			counter = Counter_elt_mat()
-      @test Elemental_elom_bfgs{T}(nie,indices,Bie_bfgs, counter) == LBFGS_eelom(nie;T=T, index=index)
-      @test Elemental_elom_sr1{T}(nie,indices,Bie_sr1, counter) == LSR1_eelom(nie;T=T, index=index)
+			Bs = Vector{T}(undef,nie)
+			damping = false
+      @test Elemental_elom_bfgs{T}(nie,indices,Bie_bfgs,counter,Bs, damping) == LBFGS_eelom(nie;T=T, index=index)
+      @test Elemental_elom_sr1{T}(nie,indices,Bie_sr1,counter) == LSR1_eelom(nie;T=T, index=index)
     end
   end
 
