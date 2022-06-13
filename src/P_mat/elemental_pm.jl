@@ -1,7 +1,7 @@
 module ModElemental_pm
 
   using SparseArrays
-	using ..Utils
+  using ..Utils
   using ..M_abstract_part_struct, ..M_part_mat
   using ..M_abstract_element_struct, ..M_elt_mat, ..ModElemental_em
 
@@ -49,7 +49,7 @@ module ModElemental_pm
   Create a partitionned matrix of type `T`.
   The partitionned matrix possess `N` identity elemental element matrices based from the indices of each component of `element_variables`.
   """
-	identity_epm(element_variables :: Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64) = identity_epm(element_variables, N, n; T=T)
+  identity_epm(element_variables :: Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64) = identity_epm(element_variables, N, n; T=T)
   function identity_epm(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
     eem_set = map( (elt_var -> create_id_eem(elt_var; T=T)), element_variables)
     spm = spzeros(T, n, n)

@@ -6,196 +6,41 @@ using PartitionedStructures.M_part_mat
 using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_frontale
 
-not_last && @testset "test frontal method" begin 
-  for n in 10:30, N in Int(floor(n/4)):Int(floor(3*n/4)), nie in 2:Int(floor(sqrt(n)))	
-    pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
-    sp_pm = SparseMatrixCSC(pm)
-    m = Matrix(pm)
-    @test Matrix(sp_pm) == m
-
+@testset "Frontal method" begin
+  @testset "random matrices" begin
+    for n in 10:30, N in Int(floor(n/4)):Int(floor(3*n/4)), nie in 2:Int(floor(sqrt(n)))	
+      pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
+      sp_pm = SparseMatrixCSC(pm)
+      m = Matrix(pm)
+      @test Matrix(sp_pm) == m
+  
+      LLT = cholesky(m)
+      L_chol = LLT.L
+  
+      frontale!(pm)
+      L_frontale = Matrix(tril(ModElemental_pm.get_L(pm)))
+      m_frontale = L_frontale * L_frontale'
+  
+      @test norm(L_chol - L_frontale) ≤	1e-6 
+      @test norm(m_frontale - m ) ≤ 1e-6
+    end     
+  end
+  
+  @testset "one shot" begin
+    n = 100
+    nie = 5
+    pm = n_i_SPS(n; nie=nie) # create a tridiag dominant matrix
+    sp_pm = SparseMatrixCSC(pm) # the sparse matrix from the bloc matrix
+    m = Matrix(sp_pm) # Matrix format for nice print
+  
     LLT = cholesky(m)
-    L_chol = LLT.L
-
     frontale!(pm)
+  
+    L_chol = LLT.L
     L_frontale = Matrix(tril(ModElemental_pm.get_L(pm)))
     m_frontale = L_frontale * L_frontale'
-
+  
     @test norm(L_chol - L_frontale) ≤	1e-6 
-    @test norm(m_frontale - m ) ≤ 1e-6
-    
-  end 
+    @test norm(m_frontale - m ) ≤ 1e-6  
+  end  
 end 
-
-not_last && @testset "génération de matrice" begin 
-  N = 5 
-  n = 10 #by default must be a mulitple of 5
-  id_epm = identity_epm(N,n)
-  id_m = Matrix(id_epm)
-
-  ones_pm = ones_epm(N,n)
-  one_m = Matrix(ones_pm)
-
-  ones_id_pm = ones_epm_and_id(N,n)
-  one_id_m = Matrix(ones_id_pm)
-
-  n_i_sep_pm = n_i_sep(n)
-  sep_m = Matrix(n_i_sep_pm)
-
-  n_i_sps_pm = n_i_SPS(n; overlapping=1)
-  sps_sp_m = SparseMatrixCSC(n_i_sps_pm)	
-  sps_m = Matrix(n_i_sps_pm)
-end 
-
-
-
-
-
-# Exemple pouvant être plus facilement manipuler
-# attention aux grandes dimensions le pattern de ones_epm_and_id(N,n,nie) n'est pas bon de manière générale.
-
-n = 100
-nie = 5
-# N = 15
-# pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
-pm = n_i_SPS(n; nie=nie) # create a tridiag dominant matrix
-sp_pm = SparseMatrixCSC(pm) # the sparse matrix from the bloc matrix
-m = Matrix(sp_pm) # Matrix format for nice print
-
-LLT = cholesky(m)
-frontale!(pm)
-
-L_chol = LLT.L
-L_frontale = Matrix(tril(ModElemental_pm.get_L(pm)))
-m_frontale = L_frontale * L_frontale'
-
-@test norm(L_chol - L_frontale) ≤	1e-6 
-@test norm(m_frontale - m ) ≤ 1e-6
-
-# bench_chol = @benchmark cholesky(m)
-# bench_frontale = @benchmark frontale!(pm)
-# bench_sparse = @benchmark ldl(sp_pm)
-
-# ProfileView.@profview (@benchmark frontale!(pm))
-
-# @code_warntype frontale!(pm) 
-# afficher m et m_frontale
-
-N = 5 
-n = 10 #by default must be a mulitple of 5
-id_epm = identity_epm(N,n)
-id_m = Matrix(id_epm)
-
-ones_pm = ones_epm(N,n)
-one_m = Matrix(ones_pm)
-
-ones_id_pm = ones_epm_and_id(N,n)
-one_id_m = Matrix(ones_id_pm)
-
-n_i_sep_pm = n_i_sep(n)
-sep_m = Matrix(n_i_sep_pm)
-
-n_i_sps_pm = n_i_SPS(n; overlapping=1)
-sps_sp_m = SparseMatrixCSC(n_i_sps_pm)
-ldl(sps_sp_m)
-sps_m = Matrix(n_i_sps_pm)
-
-function test_multifrontale()
-  names = []
-  # vector_n = [100,200,500,1000,5000,10000]
-  # vector_ni = [5,10,20]
-  # vector_chevauchement = [1,2,3]
-  vector_n = [100,1000,10000]		
-  vector_ni = [10,20]	
-  vector_chevauchement = [1,2,5]
-  # vector_n = [82,802,8002]	
-  # vector_ni = [10]	
-  # vector_chevauchement = [2]
-  
-  # @show pwd()
-  io = open("test/results/res_frontale.tex","w")
-  
-
-  time_chol = []
-  time_sparse = []
-  time_frontale = []
-
-  memory_chol = []
-  memory_sparse = []
-  memory_frontale = []
-
-  allocs_chol = []
-  allocs_sparse = []
-  allocs_frontale = []
-
-  for (id_n,n) in enumerate(vector_n)
-    # vector_N = Vector{Int}([n/10:n/10:2*n;])
-    # for N in vector_N 
-      for ni in vector_ni
-        for chevauchement in vector_chevauchement
-          pm = n_i_SPS(n; nie=ni, overlapping=chevauchement) # create a overlapping bloc diagonale matrix			
-          # pm = part_mat(;n=n,nie=ni, overlapping=chevauchement)
-          sp_m = SparseMatrixCSC(pm) # the sparse matrix from the partitioned matrix
-          
-          m = Matrix(pm) # dense one
-          
-          # name = "$(n)_"*"$(N)_"*"$(ni)_"*"$(chevauchement)"
-          name = "$(n)\\_"*"$(ni)\\_"*"$(chevauchement)"
-          println(name)
-          push!(names, name)
-
-          bench_chol = @timed cholesky(m)
-          push!(memory_chol, bench_chol.bytes)
-          push!(allocs_chol, bench_chol.gcstats.malloc)
-          push!(time_chol, bench_chol.time)
-
-          # bench_sparse = @timed ldl(sp_m)							
-          sm = Symmetric(triu(sp_m), :U) # get upper triangle and apply Symmetric wrapper
-          LDL = ldl_analyze(sm)
-          bench_sparse = @timed ldl_factorize!(sm, LDL)
-          push!(memory_sparse, bench_sparse.bytes)
-          push!(allocs_sparse, bench_sparse.gcstats.malloc)
-          push!(time_sparse, bench_sparse.time)
-
-          bench_frontale = @timed frontale!(pm)
-          push!(memory_frontale, bench_frontale.bytes)
-          push!(allocs_frontale, bench_frontale.gcstats.malloc)
-          push!(time_frontale, bench_frontale.time)
-        end 			
-      end 
-    # end 
-  end 
-
-  data = Matrix(undef,length(names),10)
-
-  for (id,name) in enumerate(names)
-    data[id,1] = name
-
-    data[id,2] = time_chol[id]
-    data[id,3] = time_sparse[id]
-    data[id,4] = time_frontale[id]
-
-    data[id,5] = memory_chol[id]
-    data[id,6] = memory_sparse[id]
-    data[id,7] = memory_frontale[id]
-
-    data[id,8] = allocs_chol[id]
-    data[id,9] = allocs_sparse[id]
-    data[id,10] = allocs_frontale[id]
-  end 
-
-  pretty_table(data; header=["n_ni_overlapping","t chol","t sparse", "t frontale","memory chol", "memory sparse", "memory frontale", "allocs chol", "allocs sparse", "allocs frontale"])
-  pretty_table(io,data[:, 1:7]; header=["n\\_ni\\_overlapping","time chol","time sparse", "time frontale","memory chol", "memory sparse", "memory frontale"], backend = Val(:latex))
-  close(io)
-end
-
-sp_m = sprand(10,10,0.1)
-sp_m2 = copy(sp_m)
-m = Matrix(sp_m)
-sm = Symmetric(triu(sp_m2), :U) # get upper triangle and apply Symmetric wrapper
-LDL = ldl_analyze(sm)
-# bench_sparse = @timed ldl_factorize!(sm, LDL)
-# bench_sparse2 = @timed ldl(sp_m)
-# @show bench_sparse.time, bench_sparse2.time
-
-
-

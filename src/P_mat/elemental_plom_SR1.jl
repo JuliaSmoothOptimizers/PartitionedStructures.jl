@@ -45,7 +45,7 @@ module ModElemental_plom_sr1
   Create an elemental partitionned limited memory of `N` elemental element linear operators matrices whose the positions are given by `vec_indices`.
   """
   function identity_eplom_LSR1(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
-		length(element_variables) != N && @error("unvalid list of element indices, PLSR1")
+    length(element_variables) != N && @error("unvalid list of element indices, PLSR1")
     eelom_set = map( (elt_var -> init_eelom_LSR1(elt_var; T=T)), element_variables)
     spm = spzeros(T, n, n)
     L = spzeros(T, n, n)

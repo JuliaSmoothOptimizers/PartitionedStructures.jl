@@ -24,9 +24,6 @@ end
   epv = ones_kchained_epv(N,k)
   build_v!(epv)
   epv_v = copy(get_v(epv))
-  # ModElemental_pv.build_v2!(epv)
-  # epv_v2 = copy(get_v(epv))
-  # @show epv_v - epv_v2
   @test sum(epv_v) == N*k
 
   # internal
@@ -105,8 +102,4 @@ end
   PartitionedStructures.epv_from_epv!(epv1,epv2)
   epv2.eev_set[1].vec[1] = 1.0
   @test epv1.eev_set[1].vec[1] != 1.
-
 end
-# bi = @benchmark build_v!(ipv)
-# be = @benchmark build_v!(epv)
-# ProfileView.@profview @benchmark build_v!(ipv)

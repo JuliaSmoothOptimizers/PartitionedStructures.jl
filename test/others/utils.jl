@@ -38,12 +38,12 @@ using PartitionedStructures.Utils
     y = (x -> x/2).(ones(n))
   
     B1 = SR1(s,y,B)
-  
     @test B1 == transpose(B1)
     @test isapprox(B1*s, y)  
   
     B2 = SR1(s,s,B)
     @test B2 == B
+		
     B2_x2 = SR1((x-> 1/2*x).(s),s,B_x2)
     @test B2_x2 == B_x2
     

@@ -1,16 +1,16 @@
 module PartitionedLOQuasiNewton
-	using LinearOperators, LinearAlgebra
+  using LinearOperators, LinearAlgebra
 
   using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
-	using ..M_abstract_element_struct
+  using ..M_abstract_element_struct
   using ..Utils, ..Link
   using ..ModElemental_ev, ..ModElemental_pv
   using ..ModElemental_elom_bfgs, ..ModElemental_elom_sr1, ..ModElemental_plom
-	using ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1
+  using ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1
   
   export PLBFGS_update, PLBFGS_update!
-	export PLSR1_update, PLSR1_update!
-	export PLSE_update, PLSE_update!
+  export PLSR1_update, PLSR1_update!
+  export PLSE_update, PLSE_update!
   export Part_update, Part_update!
 
   """ 
@@ -24,29 +24,29 @@ module PartitionedLOQuasiNewton
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
     for i in 1:N      
-			eelomi = get_eelom_set(eplom_B, i)
+      eelomi = get_eelom_set(eplom_B, i)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))
-			index = get_index(eelomi)
-			if (dot(si,yi) > eps(T))
-				Bi = get_Bie(eelomi)
-      	push!(Bi, si, yi)		
-				update = 1	
-			elseif index < reset # Bi is not updated nor reset				
-				update = 0
-			else 
-				reset_eelom_bfgs!(eelomi)
-				update = -1
-			end 
-			cem = get_cem(eelomi)
-			update_counter_elt_mat!(cem, update)
+      index = get_index(eelomi)
+      if (dot(si,yi) > eps(T))
+        Bi = get_Bie(eelomi)
+        push!(Bi, si, yi)		
+        update = 1	
+      elseif index < reset # Bi is not updated nor reset				
+        update = 0
+      else 
+        reset_eelom_bfgs!(eelomi)
+        update = -1
+      end 
+      cem = get_cem(eelomi)
+      update_counter_elt_mat!(cem, update)
     end 
-		verbose && (str = string_counters_iter(eplom_B))
-		verbose && (print("\n PLBFGS"*str))
-		return eplom_B
-	end
+    verbose && (str = string_counters_iter(eplom_B))
+    verbose && (print("\n PLBFGS"*str))
+    return eplom_B
+  end
 
-	""" 
+  """ 
       PLSR1_update(eplom_B, s, epv_y)
   Define the partitioned LSR1 update of the partioned matrix eplom_B, given the step s and the element gradient difference epv_y
   """
@@ -57,27 +57,27 @@ module PartitionedLOQuasiNewton
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
     for i in 1:N      
-			eelomi = get_eelom_set(eplom_B, i)
+      eelomi = get_eelom_set(eplom_B, i)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))
-			Bi = get_Bie(eelomi)
-			ri = yi .- Bi*si
-			index = get_index(eelomi)
-    	if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
-      	push!(Bi, si, yi)
-				update = 1
-			elseif index < reset # Bi is not updated nor reset				
-				update = 0
-			else 
-				reset_eelom_sr1!(eelomi)
-				update = -1
-			end
-			cem = get_cem(eelomi)
-			update_counter_elt_mat!(cem, update)
+      Bi = get_Bie(eelomi)
+      ri = yi .- Bi*si
+      index = get_index(eelomi)
+      if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
+        push!(Bi, si, yi)
+        update = 1
+      elseif index < reset # Bi is not updated nor reset				
+        update = 0
+      else 
+        reset_eelom_sr1!(eelomi)
+        update = -1
+      end
+      cem = get_cem(eelomi)
+      update_counter_elt_mat!(cem, update)
     end 
-		verbose && (str = string_counters_iter(eplom_B))
-		verbose && (print("\n PLSR1"*str))
-		return eplom_B
+    verbose && (str = string_counters_iter(eplom_B))
+    verbose && (print("\n PLSR1"*str))
+    return eplom_B
   end
 
   """
@@ -100,7 +100,7 @@ module PartitionedLOQuasiNewton
     end 
   end
 
-	"""
+  """
       PLSE_update(eplom_B, epv_y, s)
   Perform the partitionned update of eplom_B.
   eplom_B is build from LBFGS or LSR1 elemental element matrices.
@@ -112,49 +112,49 @@ module PartitionedLOQuasiNewton
     full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
     full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
     N = get_N(eplom_B)
-		acc_lbfgs = 0
-		acc_lsr1 = 0
-		acc_untouched = 0
-		acc_reset = 0
+    acc_lbfgs = 0
+    acc_lsr1 = 0
+    acc_untouched = 0
+    acc_reset = 0
     for i in 1:N
-			eelom = get_eelom_set(eplom_B, i)
+      eelom = get_eelom_set(eplom_B, i)
       Bi = get_Bie(eelom)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))			
-			ri = yi .- Bi*si
-			index = get_index(eelom)
-			if isa(Bi, LBFGSOperator{T})
-				if dot(si, yi) > eps(T)  # curvature condition
-					push!(Bi, si, yi)			
-					acc_lbfgs += 1 
-				elseif abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
-					indices = get_indices(eelom)
-					eelom = init_eelom_LSR1(indices; T=T)
-					Bi = get_Bie(eelom)
-					set_eelom_set!(eplom_B, i, eelom)
-					push!(Bi, si, yi)	
-					acc_lsr1 += 1
-				elseif index < reset
-					acc_untouched += 1
-				else 
-					reset_eelom_bfgs!(eelom)
-					acc_reset += 1
-				end
-			else # isa(Bi, LSR1Operator{T})				
-				if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
-					push!(Bi, si, yi)			
-					acc_lsr1 += 1	
-				elseif index < reset
-					acc_untouched += 1
-				else
-					indices = get_indices(eelom)
-					eelom = init_eelom_LBFGS(indices; T=T)
-					acc_reset += 1
-				end 
-			end
-		end 
-		verbose && println("PLSE : LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N), untouched $(acc_untouched)/$(N), reset $(acc_reset)/$(N)")
-		return eplom_B
+      ri = yi .- Bi*si
+      index = get_index(eelom)
+      if isa(Bi, LBFGSOperator{T})
+        if dot(si, yi) > eps(T)  # curvature condition
+          push!(Bi, si, yi)			
+          acc_lbfgs += 1 
+        elseif abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
+          indices = get_indices(eelom)
+          eelom = init_eelom_LSR1(indices; T=T)
+          Bi = get_Bie(eelom)
+          set_eelom_set!(eplom_B, i, eelom)
+          push!(Bi, si, yi)	
+          acc_lsr1 += 1
+        elseif index < reset
+          acc_untouched += 1
+        else 
+          reset_eelom_bfgs!(eelom)
+          acc_reset += 1
+        end
+      else # isa(Bi, LSR1Operator{T})				
+        if abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2)
+          push!(Bi, si, yi)			
+          acc_lsr1 += 1	
+        elseif index < reset
+          acc_untouched += 1
+        else
+          indices = get_indices(eelom)
+          eelom = init_eelom_LBFGS(indices; T=T)
+          acc_reset += 1
+        end 
+      end
+    end 
+    verbose && println("PLSE : LBFGS updates $(acc_lbfgs)/$(N), LSR1 $(acc_lsr1)/$(N), untouched $(acc_untouched)/$(N), reset $(acc_reset)/$(N)")
+    return eplom_B
   end
 
 end 

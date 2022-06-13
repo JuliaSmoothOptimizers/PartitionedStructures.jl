@@ -8,7 +8,7 @@ module PartitionedQuasiNewton
   
   export PBFGS_update, PBFGS_update!
   export PSR1_update, PSR1_update!
-	export PSE_update, PSE_update!
+  export PSE_update, PSE_update!
   
   """ 
       PBFGS_update(epm_B, s, epv_y)
@@ -21,19 +21,19 @@ module PartitionedQuasiNewton
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
     for i in 1:N
-			eemi = get_eem_set(epm_B, i)
+      eemi = get_eem_set(epm_B, i)
       Bi = get_Bie(eemi)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))
-			index = get_index(eemi)
+      index = get_index(eemi)
       update = BFGS!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
-			cem = get_cem(eemi)
-			update_counter_elt_mat!(cem, update)
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
     end
-		verbose && (str = string_counters_iter(epm_B))
-		verbose && (print("\n PBFGS"*str))
-		return epm_B
-	end
+    verbose && (str = string_counters_iter(epm_B))
+    verbose && (print("\n PBFGS"*str))
+    return epm_B
+  end
 
   """ 
       PSR1_update(epm_B, s, epv_y)
@@ -46,18 +46,18 @@ module PartitionedQuasiNewton
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
     for i in 1:N
-			eemi = get_eem_set(epm_B, i)
+      eemi = get_eem_set(epm_B, i)
       Bi = get_Bie(eemi)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))			
-			index = get_index(eemi)
+      index = get_index(eemi)
       update = SR1!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
-			cem = get_cem(eemi)
-			update_counter_elt_mat!(cem, update)
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
     end 
-		verbose && (str = string_counters_iter(epm_B))
-		verbose && (print("\n PSR1"*str))
-		return epm_B
+    verbose && (str = string_counters_iter(epm_B))
+    verbose && (print("\n PSR1"*str))
+    return epm_B
   end
 
   """ 
@@ -70,20 +70,20 @@ module PartitionedQuasiNewton
     full_check_epv_epm(epm_B,epv_y) || @error("differents partitioned structures between epm_B and epv_y")
     full_check_epv_epm(epm_B,epv_s) || @error("differents partitioned structures between epm_B and epv_s")
     N = get_N(epm_B)
-		acc = 0
+    acc = 0
     for i in 1:N
-			eemi = get_eem_set(epm_B, i)
+      eemi = get_eem_set(epm_B, i)
       Bi = get_Bie(eemi)
       si = get_vec(get_eev(epv_s,i))
       yi = get_vec(get_eev(epv_y,i))
-			index = get_index(eemi)
+      index = get_index(eemi)
       update = SE!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
-			cem = get_cem(eemi)
-			update_counter_elt_mat!(cem, update)
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
     end 
-		verbose && (str = string_counters_iter(epm_B))
-		verbose && (print(str))
-		return epm_B
+    verbose && (str = string_counters_iter(epm_B))
+    verbose && (print(str))
+    return epm_B
   end
 
 end 

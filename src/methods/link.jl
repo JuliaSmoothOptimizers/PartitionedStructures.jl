@@ -184,8 +184,8 @@ module Link
       reset += (re>0 ? 1 : 0)
     end 
     N = get_N(pm)    
-		str = "\t structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
-		return str
+    str = "\t structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
+    return str
   end
 
   """
@@ -205,8 +205,8 @@ module Link
       reset += re
     end 
     N = get_N(pm)
-		str = "\t structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
-		return str
+    str = "\t structure: $(T) based from $(N) elements; update: $(update), untouch: $(untouch), reset: $(reset) \n"
+    return str
   end
 
 end 

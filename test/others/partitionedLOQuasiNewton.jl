@@ -49,9 +49,8 @@ end
   B1 = Matrix(eplom_B1)
 
   @test B == transpose(B)
-	@test isapprox(B1, transpose(B1))
-	@test B != B1
-
+  @test isapprox(B1, transpose(B1))
+  @test B != B1
 end 
 
 @testset "Partitionned update test" begin
