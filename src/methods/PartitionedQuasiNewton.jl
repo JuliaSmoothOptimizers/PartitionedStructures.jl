@@ -12,7 +12,8 @@ module PartitionedQuasiNewton
   
   """ 
       PBFGS_update(epm_B, s, epv_y)
-  Define the partitioned BFGS update of the partioned matrix epm_B, given the step s and the element gradient difference epv_y
+
+  Define the partitioned BFGS update of the partitioned matrix epm_B, given the step s and the element gradient difference epv_y
   """
   PBFGS_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(epm_B); PBFGS_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PBFGS_update!(epm_B, epv_y, epv_s; kwargs...) end
@@ -37,7 +38,8 @@ module PartitionedQuasiNewton
 
   """ 
       PSR1_update(epm_B, s, epv_y)
-  Define the partitioned SR1 update of the elemental partioned matrix epm_B, given the step s and the element gradient difference epv_y
+
+  Define the partitioned SR1 update of the elemental partitioned matrix epm_B, given the step s and the element gradient difference epv_y
   """
   PSR1_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(epm_B); PSR1_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PSR1_update!(epm_B, epv_y, epv_s; kwargs...) end
@@ -62,7 +64,8 @@ module PartitionedQuasiNewton
 
   """ 
       PSE_update(epm_B, s, epv_y)
-  Define the partitioned SR1 update of the elemental partioned matrix epm_B, given the step s and the element gradient difference epv_y
+      
+  Define the partitioned SR1 update of the elemental partitioned matrix epm_B, given the step s and the element gradient difference epv_y
   """
   PSE_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(epm_B); PSE_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
   PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PSE_update!(epm_B, epv_y, epv_s; kwargs...) end

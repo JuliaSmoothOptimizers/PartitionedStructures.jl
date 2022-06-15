@@ -6,7 +6,7 @@ module M_elt_vec
   export get_vec, set_vec! 
   export set_add_vec!, set_minus_vec!
 
-  "Abstract type representing element vectors."
+  """Abstract type representing element vectors."""
   abstract type Elt_vec{T} <: Element_struct{T} end
 
   #generic getter/setter

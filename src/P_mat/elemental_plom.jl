@@ -16,7 +16,11 @@ module ModElemental_plom
 
   elom_type{T} = Union{Elemental_elom_sr1{T}, Elemental_elom_bfgs{T}}
 
-  "Type that represents an element partitioned matrix defined with elemental element linear operators LBFGS/LSR1"
+  """
+  Elemental_plom_sr1{T} <: Part_LO_mat{T}
+  
+      Type that represents an elemental limited-memory partitioned quasi-Newton linear operator, each Bᵢ may use a LBFGS or LSR1 linear operator.
+  """
   mutable struct Elemental_plom{T} <: Part_LO_mat{T}
     N :: Int
     n :: Int
