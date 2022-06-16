@@ -1,4 +1,4 @@
-# PartitionedStructures.jl : A partitioned storage for partially separable function derivatives
+# PartitionedStructures.jl : A partitioned storage for the derivatives of a partially separable function 
 
 | **Documentation** | **Linux/macOS/Windows/FreeBSD** | **Coverage** | **DOI** |
 |:-----------------:|:-------------------------------:|:------------:|:-------:|
@@ -24,7 +24,7 @@ The module implements some partitioned structures, the derivatives of the partia
 $$
 f(x) = \sum_{=1}^N \hat{f}_i (U_i x), \quad f \in \R^n \to \R, \quad \hat f_i:\R^{n_i} \to \R, \quad U_i \in \R^{n_i \times n}.
 $$
-$f$ is a sum of element functions $\hat{f}$, and usually $n_i \ll n$. $U_i$ is a linear operator selecting the variables used by $\hat{f}_i$.
+$f$ is a sum of element functions $\hat{f}_i$, and usually $n_i \ll n$. $U_i$ is a linear operator, it selects the variables used by $\hat{f}_i$.
 
 Consequently, the gradient 
 $$
@@ -39,14 +39,16 @@ This structure allows to define partitioned quasi-Newton approximation of $\nabl
 $$
 B = \sum_{i=1}^N U_i^\top \hat{B}_{i} U_i
 $$
-such that $\hat{B}_i \approx \nabla^2 \hat{f}_i$.
+such that each $\hat{B}_i \approx \nabla^2 \hat{f}_i$.
+Contrary to the BFGS and SR1 updates, respectively of rank 1 and 2, the rank of update $B$ is proportionnal to $\min(N,n)$.
+
 #### Reference
 * A. Griewank and P. Toint, [*Partitioned variable metric updates for large structured optimization problems*](10.1007/BF01399316), Numerische Mathematik volume, 39, pp. 119--137, 1982.
-## Features
 
+## Content
 PartitionedStructures.jl implements :
 - the partitioned quasi-Newton linear operator : PBFGS, PSR1, PSE
-- the limited-memory partitioned quasi-Newton linear operator: PLBFGS, PLSR1, PSE
+- the limited-memory partitioned quasi-Newton linear operator: PLBFGS, PLSR1, PLSE
 
 ```julia
 using PartitionedStructures
