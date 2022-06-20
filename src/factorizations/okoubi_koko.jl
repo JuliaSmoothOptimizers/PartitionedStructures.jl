@@ -8,7 +8,7 @@ using ..Link
 """
     okoubi(epm, epv)
     
-Solve the partitioned linear problem using the Okoubi and Koko method described in the paper available https://doi.org/10.1007/s11590-016-1020-x.
+Solve the partitioned linear problem from `epm` and `epv` using the Okoubi and Koko method described in the paper available at https://doi.org/10.1007/s11590-016-1020-x.
 """
 function okoubi(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T	
   epv_x = similar(epv_b)
@@ -18,9 +18,9 @@ function okoubi(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T
 end 
 
 """
-    okoubi(epm, epv, epv_tmp, res)
+    okoubi!(epm, epv, epv_tmp, res)
 
-Solve the partitioned linear problem using the Okoubi and Koko method described in the paper available https://doi.org/10.1007/s11590-016-1020-x.
+Solve the partitioned linear problem using the Okoubi and Koko method described in the paper available at https://doi.org/10.1007/s11590-016-1020-x.
 This method avoid the allocation of `epv_tmp` and `res`.
 """
 function okoubi!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, res :: Vector{T}) where T

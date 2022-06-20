@@ -5,7 +5,7 @@ using PartitionedStructures.M_internal_pv
 using PartitionedStructures.ModElemental_ev
 using PartitionedStructures.M_abstract_element_struct
 
-@testset "premier test" begin 
+@testset "first test" begin 
   N = 30
   nᵢ = 50
   pev = rand_epv(N,nᵢ)

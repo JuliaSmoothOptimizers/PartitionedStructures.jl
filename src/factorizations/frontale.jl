@@ -5,7 +5,7 @@ using ..M_part_mat, ..ModElemental_pm
 """
     frontale!(epm)
     
-Produce the Cholesky frontal factorization of the elemental partitioned matrix `epm`.
+Produce the Cholesky factorization of the elemental partitioned matrix `epm` using a frontal method.
 The sparse factor `L` is stored in `epm.L`.
 """
 function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T	

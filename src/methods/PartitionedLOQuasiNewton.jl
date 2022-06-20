@@ -14,12 +14,27 @@ export PLSE_update, PLSE_update!
 export Part_update, Part_update!
 
 """ 
-    PLBFGS_update(eplom_B, s, epv_y)
+    B = PLBFGS_update(eplom_B, s, epv_y)
     
-Performs the partitioned-LBFGS update onto the partitioned matrix `eplom_B`, given the step `s` and the element gradient difference `epv_y`.
+Performs the partitioned-LBFGS update onto the limited memory partitioned operator `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
 """
-PLBFGS_update(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(eplom_B); PLBFGS_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
-PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PLBFGS_update!(eplom_B, epv_y, epv_s; kwargs...) end
+function PLBFGS_update(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+	epm_copy = copy(eplom_B)
+	PLBFGS_update!(epm_copy,epv_y,s; kwargs...)
+	return epm_copy 
+end 
+
+function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+	epv_s = epv_from_v(s, epv_y)
+	PLBFGS_update!(eplom_B, epv_y, epv_s; kwargs...)
+	return eplom_B
+end
+
+""" 
+    PLBFGS_update!(eplom_B, s, epv_y)
+    
+Performs the partitioned-LBFGS update onto the limited memory partitioned operator `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
+"""
 function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, reset=true, kwargs...) where T 
   full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
   full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
@@ -48,12 +63,27 @@ function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv
 end
 
 """ 
-    PLSR1_update(eplom_B, s, epv_y)
+    B = PLSR1_update(eplom_B, s, epv_y)
 
-Performs the partitioned-LSR1 update of the partitioned matrix `eplom_B`, given the step `s` and the element gradient difference `epv_y`.
+Performs the partitioned-SR1 update onto the limited memory partitioned operator `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
 """
-PLSR1_update(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epm_copy = copy(eplom_B); PLSR1_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
-PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T = begin epv_s = epv_from_v(s, epv_y); PLSR1_update!(eplom_B, epv_y, epv_s; kwargs...) end
+function PLSR1_update(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+	epm_copy = copy(eplom_B)
+	PLSR1_update!(epm_copy,epv_y,s; kwargs...)
+	return epm_copy
+end 
+
+function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+	epv_s = epv_from_v(s, epv_y)
+	PLSR1_update!(eplom_B, epv_y, epv_s; kwargs...)
+	return eplom_B
+end
+
+""" 
+    PLSR1_update!(eplom_B, s, epv_y)
+
+Performs the partitioned-SR1 update onto the limited memory partitioned operator `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
+"""
 function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where T 
   full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
   full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
@@ -83,14 +113,31 @@ function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T
 end
 
 """
-    Part_update(eplom_B, epv_y, s)
+    B = Part_update(eplom_B, epv_y, s)
 
-Performs the partitionned update of `eplom_B`.
-`eplom_B` is build from LBFGS or LSR1 elemental element matrices.
-The update performed on each element matrix correspond to the linear operator associated.
+Performs a quasi-Newton partitionned update of `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
+Each element linear operator from `eplom_B` is either a `LBFGSOperator` or `LSR1Operator`.
+The update performs on each element the quasi-Newton to the linear operator associated.
 """
-Part_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T = begin epm_copy = copy(eplom_B); Part_update!(epm_copy,epv_y,s); return epm_copy end 
-Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T = begin epv_s = epv_from_v(s, epv_y); Part_update!(eplom_B, epv_y, epv_s) end
+function Part_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T
+	epm_copy = copy(eplom_B)
+	Part_update!(epm_copy,epv_y,s)
+	return epm_copy 
+end 
+
+function Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}) where Y <: Part_LO_mat{T} where T
+	epv_s = epv_from_v(s, epv_y)
+	Part_update!(eplom_B, epv_y, epv_s)
+	return eplom_B
+end
+
+"""
+    Part_update!(eplom_B, epv_y, s)
+
+Performs a quasi-Newton partitionned update of `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
+Each element linear operator from `eplom_B` is either a `LBFGSOperator` or `LSR1Operator`.
+The update performs on each element the quasi-Newton to the linear operator associated.
+"""
 function Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; kwargs...) where Y <: Part_LO_mat{T} where T 
   full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
   full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")
@@ -104,14 +151,28 @@ function Part_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental
 end
 
 """
-    PLSE_update(eplom_B, epv_y, s)
+    B = PLSE_update(eplom_B, epv_y, s)
 
-Perform the partitionned update PLSE of `eplom_B`, which is made of LBFGS or LSR1 elemental element matrices.
-The update try to apply a LBFGS update to every Bᵢ but if the curvature condition yᵢᵀs > 0 is not satisfy it applies LSR1 in place of LBFGS.
+Performs the partitionned update PLSE of `eplom_B`, which is made of LBFGS or LSR1 elemental element matrices, given the step `s` and the element gradient differences `epv_y`.
+The update try to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀs > 0 is not satisfied it applies LSR1 in place of LBFGS.
 """
+function PLSE_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T
+	epm_copy = copy(eplom_B)
+	PLSE_update!(epm_copy,epv_y,s; kwargs...)
+	return epm_copy
+end 
 
-PLSE_update(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T = begin epm_copy = copy(eplom_B); PLSE_update!(epm_copy,epv_y,s; kwargs...); return epm_copy end 
-PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T = begin epv_s = epv_from_v(s, epv_y); PLSE_update!(eplom_B, epv_y, epv_s; kwargs...) end
+function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where Y <: Part_LO_mat{T} where T
+	epv_s = epv_from_v(s, epv_y)
+	PLSE_update!(eplom_B, epv_y, epv_s; kwargs...)
+end
+
+"""
+    PLSE_update!(eplom_B, epv_y, epv_s)
+
+Performs the partitionned update PLSE of `eplom_B`, which is made of LBFGS or LSR1 elemental element matrices, given the element steps `epv_s` and the element gradient differences `epv_y`.
+The update try to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀs > 0 is not satisfied it applies LSR1 in place of LBFGS.
+"""
 function PLSE_update!(eplom_B :: Y, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where Y <: Part_LO_mat{T} where T 
   full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
   full_check_epv_epm(eplom_B,epv_s) || @error("differents partitioned structures between eplom_B and epv_s")

@@ -12,7 +12,7 @@ export reset_eelom_bfgs!
 """
     Elemental_elom_bfgs{T} <: LOEltMat{T}
 
-    Type that represents an elemental element linear operator LBFGS
+Type that represents an elemental element linear operator LBFGS
 """
 mutable struct Elemental_elom_bfgs{T} <: LOEltMat{T}
   nie :: Int # nᵢᴱ
