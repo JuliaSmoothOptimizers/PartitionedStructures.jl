@@ -55,7 +55,7 @@ end
 """
     ones_eem(nie; T=T, n=n)
 
-    Create an `nie` ones elemental element matrix of type `T` at random indices in the range `1:n`.
+Create an `nie` ones elemental element matrix of type `T` at random indices in the range `1:n`.
 """
 function ones_eem(nie :: Int; T=Float64, n=nie^2) 
   indices = rand(1:n, nie)
@@ -68,7 +68,7 @@ end
 """
     fixed_ones_eem(index, nie; type=T, mul=mul)
 
-    Create an `nie` elemental element matrix of type `T` at indices `index:index+nie-1`.
+Create an `nie` elemental element matrix of type `T` at indices `index:index+nie-1`.
 All element have the value `1` except the diagonal that have the value `mul`, it is use to define diagonal dominant matrix.
 """
 function fixed_ones_eem(i :: Int, nie :: Int; T=Float64, mul=5.) 
@@ -83,7 +83,7 @@ end
 """
     one_size_bloc(i)
 
-    Define a elemental element matrix of type `T` of size one at the index `i`.
+Define a elemental element matrix of type `T` of size one at the index `i`.
 """
 one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
 
