@@ -15,9 +15,9 @@ export set_L!, set_L_to_spm!
 export identity_eplom_LSR1, PLSR1_eplom, PLSR1_eplom_rand 
 
 """
-Elemental_plom_sr1{T} <: Part_LO_mat{T}
+		Elemental_plom_sr1{T} <: Part_LO_mat{T}
 
-    Type that represents an elemental limited-memory partitioned quasi-Newton linear operator PLSR1.
+Type that represents an elemental limited-memory partitioned quasi-Newton operator PLSR1.
 """
 mutable struct Elemental_plom_sr1{T} <: Part_LO_mat{T}
 	N :: Int
@@ -29,16 +29,76 @@ mutable struct Elemental_plom_sr1{T} <: Part_LO_mat{T}
 	permutation :: Vector{Int} # n-size vector 
 end
 
+"""
+    get_eelom_set(eplom)
+
+Returns the vector of every elemental element linear operator `eplom.eelom_set`.
+"""
 @inline get_eelom_set(eplom :: Elemental_plom_sr1{T}) where T = eplom.eelom_set
+
+"""
+    get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int)
+
+Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
+"""
 @inline get_eelom_set(eplom :: Elemental_plom_sr1{T}, i :: Int) where T = @inbounds eplom.eelom_set[i]
+
+"""
+    get_ee_struct(eplom)
+
+Returns the vector of every elemental element linear operator `eplom.eelom_set`.
+"""
 @inline get_ee_struct(eplom :: Elemental_plom_sr1{T}) where T = get_eelom_set(eplom)
+
+"""
+    get_ee_struct(eplom, i)
+
+Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
+"""
 @inline get_ee_struct(eplom :: Elemental_plom_sr1{T}, i :: Int) where T = get_eelom_set(eplom, i)
+
+"""
+    get_eelom_set_Bie(eplom, indices)
+
+Returns a subset of the elemental element linear operators composing `eplom`.
+`indices` selects the differents elemental element linear operators needed.
+"""
 @inline get_eelom_sub_set(eplom :: Elemental_plom_sr1{T}, indices :: Vector{Int}) where T = eplom.eelom_set[indices]
+
+"""
+    get_eelom_set_Bie(eplom, i)
+
+Get the linear operator of the `i`-th elemental element linear operator of `eplom`.
+"""
 @inline get_eelom_set_Bie(eplom :: Elemental_plom_sr1{T}, i :: Int) where T = get_Bie(get_eelom_set(eplom, i))	
+
+"""
+    get_L(eplom)
+
+Returns the sparse matrix `eplom.L`, whose aim to store a cholesky factor.
+By default `eplom.L` is not instantiate.
+"""
 @inline get_L(eplom :: Elemental_plom_sr1{T}) where T = eplom.L
+
+"""
+    get_L(eplom, i, j)
+
+Returns the value `eplom.L[i,j]`, from the sparse matrix `eplom.L`.
+"""
 @inline get_L(eplom :: Elemental_plom_sr1{T}, i :: Int, j :: Int) where T = @inbounds eplom.L[i, j]
 
-@inline set_L!(eplom :: Elemental_plom_sr1{T}, i :: Int, j :: Int, v :: T) where T = @inbounds eplom.L[i, j] = v
+"""
+    set_L!(eplom, i, j, value)
+
+Sets the value of `eplom.L[i,j] = value`.
+"""
+@inline set_L!(eplom :: Elemental_plom_sr1{T}, i :: Int, j :: Int, value :: T) where T = @inbounds eplom.L[i, j] = value
+
+"""
+    set_L_to_spm!(eplom, i, j, value)
+
+Sets the sparse matrix `eplom.L` to the sparse matrix `eplom.spm`.
+"""
 @inline set_L_to_spm!(eplom :: Elemental_plom_sr1{T}) where T = eplom.L .= eplom.spm
 
 @inline (==)(eplom1 :: Elemental_plom_sr1{T}, eplom2 :: Elemental_plom_sr1{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
@@ -48,7 +108,8 @@ end
 """
 		identity_eplom_LSR1(vec_indices, N, n; T=T)
 
-Create an elemental partitionned limited memory of `N` elemental element linear operators matrices whose the positions are given by `vec_indices`.
+Creates an elemental partitionned limited-memory operator PLSR1 of `N` elemental element linear operators.
+The positions are given by the vector of the element variables `element_variables`.
 """
 function identity_eplom_LSR1(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
 	length(element_variables) != N && @error("unvalid list of element indices, PLSR1")
@@ -65,7 +126,8 @@ end
 """
 		PLSR1_eplom(N, n; type, nie)
 
-Create an elemental partitionned limited memory of `N` elemental element linear operators matrices which are overlapping the next block coordinates by `overlapping`.
+Creates an elemental partitionned limited-memory operator PLSR1 of `N` (deduced from `n` and `nie`) elemental element linear operators.
+Each element overlaps the coordinates of the next element by `overlapping` components.
 """
 function PLSR1_eplom(; n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1)		
 	overlapping < nie || error("the overlapping must be lower than nie")
@@ -86,7 +148,8 @@ end
 """
 		PLSR1_eplom_rand(N, n; type, nie)
 
-Create an elemental partitionned limited memory matrix of `N` elemental element linear operators matrices whose positions are random.
+Create an elemental partitionned limited-memory operator PLSR1 of `N` elemental element linear operators.
+The size of each element is `nie`, whose positions are random in the range `1:n`.
 """
 function PLSR1_eplom_rand(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
 	eelom_set = map(i -> LSR1_eelom_rand(nie; T=T, n=n), [1:N;])
@@ -102,7 +165,7 @@ end
 """
 		initialize_component_list!(eplom)
 
-Build for each index i (∈ {1, ..., n}) the list of the blocs using i.
+Build for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
 """
 function initialize_component_list!(eplom :: Elemental_plom_sr1)
 	N = get_N(eplom)
@@ -118,7 +181,8 @@ end
 """
 		set_spm!(eplom)
 
-Build the sparse matrix `eplom.spm` from the blocs `eplom.eelom_set`, according to the indices of each elemental element linear operator matrice.
+Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`. 
+The sparse matrix is build according to the indices of each elemental element linear operator.
 """
 function set_spm!(eplom :: Elemental_plom_sr1{T}) where T
 	reset_spm!(eplom)

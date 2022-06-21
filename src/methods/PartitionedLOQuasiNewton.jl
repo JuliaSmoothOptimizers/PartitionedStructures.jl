@@ -16,7 +16,7 @@ export Part_update, Part_update!
 """ 
     B = PLBFGS_update(eplom_B, s, epv_y)
     
-Performs the partitioned-LBFGS update onto the limited memory partitioned operator `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
+Performs the partitioned-LBFGS update onto the limited-memory partitioned operator `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
 """
 function PLBFGS_update(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
 	epm_copy = copy(eplom_B)
@@ -33,7 +33,7 @@ end
 """ 
     PLBFGS_update!(eplom_B, s, epv_y)
     
-Performs the partitioned-LBFGS update onto the limited memory partitioned operator `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
+Performs the partitioned-LBFGS update onto the limited-memory partitioned operator `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
 """
 function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, reset=true, kwargs...) where T 
   full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")
@@ -65,7 +65,7 @@ end
 """ 
     B = PLSR1_update(eplom_B, s, epv_y)
 
-Performs the partitioned-SR1 update onto the limited memory partitioned operator `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
+Performs the partitioned-SR1 update onto the limited-memory partitioned operator `eplom_B`, given the step `s` and the element gradient differences `epv_y`.
 """
 function PLSR1_update(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
 	epm_copy = copy(eplom_B)
@@ -82,7 +82,7 @@ end
 """ 
     PLSR1_update!(eplom_B, s, epv_y)
 
-Performs the partitioned-SR1 update onto the limited memory partitioned operator `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
+Performs the partitioned-SR1 update onto the limited-memory partitioned operator `eplom_B`, given the element steps `epv_s` and the element gradient differences `epv_y`.
 """
 function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where T 
   full_check_epv_epm(eplom_B,epv_y) || @error("differents partitioned structures between eplom_B and epv_y")

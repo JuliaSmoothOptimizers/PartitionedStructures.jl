@@ -22,12 +22,23 @@ abstract type Part_LO_mat{T} <: Part_mat{T} end
 
     get_spm(pm, i, j)
 
-Get either the sparse matrix associated to the partitioned matrix `pm` `pm[i,j]`.
+Get either the sparse matrix associated to the partitioned matrix `pm` or `pm[i,j]`.
 """
 @inline get_spm(pm :: T) where T <: Part_mat = pm.spm
 @inline get_spm(pm :: T, i :: Int, j :: Int) where T <: Part_mat = @inbounds get_spm(pm)[i,j]
 
+"""
+    get_permutation(pm)
+
+Gets the current permutation of the partitioned matrix `pm`.
+"""
 @inline get_permutation(pm :: T) where T <: Part_mat = pm.permutation
+
+"""
+    get_permutation(pm, perm)
+
+Set the permutation of the partitioned matrix `pm` to `perm`.
+"""
 @inline set_permutation!(pm :: T, perm :: Vector{Int}) where T <: Part_mat = pm.permutation .= perm
 
 """
@@ -60,6 +71,12 @@ Reset the sparse matrix `pm.L`.
 
 @inline get_eelom_set(plm :: T) where T <: Part_LO_mat = @error("should not be called")
 @inline set_eelom_set!(plm :: T) where T <: Part_LO_mat = @error("should not be called")
+
+""" 
+    get_ee_struct_Bie(pm, i)
+
+Returns the `i`-th elemental element matrix of the partitioned matrix `pm`.
+"""
 @inline get_ee_struct_Bie(pm :: T, i :: Int) where T <: Part_mat = get_Bie(get_ee_struct(pm, i))
 
 end

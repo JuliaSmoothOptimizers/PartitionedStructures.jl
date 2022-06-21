@@ -12,7 +12,7 @@ export reset_eelom_sr1!
 """
     Elemental_elom_sr1{T} <: LOEltMat{T}
 
-    Type that represents an elemental element linear operator LSR1
+Type that represents an elemental element linear operator LSR1
 """
 mutable struct Elemental_elom_sr1{T} <: LOEltMat{T}
   nie :: Int # nᵢᴱ
@@ -26,9 +26,9 @@ end
 @inline similar(eelom :: Elemental_elom_sr1{T}) where T = Elemental_elom_sr1{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), similar(get_Bie(eelom)), copy(get_cem(eelom)))
 
 """
-    init_eelom_LSR1(indices; T=T)
+    init_eelom_LSR1(elt_var; T=T)
 
-Define a `Elemental_elom_sr1` of type `Elemental_elom_sr1` based from the vector `indices`.
+Defines an `Elemental_elom_sr1` of type `T` based from the vector of indices `elt_var`.
 """
 function init_eelom_LSR1(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
@@ -41,7 +41,7 @@ end
 """
     LSR1_eelom_rand(nie, T=T, n=n)
 
-Create a `Elemental_elom_sr1` of type `T` with `nie` random indices within the range `1:n`.
+Creates an `Elemental_elom_sr1` of type `T` with `nie` random indices within the range `1:n`.
 """
 function LSR1_eelom_rand(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie) 		
@@ -53,8 +53,8 @@ end
 
 """
     LSR1_eelom(nie, T=T, index=index)
-    
-Create a `Elemental_elom_sr1` of type `T` of size `nie`, the indices are in the range `index:index+nie-1`.
+
+Creates an `Elemental_elom_sr1` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
 function LSR1_eelom(nie :: Int; T=Float64, index=1)
   indices = [index:1:index+nie-1;]
@@ -67,7 +67,7 @@ end
 """
     index_eelom_sr1!(eelom)
 
-Reset the LSR1 linear operator of the elemental element linear operator matrix.
+Resets the LSR1 linear operator of the elemental element linear operator matrix.
 """
 function reset_eelom_sr1!(eelom::Elemental_elom_sr1{T}) where T <: Number
   eelom.Bie = LinearOperators.LSR1Operator(T, eelom.nie)

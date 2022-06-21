@@ -10,19 +10,32 @@ export update_counter_elt_mat!, iter_info, total_info
 
 import Base.copy, Base.similar
 
-"Abstract type representing element matrix"
+"Abstract type representing an element matrix"
 abstract type Elt_mat{T} <: Element_struct{T} end
+"Abstract type representing a dense element matrix"
 abstract type DenseEltMat{T} <: Elt_mat{T} end
+"Abstract type representing a element linear operator"
 abstract type LOEltMat{T} <: Elt_mat{T} end
 
 """
     get_Bie(elt_mat) 
 
-Return the element matrix elt_mat.Bie.
+Returns the element matrix `elt_mat.Bie`.
 """
 @inline get_Bie(elt_mat :: T) where T <: Elt_mat = elt_mat.Bie
 
+"""
+    get_counter_elt_mat(elt_mat)
+
+Returns the `Counter_elt_mat` of the elemental element matrix `elt_mat`.
+"""
 @inline get_counter_elt_mat(elt_mat :: T) where T <: Elt_mat = elt_mat.counter
+
+"""
+    get_cem(elt_mat)
+
+Returns the `Counter_elt_mat` of the elemental element matrix `elt_mat`.
+"""
 @inline get_cem(elt_mat :: T) where T <: Elt_mat = elt_mat.counter
 
 @inline get_index(elt_mat :: T) where T <: Elt_mat = get_current_untouched(elt_mat.counter)
@@ -48,13 +61,24 @@ similar(cem :: Counter_elt_mat) = Counter_elt_mat()
 
 get_current_untouched(cem :: Counter_elt_mat) = cem.current_untouched
 
+"""
+    iter_info(cem)
+
+Returns the information about the last quasi-Newton update applied onto the element associated to the counter `cem`.
+"""
 iter_info(cem :: Counter_elt_mat) = (cem.current_update, cem.current_untouched, cem.current_reset)
+
+"""
+    iter_info(cem)
+
+Returns the informations about all the quasi-Newton updates applied onto the element associated to the counter `cem`.
+"""
 total_info(cem :: Counter_elt_mat) = (cem.total_update, cem.total_untouched, cem.current_reset)
 
 """
     update_counter_elt_mat!(cem, qn)
 
-Update the `cem` counter given the index `qn` from the quasi-Newton update.
+Updates the `cem` counter given the index `qn` from the quasi-Newton update.
 """
 function update_counter_elt_mat!(cem :: Counter_elt_mat, qn :: Int)
   if qn == 1

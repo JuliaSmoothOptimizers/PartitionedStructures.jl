@@ -26,9 +26,9 @@ end
 @inline similar(eelom :: Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), similar(get_Bie(eelom)), copy(get_cem(eelom)))
 
 """
-    init_eelom_LBFGS(indices; T=T)
+    init_eelom_LBFGS(elt_var; T=T)
 
-Define a `Elemental_elom_bfgs` of type `Elemental_elom_sr1` based from the vector `indices`.
+Defines an `Elemental_elom_bfgs` of type `T` based from the vector of indices `elt_var`.
 """	
 function init_eelom_LBFGS(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
@@ -39,9 +39,9 @@ function init_eelom_LBFGS(elt_var :: Vector{Int}; T=Float64)
 end 
 
 """
-    LBFGS_eelom_rand(nie, T=T, n=n)
+    LBFGS_eelom_rand(nie; T=T, n=n)
 
-Create a `Elemental_elom_bfgs` of type `T` with `nie` random indices within the range `1:n`.
+Creates an `Elemental_elom_bfgs` of type `T` with `nie` random indices within the range `1:n`.
 """
 function LBFGS_eelom_rand(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie) 		
@@ -52,9 +52,9 @@ function LBFGS_eelom_rand(nie :: Int; T=Float64, n=nie^2)
 end 
 
 """
-    LBFGS_eelom(nie, T=T, index=index)
+    LBFGS_eelom(nie; T=T, index=index)
 
-Create a `Elemental_elom_bfgs` of type `T` of size `nie`, the indices are in the range `index:index+nie-1`.
+Creates an `Elemental_elom_bfgs` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
 function LBFGS_eelom(nie :: Int; T=Float64, index=1)
   indices = [index:1:index+nie-1;]
@@ -67,7 +67,7 @@ end
 """
     reset_eelom_bfgs!(eelom)
 
-Reset the LBFGS linear operator of the elemental element linear operator matrix.
+Resets the LBFGS linear operator of the elemental element linear operator matrix `eelom`.
 """
 function reset_eelom_bfgs!(eelom::Elemental_elom_bfgs{T}) where T <: Number
   eelom.Bie = LinearOperators.LBFGSOperator(T, eelom.nie)
