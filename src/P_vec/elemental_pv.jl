@@ -11,6 +11,7 @@ import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 export Elemental_pv
 export get_eev_set, get_eev, get_eev_value, get_eevs
 export set_eev!, minus_epv!, add_epv!
+export set_epv!
 export create_epv, ones_kchained_epv, part_vec, rand_epv	
 export scale_epv, scale_epv!
 export epv_from_epv!, epv_from_v, epv_from_v! 
@@ -43,8 +44,8 @@ end
 @inline get_eevs(pv :: Elemental_pv{T}, indices :: Vector{Int}) where T = pv.eev_set[indices]
 @inline get_eev_value(pv :: Elemental_pv{T}, i :: Int) where T = get_vec(get_eev(pv,i))
 @inline get_eev_value(pv :: Elemental_pv{T}, i :: Int, j :: Int) where T = get_vec(get_eev(pv,i))[j]
-@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, j::Int, val:: T ) where T = set_vec!(get_eev(pv,i),j,val)
-@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, vec :: Vector{T} ) where T = set_vec!(get_eev(pv,i),vec)
+@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, j::Int, val:: T) where T = set_vec!(get_eev(pv,i),j,val)
+@inline set_eev!(pv :: Elemental_pv{T}, i :: Int, vec :: Vector{T}) where T = set_vec!(get_eev(pv,i),vec)
 
 @inline (==)(ep1 :: Elemental_pv{T},ep2 :: Elemental_pv{T}) where T = (get_N(ep1) == get_N(ep2)) && (get_n(ep1) == get_n(ep2)) && (get_eev_set(ep1) == get_eev_set(ep2))
 @inline similar(ep :: Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef,get_n(ep)))
@@ -104,7 +105,7 @@ end
 create an elemental partitioned vector from a collection (vector) of: sparse vector, elemental element vector or a vector of indices.
 """
 @inline create_epv(sp_set :: Vector{SparseVector{T,Y}}; kwargs...) where {T,Y} = create_epv(eev_from_sparse_vec.(sp_set); kwargs...)
-function create_epv(eev_set :: Vector{Elemental_elt_vec{T}}; n=max_indices(eev_set)  ) where T
+function create_epv(eev_set :: Vector{Elemental_elt_vec{T}}; n=max_indices(eev_set)) where T
   N = length(eev_set)
   v = zeros(T,n)
   Elemental_pv{T}(N, n, eev_set, v)
@@ -112,6 +113,18 @@ end
 function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type=Float64)
   eev_set = map((elt_var -> create_eev(elt_var,type=type)), vec_elt_var)  
   epv = create_epv(eev_set; n=n)
+  return epv
+end 
+
+"""
+    set_epv!(epv, vec_value_eev)
+
+Set the values of the elemental element vectors of epv to the components of vec_valeu_eev.
+"""
+function set_epv!(epv :: Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T <: Number
+  N = get_N(epv)
+  length(vec_value_eev) == N || @error("The size of vec_value_eev does not match the size of get_N(epv)")
+  map(i -> set_eev!(epv, i, vec_value_eev[i]), 1:N)  
   return epv
 end 
 

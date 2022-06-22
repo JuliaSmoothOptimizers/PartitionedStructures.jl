@@ -42,9 +42,6 @@ $$
 such that each $\hat{B}_i \approx \nabla^2 \hat{f}_i$.
 Contrary to the BFGS and SR1 updates, respectively of rank 1 and 2, the rank of update $B$ is proportionnal to $\min(N,n)$.
 
-#### Reference
-* A. Griewank and P. Toint, [*Partitioned variable metric updates for large structured optimization problems*](10.1007/BF01399316), Numerische Mathematik volume, 39, pp. 119--137, 1982.
-
 ## Content
 PartitionedStructures.jl implements :
 - the partitioned quasi-Newton linear operator : PBFGS, PSR1, PSE

@@ -17,6 +17,7 @@ include("P_mat/_include.jl")
 include("methods/_include.jl")
 include("factorizations/_include.jl")
 
+using .Utils
 using .M_abstract_part_struct, .M_abstract_element_struct
 using .M_elt_vec, .M_elt_mat
 using .M_part_v, .M_part_mat
@@ -30,6 +31,7 @@ export initialize_component_list!
 export Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs, Elemental_elom_sr1
 export create_eev, create_id_eem
 export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv!, epv_from_epv! # ModElemental_pv
+export set_epv!
 export get_v, build_v!
 export get_eev_value
 
@@ -43,7 +45,7 @@ export PSR1_update!, PSR1_update
 export PSE_update, PSE_update!  
 export PLBFGS_update, PLBFGS_update!
 export PLSR1_update, PLSR1_update!
-export PLSE_update, PLSE_update!  
+export PLSE_update, PLSE_update!
 
 export full_check_epv_epm
 export epm_from_epv, eplom_lbfgs_from_epv, eplom_lose_from_epv, eplom_lsr1_from_epv
@@ -51,5 +53,7 @@ export create_epv_eplom, epv_from_eplom, epv_from_epm
 export mul_epm_vector, mul_epm_vector!, mul_epm_epv  
 export Counter_elt_mat, string_counters_iter, string_counters_total
 export prod_part_vectors
+
+export BFGS, SR1
 
 end # module

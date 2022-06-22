@@ -9,7 +9,6 @@ my_and = (a :: Bool,b :: Bool) -> (a && b)
 max_indices(elt_vars :: Vector{Vector{T}}) where T <: Number = isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars)) 
 min_indices(elt_vars :: Vector{Vector{T}}) where T <: Number = isempty(elt_vars) ? 0 : minimum(minimum.(elt_vars)) 
 
-
 """
     BFGS(s, y, B)
     
