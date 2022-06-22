@@ -129,7 +129,7 @@ function PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :
 		update_counter_elt_mat!(cem, update)
 	end 
 	verbose && (str = string_counters_iter(epm_B))
-	verbose && (print(str))
+	verbose && (print("\n PSE"*str))
 	return epm_B
 end
 
