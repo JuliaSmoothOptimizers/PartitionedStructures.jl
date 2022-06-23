@@ -134,15 +134,20 @@ B_BFGS
 
 ## Partitioned quasi-Newton approximation of the quadratic <a name="pqnapprox"></a>
 In order to make a sparse quasi-Newton approximation of $\nabla^2 f$, you may define a partitioned matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
-```julia
+```@example PartitionedStructures
 partitioned_matrix = epm_from_epv(partitioned_gradient_x0)
 ```
-```julia
+```@example PartitionedStructures
+Matrix(partitioned_matrix)
+```
+<!-- ```julia
 3×3 Matrix{Float64}:
  1.0  0.0  0.0
  0.0  2.0  0.0
  0.0  0.0  1.0
 ```
+ -->
+
 The second term of the diagonal accumulates two 1.0 from the two initial element approximations.
 
 Then you compute the partitioned gradient at `x1`
