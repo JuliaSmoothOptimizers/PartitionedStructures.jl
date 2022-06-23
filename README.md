@@ -33,7 +33,12 @@ See the [tutorial](https://paraynaud.github.io/PartitionedStructures.jl/dev/tuto
 ## Main partitioned structures
 Structure              | Description
 -----------------------|------------
-`Elemental_pm`         | An elemental partitioned matrix
+`Part_struct`          | The supertype of every partitioned structure
+`Elemental_pm`         | An elemental partitioned matrix, each element matrix is dense
+`Elemental_plom_bfgs`  | A limited-memory elemental partitioned matrix, each elemental element matrix is a `LBFGSOperator`
+`Elemental_plom_sr1`   | A limited-memory elemental partitioned matrix, each elemental element matrix is a `LSR1Operator`
+`Elemental_plom`       | A limited-memory elemental partitioned matrix, each elemental element matrix is a `LBFGSOperator` or a`LSR1Operator`
+`Elemental_pv`         | An elemental partitioned vector
 
 ## Main methods 
 Method                 | Description
@@ -43,7 +48,12 @@ Method                 | Description
 `identity_eplom_LSR1`  | Creates a limited-memory (LSR1) partitioned matrix
 `identity_eplom_LOSE`  | Creates a limited-memory (combines LBFGS and LSR1) partitioned matrix
 `update`               | Performs a partitioned quasi-Newton update
-epv_from_epm
+`eplom_lbfgs_from_epv` | Creates an `Elemental_plom_bfgs` from the partitioned structure of an `Elemental_pv`
+`eplom_lsr1_from_epv`  | Creates an `Elemental_plom_sr1` from the partitioned structure of an `Elemental_pv`
+`eplom_lose_from_epv`  | Creates an `Elemental_plom` from the partitioned structure of an `Elemental_pv`
+`epm_from_epv`         | Creates an `Elemental_pm` from the partitioned structure of an `Elemental_pv`
+`epv_from_epm`         | Creates an `Elemental_pv` from the partitioned structure of an `Elemental_pm`
+`epv_from_eplom`       | Creates an `Elemental_pv` from the partitioned structure of an `Elemental_plom` or `Elemental_plom_bfgs` or `Elemental_plom_sr1`
 
 
 ## Modules applying [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl)
