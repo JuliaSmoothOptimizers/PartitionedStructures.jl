@@ -1,16 +1,5 @@
 # PartitionedStructures.jl: Tutorial
 
-<!-- ## Table of contents
-1. [Reminder about the partially separable structure and partitioned quasi-Newton updates](#reminderpss)
-2. [The partitioned structure of a quadratic](#pssquadratic)
-3. [Quasi-Newton approximation of the quadratic](#qnapprox)
-4. [Partitioned quasi-Newton approximation of the quadratic](#pqnapprox)
-5. [Other partitioned quasi-Newton approximation](#allpqnapprox)
-	1. [Partitioned quasi-Newton operators](#pqnoperators)
-	2. [Limited-memory partitioned quasi-Newton operators](#plqnoperators)
-6. [Features](#features) -->
-
-<!-- ## Reminder about the partially separable structure and partitioned quasi-Newton updates <a name="reminderpss"></a> -->
 ## Reminder about the partially separable structure and partitioned quasi-Newton updates
 The quasi-Newton methods exploiting the partially separable function 
 $$
@@ -34,7 +23,6 @@ Then, the update of each element requires $\hat{B}_i$, $U_i s$ and $\nabla \hat{
 #### Reference
 * A. Griewank and P. Toint, *On the unconstrained optimization of partially separable functions*, Numerische Nonlinear Optimization 1981, 39, pp. 301--312, 1982.
 
-<!-- ## The partitioned structure of a quadratic <a name="pssquadratic"></a> -->
 ## The partitioned structure of a quadratic
 
 Let's take the quadratic function `f` as an example 
@@ -102,7 +90,6 @@ build_v!(partitioned_gradient_x0) # builds the gradient vector
 @test get_v(partitioned_gradient_x0) == ∇f(x0) # with the same value as the gradient
 ```
 
-<!-- ## Quasi-Newton approximation of the quadratic <a name="qnapprox"></a> -->
 ## Quasi-Newton approximation of the quadratic
 In the case of the BFGS method, you want to approximate the Hessian matrix from `s = x1 - x0`
 ```@example PartitionedStructures
@@ -129,13 +116,7 @@ but the approximation `B_BFGS` is dense.
 ```@example PartitionedStructures
 B_BFGS
 ```
-<!-- julia> B_BFGS
-3×3 Matrix{Float64}:
- 1.30952   0.952381  0.738095
- 0.952381  3.2381    1.80952
- 0.738095  1.80952   2.45238 -->
 
-<!-- ## Partitioned quasi-Newton approximation of the quadratic <a name="pqnapprox"></a> -->
 ## Partitioned quasi-Newton approximation of the quadratic
 In order to make a sparse quasi-Newton approximation of $\nabla^2 f$, you may define a partitioned matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
 ```@example PartitionedStructures
@@ -144,12 +125,6 @@ partitioned_matrix = epm_from_epv(partitioned_gradient_x0)
 ```@example PartitionedStructures
 Matrix(partitioned_matrix)
 ```
-<!-- 
-3×3 Matrix{Float64}:
- 1.0  0.0  0.0
- 0.0  2.0  0.0
- 0.0  0.0  1.0
--->
 
 The second term of the diagonal accumulates two 1.0 from the two initial element approximations.
 
@@ -174,11 +149,7 @@ B_PBFGS = update(partitioned_matrix, partitioned_gradient_difference, s; name=:p
 ```@example PartitionedStructures
  B_PBFGS
 ```
-<!-- PBFGS   structure: Elemental_pm{Float64} based from 2 elements; update: 2, untouch: 0, reset: 0
-3×3 Matrix{Float64}:
- 2.75  0.25  0.0
- 0.25  3.75  2.0
- 0.0   2.0   3.0 -->
+
 which keeps the sparsity structure of $\nabla^2 f$.
 
 In addition, `update()` informs the number of element: updated, not updated or untouched, as long as the user don't set `verbose=false`.
@@ -192,13 +163,11 @@ Bs = mul_epm_vector(partitioned_matrix, s) # compute the product partitioned-mat
 @test norm(Bs - y) == 0.
 ```
 
-<!-- ## Other partitioned quasi-Newton approximation <a name="allpqnapprox"></a> -->
 ## Other partitioned quasi-Newton approximation
 There exist two categories of partitioned quasi-Newton updates.
 In the first category, each element Hessian is approximate with a dense matrix, for example: PBFGS.
 In the second category, each element Hessian is approximate with a quasi-Newton linear operator.
 
-<!-- ### Partitioned quasi-Newton operators <a name="pqnoperators"></a> -->
 ### Partitioned quasi-Newton operators
 Once the partitioned matrix is allocated, 
 ```@example PartitionedStructures
@@ -222,7 +191,6 @@ All these methods satisfy the secant equation as long as every element approxima
 @test norm(mul_epm_vector(partitioned_matrix_PSE, s) - y) == 0.
 ```
 
-<!-- ### Limited-memory partitioned quasi-Newton operators <a name="plqnoperators"></a> -->
 ### Limited-memory partitioned quasi-Newton operators
 These operators are made to apply the partitioned quasi-Newton methods to the partially separable function with large elements, whose element approximations can't be store by dense matrices.
 The limited-memory partitioned quasi-Newton operators allocate for each element approximation a quasi-Newton operator LBFGS or LSR1 defined in [LinearOperators.jl](https://github.com/JuliaSmoothOptimizers/LinearOperators.jl).
@@ -250,7 +218,6 @@ B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_differe
 
 That's it, you have all the tools to implement a partitioned quasi-Newton method, enjoy!
 
-<!-- ## Features <a name="features"></a> -->
 ## Features
 For now, PartitionedStructures.jl supports only the elemental $U_i$, i.e. the lines of $U_i$ are vectors from the euclidean basis.
 Concretely, each $U_i$ is a vector of size $n_i$ whose the components indicate the indices of the variables used by the i-th element function.
