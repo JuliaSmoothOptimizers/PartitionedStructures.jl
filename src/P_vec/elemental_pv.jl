@@ -119,7 +119,7 @@ end
 """
     set_epv!(epv, vec_value_eev)
 
-Set the values of the elemental element vectors of epv to the components of vec_valeu_eev.
+Set the values of the elemental element vectors of epv to the components of `vec_value_eev`.
 """
 function set_epv!(epv :: Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T <: Number
   N = get_N(epv)

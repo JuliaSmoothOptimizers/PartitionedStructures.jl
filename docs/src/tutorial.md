@@ -36,27 +36,27 @@ Then, the update of each element requires $\hat{B}_i$, $U_i s$ and $\nabla \hat{
 ## The partitioned structure of a quadratic <a name="pssquadratic"></a>
 
 Let's take the quadratic function `f` as an example 
-```julia
+```@example PartitionedStructures
 f(x) = x[1]^2 + x[2]^2 + x[3]^2 + x[1]*x[2] + 3x[2]*x[3]
 ```
 `f` can be considered as the sum of two element functions
-```julia
+```@example PartitionedStructures
 f1(x) = x[1]^2 + x[1]*x[2]
 f2(x) = x[1]^2 + x[2]^2 + 3x[1]*x[2]
 ```
 considering
-```julia
+```@example PartitionedStructures
 U1 = [1, 2] # [1 0 0; 0 1 0] as a matrix
 U2 = [2, 3] # [0 1 0; 0 0 1] as a matrix
 ```
 inform the variables required by each element function.
 
 By gathering the different $U_i$ together
-```julia
+```@example PartitionedStructures
 U = [U1, U2]
 ```
 we define the function `f_pss = f` exploiting the partially separable structure as
-```julia
+```@example PartitionedStructures
 f_pss(x, U) = f1(x[U[1]]) + f2(x[U[2]])
 
 using Test
@@ -65,7 +65,7 @@ x0 = [2., 3., 4.]
 ```
 
 Similarly, you can compute: the gradient, the element gradients and explicit how the gradient is partitioned
-```julia
+```@example PartitionedStructures
 ∇f(x) = [2x[1] + x[2], x[1] + 2x[2] + 3x[3], 2x[3] + 3x[2]]
 ∇f1(x) = [2x[1] + x[2], x[1]]
 ∇f2(x) = [2x[1] + 3x[2], 2x[2] + 3x[1]]
@@ -81,18 +81,18 @@ end
 However, `∇f_pss` accumulates directly the element gradient and does not store the value of each element gradients `∇f1, ∇f2`.
 We would like to store every element gradient, such that afterward it is possible to build the difference element gradients required for the partitioned quasi-Newton update.
 We define the partitioned vector, from `U` and `n`, to store each element gradient and form the $\nabla f$ when required
-```julia
+```@example PartitionedStructures
 using PartitionedStructures
 U = [U1, U2]
 n = length(x0)
 partitioned_gradient_x0 = create_epv(U, n) # creates the partitioned vector
 ```
-```julia
+```@example PartitionedStructures
 Elemental_pv{Float64}(2, 3, Elemental_elt_vec{Float64}[Elemental_elt_vec{Float64}([0.5582481752025726, 0.5536916309593504], [1, 2], 2), Elemental_elt_vec{Float64}([0.974556124813947, 0.8994868430015379], [2, 3], 2)], [0.0, 0.0, 0.0], [[1], [1, 2], [2]], [1, 2, 3])
 ```
 
 We set the value of each element vector to the corresponding element gradient
-```julia
+```@example PartitionedStructures
 vector_gradient_element(x, U) = [∇f1(x[U[1]]), ∇f2(x[U[2]])] :: Vector{Vector{Float64}} # returns every element gradient
 set_epv!(partitioned_gradient_x0, vector_gradient_element(x0, U)) # sets each element vector to its corresponding element gradient
 
@@ -102,34 +102,35 @@ build_v!(partitioned_gradient_x0) # builds the gradient vector
 
 ## Quasi-Newton approximation of the quadratic <a name="qnapprox"></a>
 In the case of the BFGS method, you want to approximate the Hessian matrix from `s = x1 - x0`
-```julia
+```@example PartitionedStructures
 x1 = [1., 2., 3.]
 s = x1 .- x0
 ```
 the gradient difference `y`
-```julia
+```@example PartitionedStructures
 y = (∇f(x1) .- ∇f(x0))
 ```
 and the approximation `B`, initially set to the identity
-```julia
+```@example PartitionedStructures
 B = [ i==j ? 1. : 0. for i in 1:n, j in 1:n]
 ```
 
 By applying the BFGS update, you satisfy the secant equation `Bs = y`
-```julia
+```@example PartitionedStructures
 B_BFGS = BFGS(s,y,B) # PartitionedStructures.jl implements BFGS
 
 using LinearAlgebra		
 @test norm(B_BFGS * s - y) == 0. # numerical verification of the secant equation 
 ```
 but the approximation `B_BFGS` is dense.
-```julia
-julia> B_BFGS
+```@example PartitionedStructures
+B_BFGS
+```
+<!-- julia> B_BFGS
 3×3 Matrix{Float64}:
  1.30952   0.952381  0.738095
  0.952381  3.2381    1.80952
- 0.738095  1.80952   2.45238
-```
+ 0.738095  1.80952   2.45238 -->
 
 ## Partitioned quasi-Newton approximation of the quadratic <a name="pqnapprox"></a>
 In order to make a sparse quasi-Newton approximation of $\nabla^2 f$, you may define a partitioned matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
@@ -145,12 +146,12 @@ partitioned_matrix = epm_from_epv(partitioned_gradient_x0)
 The second term of the diagonal accumulates two 1.0 from the two initial element approximations.
 
 Then you compute the partitioned gradient at `x1`
-```julia
+```@example PartitionedStructures
 partitioned_gradient_x1 = create_epv(U, n)
 set_epv!(partitioned_gradient_x1, vector_gradient_element(x1, U))
 ```
 and compute the difference of the partitioned gradients `partitioned_gradient_difference = partitioned_gradient_x1 - partitioned_gradient_x0`
-```julia
+```@example PartitionedStructures
 partitioned_gradient_difference = copy(partitioned_gradient_x0) # copy to avoid side effects on partitioned_gradient_x0 
 minus_epv!(partitioned_gradient_difference) # applies a unary minus to every element gradient
 add_epv!(partitioned_gradient_x1, partitioned_gradient_difference) # add the element vector of partitioned_gradient_x1 to the correspond element vector of partitioned_gradient_difference, add partitioned_gradient_x1 to partitioned_gradient_difference
@@ -159,25 +160,26 @@ build_v!(partitioned_gradient_difference) # computes the vector y
 @test get_v(partitioned_gradient_difference) == y
 ```
 Then you can define the partitioned quasi-Newton update PBFGS
-```julia
+```@example PartitionedStructures
 B_PBFGS = update(partitioned_matrix, partitioned_gradient_difference, s; name=:pbfgs) # applies the partitioned update PBFGS to partitioned_matrix and returns Matrix(partitioned_matrix)
 ```
-```julia
- PBFGS   structure: Elemental_pm{Float64} based from 2 elements; update: 2, untouch: 0, reset: 0
+```@example PartitionedStructures
+ B_PBFGS
+```
+<!-- PBFGS   structure: Elemental_pm{Float64} based from 2 elements; update: 2, untouch: 0, reset: 0
 3×3 Matrix{Float64}:
  2.75  0.25  0.0
  0.25  3.75  2.0
- 0.0   2.0   3.0
-```
+ 0.0   2.0   3.0 -->
 which keeps the sparsity structure of $\nabla^2 f$.
 
 In addition, `update()` informs the number of element: updated, not updated or untouched, as long as the user don't set `verbose=false`.
 The partitioned update verifies the secant equation
-```julia
+```@example PartitionedStructures
 @test norm(B_PBFGS*s - y) == 0.
 ```
 which may also be calculated with 
-```julia
+```@example PartitionedStructures
 Bs = mul_epm_vector(partitioned_matrix, s) # compute the product partitioned-matrix vector
 @test norm(Bs - y) == 0.
 ```
@@ -189,7 +191,7 @@ In the second category, each element Hessian is approximate with a quasi-Newton 
 
 ### Partitioned quasi-Newton operators <a name="pqnoperators"></a>
 Once the partitioned matrix is allocated, 
-```julia
+```@example PartitionedStructures
 partitioned_matrix_PBFGS = epm_from_epv(partitioned_gradient_x0)
 partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
 partitioned_matrix_PSE = epm_from_epv(partitioned_gradient_x0)
@@ -198,13 +200,13 @@ you can apply on it any of the three partitioned updates : PBFGS, PSR1, PSE (by 
 - PBFGS update each element approximation with BFGS;
 - PSR1 update each element approximation with SR1;
 - PSE update each element approximate with BFGS if it is possible or with SR1 otherwise.
-```julia
+```@example PartitionedStructures
 B_PBFGS = update(partitioned_matrix_PBFGS, partitioned_gradient_difference, s; name=:pbfgs)
 B_PSR1 = update(partitioned_matrix_PSR1, partitioned_gradient_difference, s; name=:psr1)
 B_PSE = update(partitioned_matrix_PSE, partitioned_gradient_difference, s) # ; name=:pse by default
 ```
 All these methods satisfy the secant equation as long as every element approximation is update
-```julia
+```@example PartitionedStructures
 @test norm(mul_epm_vector(partitioned_matrix_PBFGS, s) - y) == 0.
 @test norm(mul_epm_vector(partitioned_matrix_PSR1, s) - y) == 0.
 @test norm(mul_epm_vector(partitioned_matrix_PSE, s) - y) == 0.
@@ -219,13 +221,13 @@ It defines three approximations:
 - PLSE, each element approximation may be a `LBFGSOperator` or `LSR1Operator`.
 
 Contrary to the partitioned quasi-Newton operators, each limited-memory version is typed differently
-```julia
+```@example PartitionedStructures
 partitioned_linear_operator_PLBFGS = eplom_lbfgs_from_epv(partitioned_gradient_x0)
 partitioned_linear_operator_PLSR1 = eplom_lsr1_from_epv(partitioned_gradient_x0)
 partitioned_linear_operator_PLSE = eplom_lose_from_epv(partitioned_gradient_x0)
 ```
 The different types simplify the `update` method, since no argument `name` is required to determine the update that will be applied
-```julia
+```@example PartitionedStructures
 B_PLBFGS = update(partitioned_linear_operator_PLBFGS, partitioned_gradient_difference, s)
 B_PLSE = update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s)
 B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s)
