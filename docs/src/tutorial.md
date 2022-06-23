@@ -2,23 +2,25 @@
 
 ## Reminder about the partially separable structure and partitioned quasi-Newton updates
 The quasi-Newton methods exploiting the partially separable function 
-$$
- f(x) = \sum_{i=1}^N \hat{f}_i (U_i) : \R^n \to \R,
-$$
-where $\hat{f}_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i < n$, manipulate the partitioned derivatives
-$$ 
-\nabla f(x) = \sum_{i=1}^N U_i^\top \hat{f}_i (U_i x), \quad \nabla^2 f(x) = \sum_{i=1}^N U_i^\top \hat{f}_i (U_i x) U_i,
-$$
-which accumulate the element derivatives $\hat{f}_i$ and $\nabla^2 \hat{f}_i$ to form $\nabla f$ and $\nabla^2 f$.
+```math
+ f(x) = \sum_{i=1}^N f_i (U_i) : \R^n \to \R,\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i < n
+```
+the sum of element function fᵢ.
+```math
+\nabla f(x) = \sum_{i=1}^N U_i^\top f_i (U_i x), \quad \nabla^2 f(x) = \sum_{i=1}^N U_i^\top f_i (U_i x) U_i,
+```
+which accumulate the element derivatives ∇fᵢ and ∇²fᵢ to form ∇f and ∇²f.
 
-These partitioned quasi-Newton methods define partitioned quasi-Newton approximations of the Hessian $B \approx \nabla^2 f$, such that $B$ accumulate the element Hessian approximation $\hat{B}_i \approx \nabla^2 \hat{f}_i$ with respect to $U_i$.
-$$
-B = \sum_{i=1}^N U_i^\top \hat{B}_i U_i
-$$
-The partitioned quasi-Newton approximations structurally keep the sparsity structure of $\nabla^2 f$, which is not the case of classical quasi-Newton approximation.
+These partitioned quasi-Newton methods define partitioned quasi-Newton approximations of the Hessian B ≈ ∇²f, such that B accumulates the element Hessian approximations Bᵢ ≈ ∇²fᵢ
+with respect to Uᵢ.
+```math
+B = \sum_{i=1}^N U_i^\top B_i U_i
+```
+The partitioned quasi-Newton approximations structurally keep the sparsity structure of ∇²f, which is not the case of classical quasi-Newton approximation.
 Moreover, the rank of the partitioned updates may be proportional to the number of elements `N`, whereas classical quasi-Newton approximation are low rank updates.
-To perform a partitioned quasi-Newton update after a step $s$, you must update every element Hessian approximation $\hat{B}_i$.
-Then, the update of each element requires $\hat{B}_i$, $U_i s$ and $\nabla \hat{f}_i (U_i (x+s)) - \nabla \hat{f}_i (U_i x)$
+To perform a partitioned quasi-Newton update after a step s, you must update every element Hessian approximation Bᵢ.
+Then, the update of each element requires Bᵢ, Uᵢ and 
+∇²fᵢ(Uᵢ(x+s)) - ∇²fᵢ(Uᵢx).
 
 #### Reference
 * A. Griewank and P. Toint, *On the unconstrained optimization of partially separable functions*, Numerische Nonlinear Optimization 1981, 39, pp. 301--312, 1982.
@@ -41,7 +43,7 @@ U2 = [2, 3] # [0 1 0; 0 0 1] as a matrix
 ```
 inform the variables required by each element function.
 
-By gathering the different $U_i$ together
+By gathering the different Uᵢ together
 ```@example PartitionedStructures
 U = [U1, U2]
 ```
@@ -70,7 +72,7 @@ end
 
 However, `∇f_pss` accumulates directly the element gradient and does not store the value of each element gradients `∇f1, ∇f2`.
 We would like to store every element gradient, such that afterward it is possible to build the difference element gradients required for the partitioned quasi-Newton update.
-We define the partitioned vector, from `U` and `n`, to store each element gradient and form the $\nabla f$ when required
+We define the partitioned vector, from `U` and `n`, to store each element gradient and form the ∇f when required
 ```@example PartitionedStructures
 using PartitionedStructures
 U = [U1, U2]
@@ -118,7 +120,7 @@ B_BFGS
 ```
 
 ## Partitioned quasi-Newton approximation of the quadratic
-In order to make a sparse quasi-Newton approximation of $\nabla^2 f$, you may define a partitioned matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
+In order to make a sparse quasi-Newton approximation of ∇²f, you may define a partitioned matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
 ```@example PartitionedStructures
 partitioned_matrix = epm_from_epv(partitioned_gradient_x0)
 ```
@@ -150,7 +152,7 @@ B_PBFGS = update(partitioned_matrix, partitioned_gradient_difference, s; name=:p
  B_PBFGS
 ```
 
-which keeps the sparsity structure of $\nabla^2 f$.
+which keeps the sparsity structure of ∇²f.
 
 In addition, `update()` informs the number of element: updated, not updated or untouched, as long as the user don't set `verbose=false`.
 The partitioned update verifies the secant equation
@@ -219,5 +221,5 @@ B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_differe
 That's it, you have all the tools to implement a partitioned quasi-Newton method, enjoy!
 
 ## Features
-For now, PartitionedStructures.jl supports only the elemental $U_i$, i.e. the lines of $U_i$ are vectors from the euclidean basis.
-Concretely, each $U_i$ is a vector of size $n_i$ whose the components indicate the indices of the variables used by the i-th element function.
+For now, PartitionedStructures.jl supports only the elemental Uᵢ, i.e. the lines of Uᵢ are vectors from the euclidean basis.
+Concretely, each Uᵢ is a vector of size nᵢ whose the components indicate the indices of the variables used by the i-th element function.
