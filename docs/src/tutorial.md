@@ -1,6 +1,6 @@
 # PartitionedStructures.jl: Tutorial
 
-## Table of contents
+<!-- ## Table of contents
 1. [Reminder about the partially separable structure and partitioned quasi-Newton updates](#reminderpss)
 2. [The partitioned structure of a quadratic](#pssquadratic)
 3. [Quasi-Newton approximation of the quadratic](#qnapprox)
@@ -8,7 +8,7 @@
 5. [Other partitioned quasi-Newton approximation](#allpqnapprox)
 	1. [Partitioned quasi-Newton operators](#pqnoperators)
 	2. [Limited-memory partitioned quasi-Newton operators](#plqnoperators)
-6. [Features](#features)
+6. [Features](#features) -->
 
 ## Reminder about the partially separable structure and partitioned quasi-Newton updates <a name="reminderpss"></a>
 The quasi-Newton methods exploiting the partially separable function 
