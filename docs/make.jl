@@ -21,7 +21,7 @@ makedocs(
     prettyurls = get(ENV, "CI", nothing) == "true",
   ),
   sitename = "PartitionedStructures.jl",
-  pages = Any["Home" => "index.md", "Tutorial" => "tutorial.md", "Reference" => "reference.md"],
+  pages = Any["Home" => "index.md", "Tutorial" => "tutorial.md", "Reference" => "reference.md", "Developper note" => "developper_note.md"],
 )
 
 deploydocs(repo = "github.com/paraynaud/PartitionedStructures.jl.git", devbranch = "main")

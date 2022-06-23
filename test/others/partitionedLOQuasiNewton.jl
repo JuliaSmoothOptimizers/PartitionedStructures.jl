@@ -29,7 +29,7 @@ end
     while mod(n-nie,nie-over) != 0 
       over +=1
     end 
-    epm_B1,epv_y1 = create_epv_eplom_bfgs(;n=n,nie=nie,overlapping=over,range_mul_m=rand()+1, mul_v=rand()*100)
+    epm_B1,epv_y1 = create_epv_eplom_bfgs(;n=n,nie=nie,overlapping=over,mul_v=rand()*100)
     s = 100 .* rand(n)
     epm_B11 = PLBFGS_update(epm_B1,epv_y1,s) 
     @test mapreduce((x -> x>0), my_and, eigvals(Matrix(epm_B11))) #test positive eigensvalues
@@ -49,9 +49,8 @@ end
   B1 = Matrix(eplom_B1)
 
   @test B == transpose(B)
-	@test isapprox(B1, transpose(B1))
-	@test B != B1
-
+  @test isapprox(B1, transpose(B1))
+  @test B != B1
 end 
 
 @testset "Partitionned update test" begin

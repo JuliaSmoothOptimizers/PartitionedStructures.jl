@@ -1,7 +1,7 @@
 using StatsBase
 using PartitionedStructures.M_elt_mat, PartitionedStructures.ModElemental_em
 
-@testset "test eem" begin 
+@testset "eem" begin 
   T = Float64
   nie = 5
   n = 20
