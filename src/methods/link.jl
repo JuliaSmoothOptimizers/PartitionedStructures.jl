@@ -12,6 +12,12 @@ export epv_from_eplom, epv_from_epm
 export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
 export string_counters_iter, string_counters_total
 
+"""
+    epv = epv_from_eplom(epm)
+
+Create an elemental partitioned vector `epv` with the same partitioned structure than `eplom`.
+Each element vector of `epv` is set to a random vector of suitable size.
+"""
 @inline epv_from_eplom(eplom) = epv_from_epm(eplom)
 """
     epv = epv_from_epm(epm)
@@ -58,7 +64,7 @@ end
 """
     eplom = eplom_lbfgs_from_epv(epv)
 
-Create an elemental partitioned limited-memory quasi-Newton operator PLBFGS `eplom` with the same partitioned structure than `epv`.
+Create an elemental limited-memory partitioned quasi-Newton operator PLBFGS `eplom` with the same partitioned structure than `epv`.
 Each element linear operator of `eplom` is set to a `LBFGSOperator` of suitable size.
 """
 function eplom_lbfgs_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
@@ -75,9 +81,9 @@ function eplom_lbfgs_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Nu
 end
 
 """
-		eplom = eplom_lsr1_from_epv(epv)
+    eplom = eplom_lsr1_from_epv(epv)
 
-Create an elemental partitioned limited-memory quasi-Newton operator PLSR1 `eplom` with the same partitioned structure than `epv`.
+Create an elemental limited-memory partitioned quasi-Newton operator PLSR1 `eplom` with the same partitioned structure than `epv`.
 Each element linear operator of `eplom` is set to a `LBFGSOperator` of suitable size.
 """
 function eplom_lsr1_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
@@ -94,10 +100,10 @@ function eplom_lsr1_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Num
 end
 
 """
-		eplom = eplom_lose_from_epv(epv)
+    eplom = eplom_lose_from_epv(epv)
 
-Create an elemental partitioned limited-memory quasi-Newton operator PLSR1 `eplom` with the same partitioned structure than `epv`.
-Each element linear operator of `eplom` is set to a `LBFGSOperator` of suitable size, but it may change to `LSR1Operator` later on.
+Create an elemental limited-memory partitioned quasi-Newton operator PLE `eplom` with the same partitioned structure than `epv`.
+Each element linear operator of `eplom` is set to a `LBFGSOperator` of suitable size, but it may change to a `LSR1Operator` later on.
 """
 function eplom_lose_from_epv(epv :: Elemental_pv{T}) where T <: Number
   N = get_N(epv)
@@ -115,8 +121,8 @@ end
 """
     result = mul_epm_vector(epm, x)
 
-It computes the product between the elemental partitioned matrix `epm <: Part_mat` and the vector `x`.
-The method return the vector `result`.
+Computes the product between the elemental partitioned matrix `epm <: Part_mat` and the vector `x`.
+The method returns the vector `result`.
 """
 function mul_epm_vector(epm :: T, x :: Vector{Y}) where T <: Part_mat{Y} where Y <: Number
   epv = epv_from_epm(epm)
@@ -124,9 +130,10 @@ function mul_epm_vector(epm :: T, x :: Vector{Y}) where T <: Part_mat{Y} where Y
 end 
 
 """
-		result = mul_epm_vector!(epm, epv, x)
+    result = mul_epm_vector!(epm, epv, x)
 
-It computes the product between the elemental partitioned matrix `epm` and the vector `x` using temporary the elemental partitioned vector `epv`.
+Computes the product between the elemental partitioned matrix `epm` and the vector `x` using temporary the elemental partitioned vector `epv`.
+The method returns the vector `result`.
 """	
 function mul_epm_vector(epm :: T, epv :: Elemental_pv{Y}, x :: Vector{Y}) where T <: Part_mat{Y} where Y <: Number
   res = similar(x)
@@ -159,9 +166,10 @@ function mul_epm_vector!(res :: Vector{Y}, epm :: T, epv :: Elemental_pv{Y}, x :
 end 
 
 """
-    mul_epm_epv(epm, epv)
+    epv_res = mul_epm_epv(epm, epv)
 
-Compute the product between the elemental partitioned matrix `epm` and the elemental partitioned vector `epv`.	
+Computes the elementwise product between the elemental partitioned matrix `epm` and the elemental partitioned vector `epv`.	
+The result is an elemental partitioned vector `epv_res` storing the elementwise products between `epm` and `epv`.
 """		
 function mul_epm_epv(epm :: T, epv :: Elemental_pv{Y}) where T <: Part_mat{Y} where Y <: Number
   epv_res = similar(epv)
@@ -172,8 +180,8 @@ end
 """
     mul_epm_epv!(epv_res, epm, epv)
 
-Compute the product between the elemental partitioned matrix `epm` and the elemental partitioned vector `epv`.	
-The result of each element matrix vector product is stored in the elemental partitioned vector `epv_res`.
+Compute the elementwise product between the elemental partitioned matrix `epm` and the elemental partitioned vector `epv`.	
+The result of each element-matrix element-vector product is stored in the elemental partitioned vector `epv_res`.
 """		
 function mul_epm_epv!(epv_res :: Elemental_pv{Y}, epm :: T, epv :: Elemental_pv{Y}) where T <: Part_mat{Y} where Y <: Number
   full_check_epv_epm(epm, epv) || error("Different partitioned structure epm/epv")
@@ -183,13 +191,14 @@ function mul_epm_epv!(epv_res :: Elemental_pv{Y}, epm :: T, epv :: Elemental_pv{
     vie = get_eev_value(epv, i)
     set_eev!(epv_res, i, Bie*vie)
   end
-	return epv_res
+  return epv_res
 end 
 
 """
     string_counters_iter(pm)
 
 Produces a string that summarize the partitioned update applied onto `pm` at the last iterate.
+The method accumulates the informations gathered by each element-counter during the last iterate.
 """
 function string_counters_iter(pm :: T; name=:PQN) where T <: Part_mat
   epm_vectors = get_ee_struct(pm)
@@ -211,7 +220,8 @@ end
 """
     string_counters_total(pm)
     
-Produces a string that summarize the partitioned update applied onto `pm` from its allocation at the start of an algorithm.
+Produces a string that summarize the partitioned update applied onto `pm` since its allocation.
+The method accumulates the informations gathered by each element-counter since their allocations.
 """
 function string_counters_total(pm :: T; name=:PQN) where T <: Part_mat
   epm_vectors = get_ee_struct(pm)

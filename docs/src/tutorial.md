@@ -1,5 +1,5 @@
 # PartitionedStructures.jl: Tutorial
-This tutorial shows how [PartitionedStructures.jl]() can define partitioned quasi-Newton approximations, by using the partitioned vectors and the partitioned matrices.
+This tutorial shows how [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl) can define partitioned quasi-Newton approximations, by using the partitioned vectors and the partitioned matrices.
 
 ## What are the partially separable structure and the partitioned quasi-Newton approximations
 The quasi-Newton methods exploiting the partially separable function 
