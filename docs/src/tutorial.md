@@ -211,4 +211,4 @@ B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_differe
 @test norm(B_PLSE * s - y) == 0.
 # @test norm(B_PLSR1 * s - y) == 0. # the second element hessian approximation is not update, since the element step and the gradient element difference are collinear.
 ```
-That's it, you have all the tools to implement a partitioned quasi-Newton method, enjoy!	
+That's it, you have all the tools to implement a partitioned quasi-Newton method, enjoy!

@@ -6,13 +6,12 @@ using ..M_abstract_part_struct, ..M_part_mat
 using ..M_abstract_element_struct, ..M_elt_mat, ..ModElemental_em
 
 import Base.==, Base.copy, Base.similar	
-import Base.Matrix, Base.permute!, SparseArrays.SparseMatrixCSC
+import Base.permute!
 import ..M_part_mat: set_spm!
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 export Elemental_pm
-export get_eem_set, get_eem_set_Bie, get_eem_sub_set, get_spm
-export get_L, reset_spm!, set_L!, set_L_to_spm!, set_spm!
+export get_eem_set, get_eem_set_Bie, get_eem_sub_set
 export correlated_var
 export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 
@@ -74,35 +73,6 @@ Returns a subset of elemental element matrices composing `epm`.
 Get the linear operator of the `i`-th elemental element linear operator of `epm`.
 """
 @inline get_eem_set_Bie(epm :: Elemental_pm{T}, i :: Int) where T = get_Bie(get_eem_set(epm, i))	
-
-"""
-    get_L(epm)
-
-Returns the sparse matrix `epm.L`, whose aim to store a cholesky factor.
-By default `epm.L` is not instantiate.
-"""
-@inline get_L(epm :: Elemental_pm{T}) where T = epm.L
-
-"""
-    Lij = get_L(epm, i, j)
-
-Returns the value `epm.L[i,j]`, from the sparse matrix `epm.L`.
-"""
-@inline get_L(epm :: Elemental_pm{T}, i :: Int, j :: Int) where T = @inbounds epm.L[i, j]
-
-"""
-    set_L!(epm, i, j, value)
-
-Sets the value of `epm.L[i,j] = value`.
-"""
-@inline set_L!(epm :: Elemental_pm{T}, i :: Int, j :: Int, value :: T) where T = @inbounds epm.L[i, j] = value
-
-"""
-    set_L_to_spm!(epm, i, j, value)
-
-Sets the sparse matrix `epm.L` to the sparse matrix `epm.spm`.
-"""
-@inline set_L_to_spm!(epm :: Elemental_pm{T}) where T = epm.L .= epm.spm
 
 @inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
 @inline copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), copy.(get_eem_set(epm)), copy(get_spm(epm)), copy(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
@@ -319,8 +289,7 @@ function permute!(epm :: Elemental_pm{T}, p :: Vector{Int}) where T
   for i in 1:n
     new_component_list[i] = get_component_list(epm, p[i])
   end 
-  # hard reset of the sparse matrix
-  hard_reset_spm!(epm)
+  hard_reset_spm!(epm) # hard reset of the sparse matrix
 end 
 
 """
@@ -341,14 +310,5 @@ function correlated_var(epm :: Elemental_pm{T}, i :: Int) where T
   unique!(var_list)
   return var_list
 end 
-
-# function Base.Matrix(epm :: Elemental_pm{T}) where T
-#   set_spm!(epm)
-#   sp_pm = get_spm(epm)
-#   m = Matrix(sp_pm)
-#   return m
-# end 
-
-# SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = begin set_spm!(epm); get_spm(epm) end
 
 end

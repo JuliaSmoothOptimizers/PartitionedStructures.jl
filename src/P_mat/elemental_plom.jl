@@ -4,22 +4,18 @@ using ..M_part_mat, ..M_abstract_part_struct
 using ..M_elt_mat, ..M_abstract_element_struct, ..ModElemental_elom_bfgs, ..ModElemental_elom_sr1
 
 import Base.==, Base.copy, Base.similar
-import ..M_part_mat: set_eelom_set! #set_spm!,
-# import Base.Matrix, SparseArrays.SparseMatrixCSC
-import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
+import ..M_part_mat: set_eelom_set!
+import ..M_abstract_part_struct: get_ee_struct
 
 export Elemental_plom
-export get_spm, get_L, get_eelom_set_Bie, get_eelom_sub_set
-export set_L!, set_L_to_spm!	
-
 export identity_eplom_LOSE, PLBFGSR1_eplom, PLBFGSR1_eplom_rand
 
 elom_type{T} = Union{Elemental_elom_sr1{T}, Elemental_elom_bfgs{T}}
 
 """
-Elemental_plom_sr1{T} <: Part_LO_mat{T}
+    Elemental_plom_sr1{T} <: Part_LO_mat{T}
 
-    Type that represents an elemental limited-memory partitioned quasi-Newton linear operator, each Bᵢ may use a LBFGS or LSR1 linear operator.
+Type that represents an elemental limited-memory partitioned quasi-Newton linear operator, each Bᵢ may use a LBFGS or LSR1 linear operator.
 """
 mutable struct Elemental_plom{T} <: Part_LO_mat{T}
   N :: Int
@@ -51,50 +47,6 @@ Returns the vector of every elemental element linear operator `eplom.eelom_set`.
 Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom{T}, i :: Int) where T = get_eelom_set(eplom, i)
-
-"""
-    eelom_subset = get_eelom_set_Bie(eplom, indices)
-
-Returns a subset of the elemental element linear operators composing `eplom`.
-`indices` selects the differents elemental element linear operators needed.
-"""
-@inline get_eelom_sub_set(eplom :: Elemental_plom{T}, indices :: Vector{Int}) where T = eplom.eelom_set[indices]
-
-"""
-    Bie = get_eelom_set_Bie(eplom, i)
-
-Get the linear operator of the `i`-th elemental element linear operator of `eplom`.
-"""
-@inline get_eelom_set_Bie(eplom :: Elemental_plom{T}, i :: Int) where T = get_Bie(get_eelom_set(eplom, i))	
-
-"""
-    L = get_L(eplom)
-
-Returns the sparse matrix `eplom.L`, who aims to store a Cholesky factor.
-By default `eplom.L` is not instantiate.
-"""
-@inline get_L(eplom :: Elemental_plom{T}) where T = eplom.L
-
-"""
-    get_L(eplom, i, j)
-
-Returns the value `eplom.L[i,j]`, from the sparse matrix `eplom.L`.
-"""
-@inline get_L(eplom :: Elemental_plom{T}, i :: Int, j :: Int) where T = @inbounds eplom.L[i, j]
-
-"""
-    set_L!(eplom, i, j, value)
-
-Sets the value of `eplom.L[i,j] = value`.
-"""
-@inline set_L!(eplom :: Elemental_plom{T}, i :: Int, j :: Int, value :: T) where T = @inbounds eplom.L[i, j] = value
-
-"""
-    set_L_to_spm!(eplom, i, j, value)
-
-Sets the sparse matrix `eplom.L` to the sparse matrix `eplom.spm`.
-"""
-@inline set_L_to_spm!(eplom :: Elemental_plom{T}) where T = eplom.L .= eplom.spm
 
 @inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
 @inline copy(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
@@ -156,22 +108,6 @@ function PLBFGSR1_eplom_rand(N :: Int, n ::Int; T=Float64, nie::Int=5, prob=0.5)
   eplom = Elemental_plom{T}(N,n,eelom_set,spm,L,component_list,no_perm)
   initialize_component_list!(eplom)	
   return eplom
-end 
-
-# """
-#     initialize_component_list!(eplom)
-
-# Builds for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
-# """
-# function initialize_component_list!(eplom::Elemental_plom)
-#   N = get_N(eplom)
-#   for i in 1:N
-#     eelomᵢ = get_eelom_set(eplom,i)
-#     _indices = get_indices(eelomᵢ)
-#     for j in _indices 
-#       push!(get_component_list(eplom,j),i)
-#     end 
-#   end 
-# end 
+end
 
 end 

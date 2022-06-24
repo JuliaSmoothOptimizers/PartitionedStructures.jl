@@ -2,6 +2,7 @@ using StatsBase, SparseArrays
 using PartitionedStructures.M_elt_vec
 using PartitionedStructures.ModElemental_em
 using PartitionedStructures.ModElemental_pm
+using PartitionedStructures.M_part_mat
 
 @testset "first tests on epm" begin 
   N = 4
