@@ -7,7 +7,7 @@ using ..M_abstract_element_struct, ..M_elt_mat, ..ModElemental_em
 
 import Base.==, Base.copy, Base.similar	
 import Base.Matrix, Base.permute!, SparseArrays.SparseMatrixCSC
-import ..M_part_mat.set_spm!
+import ..M_part_mat: set_spm!
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 export Elemental_pm
@@ -17,9 +17,9 @@ export correlated_var
 export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 
 """
-Elemental_pm{T} <: Part_mat{T}
+		Elemental_pm{T} <: Part_mat{T}
 
-    Type that represents an elemental partitioned quasi-Newton linear operator, each Bᵢ may use a BFGS or SR1 update.
+Type that represents an elemental partitioned quasi-Newton linear operator, each Bᵢ may use a BFGS or SR1 update.
 """  
 mutable struct Elemental_pm{T} <: Part_mat{T}
   N :: Int
@@ -342,13 +342,13 @@ function correlated_var(epm :: Elemental_pm{T}, i :: Int) where T
   return var_list
 end 
 
-function Base.Matrix(epm :: Elemental_pm{T}) where T
-  set_spm!(epm)
-  sp_pm = get_spm(epm)
-  m = Matrix(sp_pm)
-  return m
-end 
+# function Base.Matrix(epm :: Elemental_pm{T}) where T
+#   set_spm!(epm)
+#   sp_pm = get_spm(epm)
+#   m = Matrix(sp_pm)
+#   return m
+# end 
 
-SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = begin set_spm!(epm); get_spm(epm) end
+# SparseArrays.SparseMatrixCSC(epm :: Elemental_pm{T}) where T = begin set_spm!(epm); get_spm(epm) end
 
 end

@@ -5,12 +5,10 @@ using ..M_abstract_part_struct, ..M_part_mat
 using ..M_abstract_element_struct, ..M_elt_mat, ..ModElemental_elom_bfgs
 
 import Base.==, Base.copy, Base.similar
-import Base.Matrix, SparseArrays.SparseMatrixCSC
-import ..M_part_mat.set_spm!, ..M_part_mat.get_eelom_set	
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 export Elemental_plom_bfgs
-export get_eelom_set, get_eelom_set_Bie, get_eelom_sub_set, get_L, get_spm
+export get_eelom_set_Bie, get_eelom_sub_set, get_L, get_spm
 export set_L!, set_L_to_spm!
 export identity_eplom_LBFGS, PLBFGS_eplom, PLBFGS_eplom_rand 
 
@@ -28,20 +26,6 @@ mutable struct Elemental_plom_bfgs{T} <: Part_LO_mat{T}
   component_list :: Vector{Vector{Int}}
   permutation :: Vector{Int} # n-size vector 
 end
-
-"""
-    eelom_set = get_eelom_set(eplom)
-
-Returns the vector of every elemental element linear operator `eplom.eelom_set`.
-"""
-@inline get_eelom_set(eplom :: Elemental_plom_bfgs{T}) where T = eplom.eelom_set
-
-"""
-    eelom = get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int)
-
-Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
-"""
-@inline get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int) where T = @inbounds eplom.eelom_set[i]
 
 """
     eelom_set = get_ee_struct(eplom)
@@ -161,55 +145,20 @@ function PLBFGS_eplom_rand(N :: Int, n :: Int; T=Float64, nie :: Int=5)
   return eplom
 end 
 
-"""
-    initialize_component_list!(eplom)
+# """
+#     initialize_component_list!(eplom)
 
-Builds for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
-"""
-function initialize_component_list!(eplom :: Elemental_plom_bfgs)
-  N = get_N(eplom)
-  for i in 1:N
-    eelomᵢ = get_eelom_set(eplom, i)
-    _indices = get_indices(eelomᵢ)
-    for j in _indices 
-      push!(get_component_list(eplom, j), i)
-    end 
-  end 
-end 
-
-"""
-    set_spm!(eplom)
-
-Builds the sparse matrix of `eplom` in `eplom.spm` from all the elemental element linear operator.
-The sparse matrix is built with respect to the indices of each elemental element linear operator.
-"""
-function set_spm!(eplom :: Elemental_plom_bfgs{T}) where T
-  reset_spm!(eplom)
-  N = get_N(eplom)	
-  n = get_n(eplom)
-  spm = get_spm(eplom)
-  for i in 1:N
-    eplomᵢ = get_eelom_set(eplom, i)
-    nie = get_nie(eplomᵢ)
-    Bie = get_Bie(eplomᵢ)
-    indicesᵢ = get_indices(eplomᵢ)
-    value_Bie = zeros(T, nie, nie)
-    map( (i -> value_Bie[:, i] .= Bie*SparseVector(nie, [i], [1])), 1:nie)
-    spm[indicesᵢ, indicesᵢ] .+= value_Bie			
-  end 
-  return spm
-end
-
-function Base.Matrix(eplom :: Elemental_plom_bfgs{T}) where T
-  set_spm!(eplom)
-  sp_eplom = get_spm(eplom)
-  m = Matrix(sp_eplom)
-  return m
-end 
-
-function SparseArrays.SparseMatrixCSC(eplom :: Elemental_plom_bfgs{T}) where T
-  set_spm!(eplom)
-  get_spm(eplom)
-end
+# Builds for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
+# """
+# function initialize_component_list!(eplom :: Elemental_plom_bfgs)
+#   N = get_N(eplom)
+#   for i in 1:N
+#     eelomᵢ = get_eelom_set(eplom, i)
+#     _indices = get_indices(eelomᵢ)
+#     for j in _indices 
+#       push!(get_component_list(eplom, j), i)
+#     end 
+#   end 
+# end 
 
 end 

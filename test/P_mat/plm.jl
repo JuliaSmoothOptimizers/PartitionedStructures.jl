@@ -67,14 +67,31 @@ end
   N = 15
   n = 20
   nie = 5
+	s = rand(n)
   element_variables = map( (i -> rand(1:n,nie) ),1:N)
-  identity_eplom_LBFGS(element_variables, N, n)
+  eplom = identity_eplom_LBFGS(element_variables, N, n)
+	epv = epv_from_epm(eplom)
+	update(eplom, epv, s)
 end
 
 @testset "eplom_sr1 PartiallySeparableNLPModels" begin
   N = 15
   n = 20
   nie = 5
+	s = rand(n)
   element_variables = map( (i -> rand(1:n,nie) ),1:N)
-  identity_eplom_LSR1(element_variables, N, n)
+  eplom = identity_eplom_LSR1(element_variables, N, n)
+	epv = epv_from_epm(eplom)
+	update(eplom, epv, s)
+end
+
+@testset "eplom_se PartiallySeparableNLPModels" begin
+  N = 15
+  n = 20
+  nie = 5
+	s = rand(n)
+  element_variables = map( (i -> rand(1:n,nie) ),1:N)
+  eplom = identity_eplom_LOSE(element_variables, N, n)
+	epv = epv_from_epm(eplom)
+	update(eplom, epv, s)
 end
