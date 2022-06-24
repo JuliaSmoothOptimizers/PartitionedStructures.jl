@@ -30,35 +30,35 @@ mutable struct Elemental_plom_bfgs{T} <: Part_LO_mat{T}
 end
 
 """
-    get_eelom_set(eplom)
+    eelom_set = get_eelom_set(eplom)
 
 Returns the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_eelom_set(eplom :: Elemental_plom_bfgs{T}) where T = eplom.eelom_set
 
 """
-    get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int)
+    eelom = get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int)
 
 Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int) where T = @inbounds eplom.eelom_set[i]
 
 """
-    get_ee_struct(eplom)
+    eelom_set = get_ee_struct(eplom)
 
 Returns the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom_bfgs{T}) where T = get_eelom_set(eplom)
 
 """
-    get_ee_struct(eplom, i)
+    eelom = get_ee_struct(eplom, i)
 
 Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom_bfgs{T}, i :: Int) where T = get_eelom_set(eplom, i)
 
 """
-    get_eelom_set_Bie(eplom, indices)
+    eelom_subset = get_eelom_set_Bie(eplom, indices)
 
 Returns a subset of the elemental element linear operators composing `eplom`.
 `indices` selects the differents elemental element linear operators needed.
@@ -66,22 +66,22 @@ Returns a subset of the elemental element linear operators composing `eplom`.
 @inline get_eelom_sub_set(eplom :: Elemental_plom_bfgs{T}, indices :: Vector{Int}) where T = eplom.eelom_set[indices]
 
 """
-    get_eelom_set_Bie(eplom, i)
+    Bie = get_eelom_set_Bie(eplom, i)
 
-Get the linear operator of the `i`-th elemental element linear operator of `eplom`.
+Returns the linear operator of the `i`-th elemental element linear operator of `eplom`.
 """
 @inline get_eelom_set_Bie(eplom :: Elemental_plom_bfgs{T}, i :: Int) where T = get_Bie(get_eelom_set(eplom, i))	
 
 """
-    get_L(eplom)
+    L = get_L(eplom)
 
-Returns the sparse matrix `eplom.L`, whose aim to store a cholesky factor.
+Returns the sparse matrix `eplom.L`, who aims to store a Cholesky factor.
 By default `eplom.L` is not instantiate.
 """
 @inline get_L(eplom :: Elemental_plom_bfgs{T}) where T = eplom.L
 
 """
-    get_L(eplom, i, j)
+    Lij = get_L(eplom, i, j)
 
 Returns the value `eplom.L[i,j]`, from the sparse matrix `eplom.L`.
 """
@@ -106,9 +106,9 @@ Sets the sparse matrix `eplom.L` to the sparse matrix `eplom.spm`.
 @inline similar(eplom :: Elemental_plom_bfgs{T}) where T = Elemental_plom_bfgs{T}(copy(get_N(eplom)), copy(get_n(eplom)), similar.(get_eelom_set(eplom)), similar(get_spm(eplom)), similar(get_L(eplom)), copy(get_component_list(eplom)), copy(get_permutation(eplom)))
   
 """
-    identity_eplom_LBFGS(element_variables, N, n; T=T)
+    eplom = identity_eplom_LBFGS(element_variables, N, n; T=T)
     
-Creates an elemental partitionned limited-memory operator PLBFGS of `N` elemental element linear operators.
+Returns an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
 The positions are given by the vector of the element variables `element_variables`.
 """
 function identity_eplom_LBFGS(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)		
@@ -123,14 +123,14 @@ function identity_eplom_LBFGS(element_variables :: Vector{Vector{Int}}, N :: Int
 end 
 
 """
-    PLBFGS_eplom(;n, type, nie, overlapping)
+    eplom = PLBFGS_eplom(;n, type, nie, overlapping)
 
-Creates an elemental partitionned limited-memory operator PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear operators.
+Returns an elemental partitioned limited-memory operator PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
 """
 function PLBFGS_eplom(; n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1)		
   overlapping < nie || error("the overlapping must be lower than nie")
-  mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
+  mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must hold")
 
   indices = filter(x -> x <= n-nie+1, vcat(1, (x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
   eelom_set = map(i -> LBFGS_eelom(nie; T=T, index=i), indices)	
@@ -145,9 +145,9 @@ function PLBFGS_eplom(; n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=
 end 
 
 """
-    PLBFGS_eplom_rand(N, n; type, nie)
+    eplom = PLBFGS_eplom_rand(N, n; type, nie)
 
-Create an elemental partitionned limited-memory operator PLBFGS of `N` elemental element linear operators.
+Returns an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
 The size of each element is `nie`, whose positions are random in the range `1:n`.
 """
 function PLBFGS_eplom_rand(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
@@ -164,7 +164,7 @@ end
 """
     initialize_component_list!(eplom)
 
-Build for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
+Builds for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
 """
 function initialize_component_list!(eplom :: Elemental_plom_bfgs)
   N = get_N(eplom)
@@ -180,8 +180,8 @@ end
 """
     set_spm!(eplom)
 
-Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`. 
-The sparse matrix is build according to the indices of each elemental element linear operator.
+Builds the sparse matrix of `eplom` in `eplom.spm` from all the elemental element linear operator.
+The sparse matrix is built with respect to the indices of each elemental element linear operator.
 """
 function set_spm!(eplom :: Elemental_plom_bfgs{T}) where T
   reset_spm!(eplom)
@@ -197,6 +197,7 @@ function set_spm!(eplom :: Elemental_plom_bfgs{T}) where T
     map( (i -> value_Bie[:, i] .= Bie*SparseVector(nie, [i], [1])), 1:nie)
     spm[indicesᵢ, indicesᵢ] .+= value_Bie			
   end 
+  return spm
 end
 
 function Base.Matrix(eplom :: Elemental_plom_bfgs{T}) where T

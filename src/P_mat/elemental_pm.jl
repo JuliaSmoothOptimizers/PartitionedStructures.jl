@@ -33,38 +33,38 @@ end
 
 #getter/setter
 """
-    get_eem_set(epm)
+    eem_set = get_eem_set(epm)
 
 Returns the vector of every elemental element matrix `epm.eem_set`.
 """
 @inline get_eem_set(epm :: Elemental_pm{T}) where T = epm.eem_set
 
 """
-    get_eem_set(epm :: Elemental_pm_bfgs{T}, i :: Int)
+    eem = get_eem_set(epm :: Elemental_pm_bfgs{T}, i :: Int)
 
 Returns the `i`-th elemental element matrix `epm.eem_set[i]`.
 """
 @inline get_eem_set(epm :: Elemental_pm{T}, i :: Int) where T = @inbounds epm.eem_set[i]
 
 """
-    get_ee_struct(epm)
+    eem_set = get_ee_struct(epm)
 
 Returns the vector of every elemental element matrix `epm.eem_set`.
 """
 @inline get_ee_struct(epm :: Elemental_pm{T}) where T = get_eem_set(epm)
 
 """
-    get_ee_struct(epm, i)
+    eem = get_ee_struct(epm, i)
 
 Returns the `i`-th elemental element matrix `epm.eem_set[i]`.
 """
 @inline get_ee_struct(epm :: Elemental_pm{T}, i :: Int) where T = get_eem_set(epm, i)
 
 """
-    get_eem_set_Bie(epm, indices)
+    eem_subset = get_eem_set_Bie(epm, indices)
 
-Returns a subset of the elemental element matrix composing `epm`.
-`indices` selects the differents elemental element matrix needed.
+Returns a subset of elemental element matrices composing `epm`.
+`indices` selects the different elemental element matrices needed.
 """
 @inline get_eem_sub_set(epm :: Elemental_pm{T}, indices :: Vector{Int}) where T = epm.eem_set[indices]
 
@@ -84,7 +84,7 @@ By default `epm.L` is not instantiate.
 @inline get_L(epm :: Elemental_pm{T}) where T = epm.L
 
 """
-    get_L(epm, i, j)
+    Lij = get_L(epm, i, j)
 
 Returns the value `epm.L[i,j]`, from the sparse matrix `epm.L`.
 """
@@ -109,9 +109,9 @@ Sets the sparse matrix `epm.L` to the sparse matrix `epm.spm`.
 @inline similar(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), similar.(get_eem_set(epm)), similar(get_spm(epm)), similar(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
 
 """
-    identity_epm(element_variables; N, n, T=T)
+    epm = identity_epm(element_variables; N, n, T=T)
     
-Create a partitionned matrix of type `T` of `N` identity elemental element matrices.
+Returns a partitionned matrix of type `T` of `N` identity elemental element matrices.
 `N` and `n` are extrapolate from `element_variables`.
 The elemental variables are based from the indices informed in `element_variables`.
 """
@@ -120,7 +120,7 @@ identity_epm(element_variables :: Vector{Vector{Int}}; N::Int=length(element_var
 """
     identity_epm(element_variables, N, n; T=T)
     
-Create a partitionned matrix of type `T` of `N` identity elemental element matrices.
+Returns a partitionned matrix of type `T` of `N` identity elemental element matrices.
 The elemental variables are based from the indices informed in `element_variables`.
 """
 function identity_epm(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
@@ -135,9 +135,9 @@ function identity_epm(element_variables :: Vector{Vector{Int}}, N :: Int, n :: I
 end 
 
 """
-    identity_epm(N, n; T=T, nie)
+    epm = identity_epm(N, n; T=T, nie)
 
-Create a partitionned matrix of type `T` of `N` identity elemental element matrices.
+Returns a partitionned matrix of type `T` of `N` identity elemental element matrices.
 Each elemental element matrix is of size `nie` with randoms positions.
 """
 function identity_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
@@ -152,7 +152,7 @@ function identity_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)
 end 
 
 """
-    ones_epm(N, n; T=T, nie=nie)
+    epm = ones_epm(N, n; T=T, nie=nie)
 
 Create a partitionned matrix of type `T` of `N` elemental element matrices `ones(nie, nie)` whose positions are random.
 The partitionned matrix created may be singular.
@@ -271,10 +271,10 @@ function initialize_component_list!(epm :: Elemental_pm)
 end 
 
 """
-    set_spm!(epm)
+    set_spm!(eplom)
 
 Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`. 
-The sparse matrix is build according to the indices of each elemental element linear operator.
+The sparse matrix is built with respect to the indices of each elemental element linear operator.
 """
 function set_spm!(epm :: Elemental_pm{T}) where T
   reset_spm!(epm) # epm.spm .= 0

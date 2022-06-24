@@ -32,14 +32,14 @@ mutable struct Elemental_plom{T} <: Part_LO_mat{T}
 end
 
 """
-    get_eelom_set(eplom)
+    eelom_set = get_eelom_set(eplom)
 
 Returns the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_eelom_set(eplom :: Elemental_plom{T}) where T = eplom.eelom_set
 
 """
-    get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int)
+    eelom = get_eelom_set(eplom :: Elemental_plom_bfgs{T}, i :: Int)
 
 Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
@@ -53,21 +53,21 @@ Sets the `i`-th elemental elemental linear operator of `eplom` to `eelom`.
 @inline set_eelom_set!(eplom :: Elemental_plom{T}, i::Int, eelom :: Y) where Y <: LOEltMat{T} where T = @inbounds eplom.eelom_set[i] = eelom
 
 """
-    get_ee_struct(eplom)
+    eelom_set = get_ee_struct(eplom)
 
 Returns the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom{T}) where T = get_eelom_set(eplom)
 
 """
-    get_ee_struct(eplom, i)
+    eelom = get_ee_struct(eplom, i)
 
 Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom{T}, i :: Int) where T = get_eelom_set(eplom, i)
 
 """
-    get_eelom_set_Bie(eplom, indices)
+    eelom_subset = get_eelom_set_Bie(eplom, indices)
 
 Returns a subset of the elemental element linear operators composing `eplom`.
 `indices` selects the differents elemental element linear operators needed.
@@ -75,16 +75,16 @@ Returns a subset of the elemental element linear operators composing `eplom`.
 @inline get_eelom_sub_set(eplom :: Elemental_plom{T}, indices :: Vector{Int}) where T = eplom.eelom_set[indices]
 
 """
-    get_eelom_set_Bie(eplom, i)
+    Bie = get_eelom_set_Bie(eplom, i)
 
 Get the linear operator of the `i`-th elemental element linear operator of `eplom`.
 """
 @inline get_eelom_set_Bie(eplom :: Elemental_plom{T}, i :: Int) where T = get_Bie(get_eelom_set(eplom, i))	
 
 """
-    get_L(eplom)
+    L = get_L(eplom)
 
-Returns the sparse matrix `eplom.L`, whose aim to store a cholesky factor.
+Returns the sparse matrix `eplom.L`, who aims to store a Cholesky factor.
 By default `eplom.L` is not instantiate.
 """
 @inline get_L(eplom :: Elemental_plom{T}) where T = eplom.L
@@ -175,7 +175,7 @@ end
 """
     initialize_component_list!(eplom)
 
-Build for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
+Builds for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
 """
 function initialize_component_list!(eplom::Elemental_plom)
   N = get_N(eplom)
@@ -191,8 +191,8 @@ end
 """
     set_spm!(eplom)
 
-Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`. 
-The sparse matrix is build according to the indices of each elemental element linear operator.
+Builds the sparse matrix of `eplom` in `eplom.spm` from all the elemental element linear operator.
+The sparse matrix is built with respect to the indices of each elemental element linear operator.
 """
 function set_spm!(eplom :: Elemental_plom{T}) where T
   reset_spm!(eplom) # eplom.spm .= 0
