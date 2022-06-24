@@ -14,17 +14,16 @@ At the moment, we mainly developed the elemental partitioned structures, but we 
 
 ## Abbreviations in the code
 If you take a look at the code, you will see some
-acronyms               | Description
------------------------|------------
-eev                    | elemental element vector
-iev                    | internal element vector
-epv                    | elemental partitioned vector
-ipv                    | internal partitioned vector
-eem                    | elemental element matrix
-eelom                  | limited-memory elemental element matrix
-iem                    | internal element matrix
-epm                    | elemental partitioned matrix
-ipm                    | internal partitioned matrix
-eplom                  | limited-memory elemental partitioned matrix
 
-
+Acronyms  | Description
+----------|------------
+`eev`     | elemental element vector
+`iev`     | internal element vector
+`epv`     | elemental partitioned vector
+`ipv`     | internal partitioned vector
+`eem`     | elemental element matrix
+`eelom`   | limited-memory elemental element matrix
+`iem`     | internal element matrix
+`epm`     | elemental partitioned matrix
+`ipm`     | internal partitioned matrix
+`eplom`   | limited-memory elemental partitioned matrix
