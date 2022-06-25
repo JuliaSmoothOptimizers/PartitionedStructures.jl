@@ -41,7 +41,8 @@ function PLBFGS_update!(eplom_B :: Elemental_plom_bfgs{T}, epv_y :: Elemental_pv
   full_check_epv_epm(eplom_B,epv_y) || @error("different partitioned structures between eplom_B and epv_y")
   full_check_epv_epm(eplom_B,epv_s) || @error("different partitioned structures between eplom_B and epv_s")
   N = get_N(eplom_B)
-  for i in 1:Nelement-matrice    eelomi = get_eelom_set(eplom_B, i)
+  for i in 1:N
+    eelomi = get_eelom_set(eplom_B, i)
     si = get_vec(get_eev(epv_s,i))
     yi = get_vec(get_eev(epv_y,i))
     index = get_index(eelomi)
@@ -91,7 +92,8 @@ function PLSR1_update!(eplom_B :: Elemental_plom_sr1{T}, epv_y :: Elemental_pv{T
   full_check_epv_epm(eplom_B,epv_y) || @error("different partitioned structures between eplom_B and epv_y")
   full_check_epv_epm(eplom_B,epv_s) || @error("different partitioned structures between eplom_B and epv_s")
   N = get_N(eplom_B)
-  for i in 1:Nelement-matrice    eelomi = get_eelom_set(eplom_B, i)
+  for i in 1:N
+    eelomi = get_eelom_set(eplom_B, i)
     si = get_vec(get_eev(epv_s,i))
     yi = get_vec(get_eev(epv_y,i))
     Bi = get_Bie(eelomi)
