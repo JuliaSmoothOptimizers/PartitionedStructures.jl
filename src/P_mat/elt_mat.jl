@@ -10,9 +10,9 @@ export update_counter_elt_mat!, iter_info, total_info
 
 import Base.copy, Base.similar
 
-"Abstract type representing an element matrix"
+"Abstract type representing an element-matrix"
 abstract type Elt_mat{T} <: Element_struct{T} end
-"Abstract type representing a dense element matrix"
+"Abstract type representing a dense element-matrix"
 abstract type DenseEltMat{T} <: Elt_mat{T} end
 "Abstract type representing a element linear operator"
 abstract type LOEltMat{T} <: Elt_mat{T} end
@@ -20,21 +20,21 @@ abstract type LOEltMat{T} <: Elt_mat{T} end
 """
     get_Bie(elt_mat)
 
-Returns the element matrix `elt_mat.Bie`.
+Returns the element-matrix `elt_mat.Bie`.
 """
 @inline get_Bie(elt_mat :: T) where T <: Elt_mat = elt_mat.Bie
 
 """
     get_counter_elt_mat(elt_mat)
 
-Returns the `Counter_elt_mat` of the elemental element matrix `elt_mat`.
+Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
 @inline get_counter_elt_mat(elt_mat :: T) where T <: Elt_mat = elt_mat.counter
 
 """
     get_cem(elt_mat)
 
-Returns the `Counter_elt_mat` of the elemental element matrix `elt_mat`.
+Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
 @inline get_cem(elt_mat :: T) where T <: Elt_mat = elt_mat.counter
 
@@ -43,7 +43,7 @@ Returns the `Counter_elt_mat` of the elemental element matrix `elt_mat`.
 """
     Counter_elt_mat
 
-Count for a element matrix the update performed on it, from its definition.
+Count for a element-matrix the update performed on it, from its definition.
 `total_update + total_reset + total_untouched == iter `.
 """
 mutable struct Counter_elt_mat

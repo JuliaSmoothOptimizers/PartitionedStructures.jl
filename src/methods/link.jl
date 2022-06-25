@@ -47,7 +47,7 @@ end
     epm = epm_from_epv(epv)
 
 Create an elemental partitioned quasi-Newton operator `epm` with the same partitioned structure than `epv`.
-Each element matrix of `epm` is set with an identity matrix of suitable size.
+Each element-matrix of `epm` is set with an identity matrix of suitable size.
 """
 function epm_from_epv(epv :: T) where T <: Elemental_pv{Y} where Y <: Number
   N = get_N(epv)

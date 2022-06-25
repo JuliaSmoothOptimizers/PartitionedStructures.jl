@@ -39,16 +39,16 @@ Check the [tutorial](https://paraynaud.github.io/PartitionedStructures.jl/dev/tu
 Structure              | Description
 -----------------------|------------
 `Part_struct`          | The (abstract) supertype of all partitioned structures
-`Elemental_pm`         | An elemental partitioned-matrix, each element matrix is dense
-`Elemental_plom_bfgs`  | A limited-memory elemental partitioned-matrix, each elemental element matrix is a `LBFGSOperator`
-`Elemental_plom_sr1`   | A limited-memory elemental partitioned-matrix, each elemental element matrix is a `LSR1Operator`
-`Elemental_plom`       | A limited-memory elemental partitioned-matrix, each elemental element matrix is a `LBFGSOperator` or a `LSR1Operator`
+`Elemental_pm`         | An elemental partitioned-matrix, each element-matrix is dense
+`Elemental_plom_bfgs`  | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LBFGSOperator`
+`Elemental_plom_sr1`   | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LSR1Operator`
+`Elemental_plom`       | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LBFGSOperator` or a `LSR1Operator`
 `Elemental_pv`         | An elemental partitioned-vector
 
 ## Methods available
 Method                 | Description
 -----------------------|------------
-`identity_epm`         | Creates a partitioned-matrix with identity element matrix
+`identity_epm`         | Creates a partitioned-matrix with identity element-matrix
 `identity_eplom_LBFGS` | Creates a limited-memory (LBFGS) partitioned-matrix
 `identity_eplom_LSR1`  | Creates a limited-memory (LSR1) partitioned-matrix
 `identity_eplom_LOSE`  | Creates a limited-memory (with both LBFGS and LSR1) partitioned-matrix

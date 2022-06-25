@@ -21,9 +21,9 @@ Acronyms  | Description
 `iev`     | internal element vector
 `epv`     | elemental partitioned-vector
 `ipv`     | internal partitioned-vector
-`eem`     | elemental element matrix
-`eelom`   | limited-memory elemental element matrix
-`iem`     | internal element matrix
+`eem`     | elemental element-matrix
+`eelom`   | limited-memory elemental element-matrix
+`iem`     | internal element-matrix
 `epm`     | elemental partitioned-matrix
 `ipm`     | internal partitioned-matrix
 `eplom`   | limited-memory elemental partitioned-matrix

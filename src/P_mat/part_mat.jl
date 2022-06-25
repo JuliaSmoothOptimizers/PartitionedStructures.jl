@@ -140,7 +140,7 @@ Returns the linear operator of the `i`-th elemental element linear operator of `
 """
     get_ee_struct_Bie(pm, i)
 
-Returns the `i`-th elemental element matrix of the partitioned-matrix `pm`.
+Returns the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
 """
 @inline get_ee_struct_Bie(pm :: T, i :: Int) where T <: Part_mat = get_Bie(get_ee_struct(pm, i))
 

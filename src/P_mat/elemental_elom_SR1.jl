@@ -28,7 +28,7 @@ end
 """
     init_eelom_LSR1(elt_var; T=T)
 
-Returns an `Elemental_elom_sr1` of type `T` based from the vector of the elemental variables `elt_var`.
+Return an `Elemental_elom_sr1` of type `T` based on the vector of the elemental variables `elt_var`.
 """
 function init_eelom_LSR1(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
@@ -41,7 +41,7 @@ end
 """
     eelom =LSR1_eelom_rand(nie, T=T, n=n)
 
-Returns an `Elemental_elom_sr1` of type `T` with `nie` random indices within the range `1:n`.
+Return an `Elemental_elom_sr1` of type `T` with `nie` random indices within the range `1:n`.
 """
 function LSR1_eelom_rand(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
@@ -54,7 +54,7 @@ end
 """
     eelom = LSR1_eelom(nie, T=T, index=index)
 
-Returns an `Elemental_elom_sr1` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
+Return an `Elemental_elom_sr1` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
 function LSR1_eelom(nie :: Int; T=Float64, index=1)
   indices = [index:1:index+nie-1;]
@@ -67,7 +67,7 @@ end
 """
     index_eelom_sr1!(eelom)
 
-Resets the LSR1 linear operator of the elemental element linear operator matrix `eelom`.
+Reset the LSR1 linear operator of the elemental element linear operator matrix `eelom`.
 """
 reset_eelom_sr1!(eelom::Elemental_elom_sr1{T}) where T <: Number = eelom.Bie = LinearOperators.LSR1Operator(T, eelom.nie)
 

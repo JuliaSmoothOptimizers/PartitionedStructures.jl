@@ -30,21 +30,21 @@ end
 """
     set_eelom_set!(eplom, i, eelom)
 
-Sets the `i`-th elemental elemental linear operator of `eplom` to `eelom`.
+Set the `i`-th elemental elemental linear operator of `eplom` to `eelom`.
 """
 @inline set_eelom_set!(eplom :: Elemental_plom{T}, i::Int, eelom :: Y) where Y <: LOEltMat{T} where T = @inbounds eplom.eelom_set[i] = eelom
 
 """
     eelom_set = get_ee_struct(eplom)
 
-Returns the vector of every elemental element linear operator `eplom.eelom_set`.
+Return the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom{T}) where T = get_eelom_set(eplom)
 
 """
     eelom = get_ee_struct(eplom, i)
 
-Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
+Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom{T}, i :: Int) where T = get_eelom_set(eplom, i)
 
@@ -55,7 +55,7 @@ Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
     identity_eplom_LOSE(vec_indices, N, n; T=T)
 
-Creates an elemental partitionned limited-memory operator of `N` elemental element linear operators initialized with LBFGS operators.
+Create an elemental partitionned limited-memory operator of `N` elemental element linear operators initialized with LBFGS operators.
 The positions are given by the vector of the element variables `element_variables`.
 """
 function identity_eplom_LOSE(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
@@ -72,9 +72,9 @@ end
 """
     PLBFGSR1_eplom(; n, type, nie, overlapping, prob)
 
-Creates an elemental partitionned limited-memory operator PLSE of `N` (deduced from `n` and `nie`) elemental element linear operators.
+Create an elemental partitionned limited-memory operator PLSE of `N` (deduced from `n` and `nie`) elemental element linear operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
-Each element is randomly (rand() > p) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
+Each element is randomly (`rand() > p`) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
 """
 function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)
   overlapping < nie || error("l'overlapping doit être plus faible que nie")

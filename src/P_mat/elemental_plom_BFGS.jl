@@ -28,14 +28,14 @@ end
 """
     eelom_set = get_ee_struct(eplom)
 
-Returns the vector of every elemental element linear operator `eplom.eelom_set`.
+Return the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom_bfgs{T}) where T = get_eelom_set(eplom)
 
 """
     eelom = get_ee_struct(eplom, i)
 
-Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
+Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom_bfgs{T}, i :: Int) where T = get_eelom_set(eplom, i)
 
@@ -46,7 +46,7 @@ Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
     eplom = identity_eplom_LBFGS(element_variables, N, n; T=T)
 
-Returns an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
+Return an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
 The positions are given by the vector of the element variables `element_variables`.
 """
 function identity_eplom_LBFGS(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
@@ -63,7 +63,7 @@ end
 """
     eplom = PLBFGS_eplom(;n, type, nie, overlapping)
 
-Returns an elemental partitioned limited-memory operator PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear operators.
+Return an elemental partitioned limited-memory operator PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
 """
 function PLBFGS_eplom(; n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1)
@@ -85,7 +85,7 @@ end
 """
     eplom = PLBFGS_eplom_rand(N, n; type, nie)
 
-Returns an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
+Return an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
 The size of each element is `nie`, whose positions are random in the range `1:n`.
 """
 function PLBFGS_eplom_rand(N :: Int, n :: Int; T=Float64, nie :: Int=5)

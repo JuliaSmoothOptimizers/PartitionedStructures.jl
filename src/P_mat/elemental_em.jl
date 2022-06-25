@@ -11,7 +11,7 @@ export identity_eem, create_id_eem, fixed_ones_eem, ones_eem, one_size_bloc
 """
     Elemental_em{T} <: DenseEltMat{T}
 
-Type that represents an elemental element matrix.
+Type that represents an elemental element-matrix.
 """
 mutable struct Elemental_em{T} <: DenseEltMat{T}
   nie :: Int # nᵢᴱ
@@ -27,7 +27,7 @@ end
 """
     eem = create_id_eem(elt_var; T=T)
 
-Creates a `nie` identity elemental element matrix of type `T` based from the vector of the elemental variables `elt_var`.
+Create a `nie` identity elemental element-matrix of type `T` based on the vector of the elemental variables `elt_var`.
 """
 function create_id_eem(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
@@ -41,7 +41,7 @@ end
 """
     eem = identity_eem(nie; T=T, n=n)
 
-Returns a `nie` identity elemental element matrix of type `T` from `nie` random indices in the range `1:n`.
+Return a `nie` identity elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
 function identity_eem(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
@@ -55,7 +55,7 @@ end
 """
     eem = ones_eem(nie; T=T, n=n)
 
-Returns a `nie` ones elemental element matrix of type `T` from `nie` random indices in the range `1:n`.
+Return a `nie` ones elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
 function ones_eem(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
@@ -68,9 +68,9 @@ end
 """
     eem = fixed_ones_eem(index, nie; type=T, mul=mul)
 
-Creates a `nie` elemental element matrix of type `T` at indices `index:index+nie-1`.
-All the components of the element matrix are set to `1` except the diagonal terms that are set to `mul`.
-This method is used to define diagonal dominant element matrix.
+Create a `nie` elemental element-matrix of type `T` at indices `index:index+nie-1`.
+All the components of the element-matrix are set to `1` except the diagonal terms that are set to `mul`.
+This method is used to define diagonal dominant element-matrix.
 """
 function fixed_ones_eem(i :: Int, nie :: Int; T=Float64, mul=5.)
   indices = [i:(i+nie-1);]
@@ -84,7 +84,7 @@ end
 """
     eem = one_size_bloc(index; T=T)
 
-Returns an elemental element matrix of type `T` of size one at `index`.
+Return an elemental element-matrix of type `T` of size one at `index`.
 """
 one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
 

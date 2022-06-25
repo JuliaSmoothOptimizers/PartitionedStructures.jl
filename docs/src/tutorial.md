@@ -117,7 +117,7 @@ B_BFGS
 ```
 
 ### Partitioned quasi-Newton approximation of the quadratic function (PBFGS)
-In order to make a sparse quasi-Newton approximation of ∇²f, you may define a partitioned-matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
+In order to make a sparse quasi-Newton approximation of ∇²f, you may define a partitioned-matrix with the same partially separable structure than `partitioned_gradient_x0` where each element-matrix is set to the identity
 ```@example PartitionedStructures
 partitioned_matrix = epm_from_epv(partitioned_gradient_x0)
 ```

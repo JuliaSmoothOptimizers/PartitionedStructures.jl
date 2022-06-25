@@ -28,7 +28,7 @@ end
 """
     eelom = init_eelom_LBFGS(elt_var; T=T)
 
-Returns an `Elemental_elom_bfgs` of type `T` based from the vector of the elemental variables`elt_var`.
+Return an `Elemental_elom_bfgs` of type `T` based on the vector of the elemental variables`elt_var`.
 """
 function init_eelom_LBFGS(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
@@ -41,7 +41,7 @@ end
 """
     eelom = LBFGS_eelom_rand(nie; T=T, n=n)
 
-Returns an `Elemental_elom_bfgs` of type `T` with `nie` random indices within the range `1:n`.
+Return an `Elemental_elom_bfgs` of type `T` with `nie` random indices within the range `1:n`.
 """
 function LBFGS_eelom_rand(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
@@ -54,7 +54,7 @@ end
 """
     eelom = LBFGS_eelom(nie; T=T, index=index)
 
-Returns an `Elemental_elom_bfgs` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
+Return an `Elemental_elom_bfgs` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
 function LBFGS_eelom(nie :: Int; T=Float64, index=1)
   indices = [index:1:index+nie-1;]
@@ -67,7 +67,7 @@ end
 """
     reset_eelom_bfgs!(eelom)
 
-Resets the LBFGS linear operator of the elemental element linear operator `eelom`.
+Reset the LBFGS linear operator of the elemental element linear operator `eelom`.
 """
 reset_eelom_bfgs!(eelom::Elemental_elom_bfgs{T}) where T <: Number = eelom.Bie = LinearOperators.LBFGSOperator(T, eelom.nie)
 
