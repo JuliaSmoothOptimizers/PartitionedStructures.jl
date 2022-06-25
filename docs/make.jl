@@ -11,8 +11,8 @@ using PartitionedStructures.M_okoubi_koko , PartitionedStructures.M_frontale, Pa
 using PartitionedStructures.PartMatInterface
 
 
-makedocs(  
-	modules = [PartitionedStructures, M_abstract_part_struct, M_abstract_element_struct, M_internal_elt_vec, M_internal_pv, M_elt_vec, ModElemental_ev, ModElemental_pv, M_elt_mat, M_part_mat, ModElemental_pm, ModElemental_em, M_okoubi_koko, M_frontale, M_1_parallel, M_2_parallel, M_3_parallel, Link, Utils, PartitionedQuasiNewton, PartitionedLOQuasiNewton, ModElemental_elom_bfgs, ModElemental_plom_bfgs, ModElemental_plom_sr1, ModElemental_elom_sr1, ModElemental_plom, Instances, PartMatInterface],
+makedocs(
+  modules = [PartitionedStructures, M_abstract_part_struct, M_abstract_element_struct, M_internal_elt_vec, M_internal_pv, M_elt_vec, ModElemental_ev, ModElemental_pv, M_elt_mat, M_part_mat, ModElemental_pm, ModElemental_em, M_okoubi_koko, M_frontale, M_1_parallel, M_2_parallel, M_3_parallel, Link, Utils, PartitionedQuasiNewton, PartitionedLOQuasiNewton, ModElemental_elom_bfgs, ModElemental_plom_bfgs, ModElemental_plom_sr1, ModElemental_elom_sr1, ModElemental_plom, Instances, PartMatInterface],
   doctest = true,
   linkcheck = true,
   strict = false,

@@ -9,7 +9,7 @@ export max_indices, min_indices
 
 abstract type Element_struct{T} end
 
-@inline get_indices(elt :: T) where T <: Element_struct = elt.indices	
+@inline get_indices(elt :: T) where T <: Element_struct = elt.indices
 @inline get_indices(elt :: T, i::Int) where T <: Element_struct = elt.indices[i]
 @inline get_nie(elt :: T) where T <: Element_struct = elt.nie
 
@@ -17,7 +17,7 @@ abstract type Element_struct{T} end
 @inline set_nie!(elt :: T, nie :: Int) where T <: Element_struct = elt.nie = nie
 
 # get the max/min index of variable from the {indiceᵢ}ᵢ
-Utils.max_indices(elt_set :: Vector{T}) where T <: Element_struct = isempty(elt_set) ? 0 : maximum(maximum.(get_indices.(elt_set))) 
+Utils.max_indices(elt_set :: Vector{T}) where T <: Element_struct = isempty(elt_set) ? 0 : maximum(maximum.(get_indices.(elt_set)))
 Utils.min_indices(elt_set :: Vector{T}) where T <: Element_struct = isempty(elt_set) ? 0 : minimum(minimum.(get_indices.(elt_set)))
 
 end

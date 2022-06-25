@@ -5,7 +5,7 @@ using ..Utils
 using ..M_abstract_part_struct, ..M_part_mat
 using ..M_abstract_element_struct, ..M_elt_mat, ..ModElemental_em
 
-import Base.==, Base.copy, Base.similar	
+import Base.==, Base.copy, Base.similar
 import Base.permute!
 import ..M_part_mat: set_spm!
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
@@ -16,10 +16,10 @@ export correlated_var
 export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 
 """
-		Elemental_pm{T} <: Part_mat{T}
+    Elemental_pm{T} <: Part_mat{T}
 
 Type that represents an elemental partitioned quasi-Newton linear operator, each Bᵢ may use a BFGS or SR1 update.
-"""  
+"""
 mutable struct Elemental_pm{T} <: Part_mat{T}
   N :: Int
   n :: Int
@@ -27,7 +27,7 @@ mutable struct Elemental_pm{T} <: Part_mat{T}
   spm :: SparseMatrixCSC{T, Int}
   L :: SparseMatrixCSC{T, Int}
   component_list :: Vector{Vector{Int}}
-  permutation :: Vector{Int} # n-size vector 
+  permutation :: Vector{Int} # n-size vector
 end
 
 #getter/setter
@@ -72,7 +72,7 @@ Returns a subset of elemental element matrices composing `epm`.
 
 Get the linear operator of the `i`-th elemental element linear operator of `epm`.
 """
-@inline get_eem_set_Bie(epm :: Elemental_pm{T}, i :: Int) where T = get_Bie(get_eem_set(epm, i))	
+@inline get_eem_set_Bie(epm :: Elemental_pm{T}, i :: Int) where T = get_Bie(get_eem_set(epm, i))
 
 @inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
 @inline copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), copy.(get_eem_set(epm)), copy(get_spm(epm)), copy(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
@@ -80,7 +80,7 @@ Get the linear operator of the `i`-th elemental element linear operator of `epm`
 
 """
     epm = identity_epm(element_variables; N, n, T=T)
-    
+
 Returns a partitionned matrix of type `T` of `N` identity elemental element matrices.
 `N` and `n` are extrapolate from `element_variables`.
 The elemental variables are based from the indices informed in `element_variables`.
@@ -89,7 +89,7 @@ identity_epm(element_variables :: Vector{Vector{Int}}; N::Int=length(element_var
 
 """
     identity_epm(element_variables, N, n; T=T)
-    
+
 Returns a partitionned matrix of type `T` of `N` identity elemental element matrices.
 The elemental variables are based from the indices informed in `element_variables`.
 """
@@ -102,7 +102,7 @@ function identity_epm(element_variables :: Vector{Vector{Int}}, N :: Int, n :: I
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
   initialize_component_list!(epm)
   return epm
-end 
+end
 
 """
     epm = identity_epm(N, n; T=T, nie)
@@ -110,16 +110,16 @@ end
 Returns a partitionned matrix of type `T` of `N` identity elemental element matrices.
 Each elemental element matrix is of size `nie` with randoms positions.
 """
-function identity_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
+function identity_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)
   eem_set = map(i -> identity_eem(nie; T=T, n=n), [1:N;])
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
   no_perm = [1:n;]
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
-  initialize_component_list!(epm)	
+  initialize_component_list!(epm)
   return epm
-end 
+end
 
 """
     epm = ones_epm(N, n; T=T, nie=nie)
@@ -127,7 +127,7 @@ end
 Create a partitionned matrix of type `T` of `N` elemental element matrices `ones(nie, nie)` whose positions are random.
 The partitionned matrix created may be singular.
 """
-function ones_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
+function ones_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)
   eem_set = map(i -> ones_eem(nie; T=T, n=n), [1:N;])
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
@@ -136,7 +136,7 @@ function ones_epm(N :: Int, n :: Int; T=Float64, nie :: Int=5)
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
   initialize_component_list!(epm)
   return epm
-end 
+end
 
 """
     ones_epm_and_id(N, n; T=T, nie=nie)
@@ -146,7 +146,7 @@ Each elemental element matrice is `ones(nie, nie)` with randoms positions in the
 The remaining `n` elemental element matrices are of size `1`, with value `[1]`, they are placed in the diagonal terms.
 This way, the partitionned matrix is generally not singular.
 """
-function ones_epm_and_id(N :: Int, n :: Int; T=Float64, nie :: Int=5)		
+function ones_epm_and_id(N :: Int, n :: Int; T=Float64, nie :: Int=5)
   eem_set1 = map(i -> ones_eem(nie; T=T, n=n), [1:N;])
   eem_set2 = map(i -> one_size_bloc(i; T=T), [1:n;])
   eem_set = vcat(eem_set1, eem_set2)
@@ -157,7 +157,7 @@ function ones_epm_and_id(N :: Int, n :: Int; T=Float64, nie :: Int=5)
   epm = Elemental_pm{T}(N+n, n, eem_set, spm, L, component_list, no_perm)
   initialize_component_list!(epm)
   return epm
-end 
+end
 
 """
     n_i_sep(n; T=T, nie=nie, mul=mul)
@@ -172,17 +172,17 @@ function n_i_sep(n :: Int; T=Float64, nie :: Int=5, mul=5.)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
   no_perm = [1:n;]
-  N = Int(floor(n/nie))	
+  N = Int(floor(n/nie))
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
   initialize_component_list!(epm)
   return epm
-end 
+end
 
 """
     n_i_SPS(n; T, nie, overlapping, mul)
 
-Defines an elemental partitioned matrix of size `n`.
-The partitioned matrix is composed by `N ≈ (n/nie)*2` elemental element matrices, of size `nie`, `overlapping` onto the diagonal.
+Defines an elemental partitioned-matrix of size `n`.
+The partitioned-matrix is composed by `N ≈ (n/nie)*2` elemental element matrices, of size `nie`, `overlapping` onto the diagonal.
 The diagonal terms of each elemental element matrix are of value `mul`.
 """
 function n_i_SPS(n :: Int; T=Float64, nie :: Int=5, overlapping :: Int=1, mul=5.)
@@ -199,13 +199,13 @@ function n_i_SPS(n :: Int; T=Float64, nie :: Int=5, overlapping :: Int=1, mul=5.
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
   initialize_component_list!(epm)
   return epm
-end 
+end
 
 """
     part_mat(;n=n, T=T, nie=nie, overlapping=overlapping, mul=mul)
 
-Define a elemental partitioned matrix formed by `N` (deduced from `n` and `nie`) elemental element matrices of size `nie`.
-Each elemental element matrix overlaps the previous one and the next one by `overlapping`.		
+Define a elemental partitioned-matrix formed by `N` (deduced from `n` and `nie`) elemental element matrices of size `nie`.
+Each elemental element matrix overlaps the previous one and the next one by `overlapping`.
 """
 function part_mat(;n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1, mul=5.)
   overlapping < nie || error("the overlapping must be lower than nie")
@@ -218,10 +218,10 @@ function part_mat(;n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1, mu
   no_perm = [1:n;]
   N = length(eem_set)
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
-  initialize_component_list!(epm)		
+  initialize_component_list!(epm)
   # set_spm!(epm)
   return epm
-end 
+end
 
 """
     initialize_component_list!(epm)
@@ -234,16 +234,16 @@ function initialize_component_list!(epm :: Elemental_pm)
   for i in 1:N
     eemᵢ = get_eem_set(epm, i)
     _indices = get_indices(eemᵢ)
-    for j in _indices 
+    for j in _indices
       push!(get_component_list(epm, j), i)
-    end 
-  end 
-end 
+    end
+  end
+end
 
 """
     set_spm!(eplom)
 
-Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`. 
+Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`.
 The sparse matrix is built with respect to the indices of each elemental element linear operator.
 """
 function set_spm!(epm :: Elemental_pm{T}) where T
@@ -259,9 +259,9 @@ function set_spm!(epm :: Elemental_pm{T}) where T
       val = Bie[i, j]
       real_i = get_indices(epmᵢ, i) # epmᵢ.indices[i]
       real_j = get_indices(epmᵢ, j) # epmᵢ.indices[j]
-      spm[real_i, real_j] += val 
-    end 
-  end 
+      spm[real_i, real_j] += val
+    end
+  end
 end
 
 """
@@ -274,13 +274,13 @@ The current `epm` permutation is stored in `epm.permutation`.
 function permute!(epm :: Elemental_pm{T}, p :: Vector{Int}) where T
   N = get_N(epm)
   n = get_n(epm)
-  # permute on element matrix 
+  # permute on element matrix
   for i in 1:N
     epmᵢ = get_eem_set(epm, i)
     indicesᵢ = get_indices(epmᵢ)
     e_perm = Vector(view(p, indicesᵢ))
     permute!(epmᵢ, e_perm)
-  end 
+  end
   # permute on the permutation vector
   perm = get_permutation(epm)
   permute!(perm, p)
@@ -288,9 +288,9 @@ function permute!(epm :: Elemental_pm{T}, p :: Vector{Int}) where T
   new_component_list = Vector{Vector{Int}}(undef, n)
   for i in 1:n
     new_component_list[i] = get_component_list(epm, p[i])
-  end 
+  end
   hard_reset_spm!(epm) # hard reset of the sparse matrix
-end 
+end
 
 """
     correlated_var(epm, i)
@@ -309,6 +309,6 @@ function correlated_var(epm :: Elemental_pm{T}, i :: Int) where T
   var_list = vcat(indices_list...)
   unique!(var_list)
   return var_list
-end 
+end
 
 end

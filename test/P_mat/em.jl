@@ -1,7 +1,7 @@
 using StatsBase
 using PartitionedStructures.M_elt_mat, PartitionedStructures.ModElemental_em
 
-@testset "eem" begin 
+@testset "eem" begin
   T = Float64
   nie = 5
   n = 20
@@ -18,4 +18,4 @@ using PartitionedStructures.M_elt_mat, PartitionedStructures.ModElemental_em
   p_view = Vector(view(p, (rand(1:n,nie))))
   permute!(eem1,p_view)
   @test cp_eem1 != eem1
-end 
+end

@@ -18,7 +18,7 @@ abstract type DenseEltMat{T} <: Elt_mat{T} end
 abstract type LOEltMat{T} <: Elt_mat{T} end
 
 """
-    get_Bie(elt_mat) 
+    get_Bie(elt_mat)
 
 Returns the element matrix `elt_mat.Bie`.
 """
@@ -52,8 +52,8 @@ mutable struct Counter_elt_mat
   total_untouched :: Int
   current_untouched :: Int # must be ≤ reset defined in the update
   total_reset :: Int
-  current_reset :: Int # ≤ 1 as long as reset ≥ 2 in any update performed		
-end 
+  current_reset :: Int # ≤ 1 as long as reset ≥ 2 in any update performed
+end
 
 Counter_elt_mat() = Counter_elt_mat(0,0,0,0,0,0)
 copy(cem :: Counter_elt_mat) = Counter_elt_mat(cem.total_update, cem.current_update, cem.total_untouched, cem.current_untouched, cem.total_reset, cem.current_reset)
@@ -85,7 +85,7 @@ function update_counter_elt_mat!(cem :: Counter_elt_mat, qn :: Int)
     cem.total_update += 1
     cem.current_update += 1
     cem.current_untouched = 0
-    cem.current_reset = 0			
+    cem.current_reset = 0
   elseif qn == 0
     cem.total_untouched += 1
     cem.current_untouched += 1

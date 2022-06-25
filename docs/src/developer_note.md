@@ -1,6 +1,6 @@
 ## Elemental and internal variables
 
-There is several types of partial separability 
+There is several types of partial separability
 ```math
   f(x) = \sum_{i=1}^N f_i U_i(x) : \R^n \to \R,\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i < n
 ```
@@ -19,11 +19,11 @@ Acronyms  | Description
 ----------|------------
 `eev`     | elemental element vector
 `iev`     | internal element vector
-`epv`     | elemental partitioned vector
-`ipv`     | internal partitioned vector
+`epv`     | elemental partitioned-vector
+`ipv`     | internal partitioned-vector
 `eem`     | elemental element matrix
 `eelom`   | limited-memory elemental element matrix
 `iem`     | internal element matrix
-`epm`     | elemental partitioned matrix
-`ipm`     | internal partitioned matrix
-`eplom`   | limited-memory elemental partitioned matrix
+`epm`     | elemental partitioned-matrix
+`ipm`     | internal partitioned-matrix
+`eplom`   | limited-memory elemental partitioned-matrix

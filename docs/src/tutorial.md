@@ -1,8 +1,8 @@
 # PartitionedStructures.jl: Tutorial
-This tutorial shows how [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl) can define partitioned quasi-Newton approximations, by using the partitioned vectors and the partitioned matrices.
+This tutorial shows how [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl) can define partitioned quasi-Newton approximations, by using the partitioned-vectors and the partitioned matrices.
 
 ## What are the partially separable structure and the partitioned quasi-Newton approximations
-The quasi-Newton methods exploiting the partially separable function 
+The quasi-Newton methods exploiting the partially separable function
 ```math
  f(x) = \sum_{i=1}^N f_i (U_i) : \R^n \to \R,\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i < n
 ```
@@ -26,7 +26,7 @@ It requires Bᵢ, Uᵢs and ∇fᵢ(Uᵢ(x+s)) - ∇²fᵢ(Uᵢx), and therefore
 * A. Griewank and P. Toint, *On the unconstrained optimization of partially separable functions*, Numerische Nonlinear Optimization 1981, 39, pp. 301--312, 1982.
 
 ## Example: the partitioned structure of a quadratic function
-Let's take the quadratic function `f` as an example 
+Let's take the quadratic function `f` as an example
 ```@example PartitionedStructures
 f(x) = x[1]^2 + x[2]^2 + x[3]^2 + x[1]*x[2] + 3x[2]*x[3]
 ```
@@ -70,12 +70,12 @@ end
 
 However, `∇f_pss` accumulates directly the element gradient and does not store the value of each element gradients `∇f1, ∇f2`.
 We would like to store every element gradient, such that afterward it is possible to build the difference element gradients required for the partitioned quasi-Newton update.
-Thus, we define the partitioned vector, from `U` and `n`, to store each element gradient and form the ∇f when required
+Thus, we define the partitioned-vector, from `U` and `n`, to store each element gradient and form the ∇f when required
 ```@example PartitionedStructures
 using PartitionedStructures
 U = [U1, U2]
 n = length(x0)
-partitioned_gradient_x0 = create_epv(U, n) # creates the partitioned vector
+partitioned_gradient_x0 = create_epv(U, n) # creates the partitioned-vector
 ```
 We set the value of each element vector to the corresponding element gradient
 ```@example PartitionedStructures
@@ -108,8 +108,8 @@ By applying the BFGS update, you satisfy the secant equation `Bs = y`
 ```@example PartitionedStructures
 B_BFGS = BFGS(s,y,B) # PartitionedStructures.jl implements BFGS
 
-using LinearAlgebra		
-@test norm(B_BFGS * s - y) == 0. # numerical verification of the secant equation 
+using LinearAlgebra
+@test norm(B_BFGS * s - y) == 0. # numerical verification of the secant equation
 ```
 but the approximation `B_BFGS` is dense.
 ```@example PartitionedStructures
@@ -117,7 +117,7 @@ B_BFGS
 ```
 
 ### Partitioned quasi-Newton approximation of the quadratic function (PBFGS)
-In order to make a sparse quasi-Newton approximation of ∇²f, you may define a partitioned matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
+In order to make a sparse quasi-Newton approximation of ∇²f, you may define a partitioned-matrix with the same partially separable structure than `partitioned_gradient_x0` where each element matrix is set to the identity
 ```@example PartitionedStructures
 partitioned_matrix = epm_from_epv(partitioned_gradient_x0)
 ```
@@ -127,14 +127,14 @@ Matrix(partitioned_matrix)
 
 The second term of the diagonal accumulates two 1.0 from the two initial element approximations.
 
-Then you compute the partitioned gradient at `x1`
+Then you compute the partitioned-gradient at `x1`
 ```@example PartitionedStructures
 partitioned_gradient_x1 = create_epv(U, n)
 set_epv!(partitioned_gradient_x1, vector_gradient_element(x1, U))
 ```
-and compute the difference of the partitioned gradients `partitioned_gradient_difference = partitioned_gradient_x1 - partitioned_gradient_x0`
+and compute the difference of the partitioned-gradients `partitioned_gradient_difference = partitioned_gradient_x1 - partitioned_gradient_x0`
 ```@example PartitionedStructures
-partitioned_gradient_difference = copy(partitioned_gradient_x0) # copy to avoid side effects on partitioned_gradient_x0 
+partitioned_gradient_difference = copy(partitioned_gradient_x0) # copy to avoid side effects on partitioned_gradient_x0
 minus_epv!(partitioned_gradient_difference) # applies a unary minus to every element gradient
 add_epv!(partitioned_gradient_x1, partitioned_gradient_difference) # add the element vector of partitioned_gradient_x1 to the correspond element vector of partitioned_gradient_difference
 
@@ -153,7 +153,7 @@ The partitioned update verifies the secant equation
 ```@example PartitionedStructures
 @test norm(B_PBFGS*s - y) == 0.
 ```
-which may also be calculated with 
+which may also be calculated with
 ```@example PartitionedStructures
 Bs = mul_epm_vector(partitioned_matrix, s) # compute the product partitioned-matrix vector
 @test norm(Bs - y) == 0.
@@ -165,13 +165,13 @@ In the first category, each element Hessian ∇²fᵢ is approximate with a dens
 In the second category, each element Hessian ∇²fᵢ is approximate with a quasi-Newton linear operator.
 
 ### Partitioned quasi-Newton operators
-Once the partitioned matrix is allocated, 
+Once the partitioned-matrix is allocated,
 ```@example PartitionedStructures
 partitioned_matrix_PBFGS = epm_from_epv(partitioned_gradient_x0)
 partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
 partitioned_matrix_PSE = epm_from_epv(partitioned_gradient_x0)
 ```
-you can apply on it any of the three partitioned updates : PBFGS, PSR1, PSE (by default) : 
+you can apply on it any of the three partitioned updates : PBFGS, PSR1, PSE (by default) :
 - PBFGS update each element approximation with BFGS;
 - PSR1 update each element approximation with SR1;
 - PSE each element approximation is update with BFGS if it is possible or with SR1 otherwise.

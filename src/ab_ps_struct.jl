@@ -8,7 +8,7 @@ export get_n, get_N, get_component_list
 export check_epv_epm, full_check_epv_epm
 export initialize_component_list!, get_ee_struct
 
-abstract type Part_struct{T} end 
+abstract type Part_struct{T} end
 
 get_n(ps :: T) where T <: Part_struct = ps.n
 get_N(ps :: T) where T <: Part_struct = ps.N

@@ -5,18 +5,18 @@ using PartitionedStructures.M_internal_pv
 using PartitionedStructures.ModElemental_ev
 using PartitionedStructures.M_abstract_element_struct
 
-@testset "first test" begin 
+@testset "first test" begin
   N = 30
   nᵢ = 50
   pev = rand_epv(N,nᵢ)
   v1 = build_v!(pev)
   v2 = build_v!(pev)
   @test v1 == v2
-  
-  piv = rand_ipv(N,nᵢ)
-end 
 
-@testset "test k-chained et build_v!" begin 
+  piv = rand_ipv(N,nᵢ)
+end
+
+@testset "test k-chained et build_v!" begin
   N = 100
   k = 4
 
@@ -30,9 +30,9 @@ end
   ipv = ipv_from_epv(epv)
   ipv_v = build_v(ipv)
   @test sum(ipv_v) == N*k
-end 
+end
 
-@testset "test fonction création epv" begin 
+@testset "test fonction création epv" begin
   # elemental
   n = 10
   N = 2
@@ -49,7 +49,7 @@ end
   epv_v = build_v(epv)
   build_v(epv)
   @test (@allocated build_v(epv)) == 0
-  
+
   # internal
   ipv = ipv_from_epv(epv)
   ipv_v = build_v(ipv)
@@ -66,7 +66,7 @@ end
 
   @test epv == copy(epv)
   @test copy(epv) != similar(epv)
-  
+
   epv2 = copy(epv)
   set_eev!(epv2, 1, 1, 5.0)
   @test epv2 != epv
@@ -86,7 +86,7 @@ end
   epv1 = ones_kchained_epv(N,k)
   epv2 = similar(epv1)
 
-  epv1 = epv2 
+  epv1 = epv2
   epv2.eev_set[1].vec[1] = 1.0
 
   @test epv1.eev_set[1].vec[1] == 1.

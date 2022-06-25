@@ -29,14 +29,14 @@ end
     eelom = init_eelom_LBFGS(elt_var; T=T)
 
 Returns an `Elemental_elom_bfgs` of type `T` based from the vector of the elemental variables`elt_var`.
-"""	
+"""
 function init_eelom_LBFGS(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
   Bie = LinearOperators.LBFGSOperator(T, nie)
   counter = Counter_elt_mat()
   eelom = Elemental_elom_bfgs{T}(nie, elt_var, Bie, counter)
   return eelom
-end 
+end
 
 """
     eelom = LBFGS_eelom_rand(nie; T=T, n=n)
@@ -44,12 +44,12 @@ end
 Returns an `Elemental_elom_bfgs` of type `T` with `nie` random indices within the range `1:n`.
 """
 function LBFGS_eelom_rand(nie :: Int; T=Float64, n=nie^2)
-  indices = rand(1:n, nie) 		
+  indices = rand(1:n, nie)
   Bie = LinearOperators.LBFGSOperator(T, nie)
   counter = Counter_elt_mat()
   eelom = Elemental_elom_bfgs{T}(nie, indices, Bie, counter)
   return eelom
-end 
+end
 
 """
     eelom = LBFGS_eelom(nie; T=T, index=index)
@@ -62,7 +62,7 @@ function LBFGS_eelom(nie :: Int; T=Float64, index=1)
   counter = Counter_elt_mat()
   eelom = Elemental_elom_bfgs{T}(nie, indices, Bie, counter)
   return eelom
-end 
+end
 
 """
     reset_eelom_bfgs!(eelom)

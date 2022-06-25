@@ -8,12 +8,12 @@ module M_3_parallel
 
   export third_parallel, third_parallel!
 
-  function third_parallel(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T	
+  function third_parallel(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T
     epv_x = similar(epv_b)
     res = Vector{T}(undef, get_n(epm_A))
     third_parallel!(epm_A, epv_b, epv_x, res)
     return res
-  end 
+  end
 
   function third_parallel!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, res :: Vector{T};
           etol::Float64=1e-6,
@@ -23,20 +23,20 @@ module M_3_parallel
     n = get_n(epm_A)
     length(res) == n || @error("wrong size res first_parallel!")
     vector_bool = zeros(Bool,n)
-    
+
     #résolution de chaque system linéaire élément
     for i in [1:N;]
       set_eev!(epv_x, i, get_eem_set_Bie(epm_A,i)\get_eev_value(epv_b,i))
-    end 
-    #trouver les indices du gradient 
+    end
+    #trouver les indices du gradient
     grad = Vector(epv_b)
     # order = reverse(sortperm(grad))
     order = sortperm(grad)
-    
+
     #procédure pour chaque coordonnée par ordre d'importance du gradient
-    for index in order 			
+    for index in order
       subproblem3!(epm_A, epv_b, epv_x, index, vector_bool, res)
-    end 
+    end
     # res est maintenant complètement défini
     epv_res = similar(epv_b)
     epv_from_v!(epv_res,res)
@@ -49,16 +49,16 @@ module M_3_parallel
         index = order[i]
         # @show index, res[index]
         subproblem3!(epm_A, epv_b, epv_x, index, vector_bool, res)
-      end 
+      end
       cpt+=1
-      norm = norm2(mul_epm_vector(epm_A, res) - grad)			
+      norm = norm2(mul_epm_vector(epm_A, res) - grad)
       # println("cpt:", cpt, "\tnorm: ", norm )
-    end 
+    end
     return res
-  end 
+  end
 
   """
-      subproblem(epm_A, epv_b, epv_x, comp_list, i) 
+      subproblem(epm_A, epv_b, epv_x, comp_list, i)
   define the subproblem which must be solve for the i-th variable
   """
   function subproblem3!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, index :: Int, vector_bool:: Vector{Bool}, res :: Vector{T}) where T
@@ -74,7 +74,7 @@ module M_3_parallel
     _columns1 = Vector{Elemental_elt_vec{T}}(undef,length(comp_list))
     for (idx,val) in enumerate(comp_list)
       eev = get_eev(epv_x, val) # retrieve elemental element vector
-      _indices[idx] = findfirst((id->id==index), eev.indices) # find the corresponding index 
+      _indices[idx] = findfirst((id->id==index), eev.indices) # find the corresponding index
       _x[idx] = get_vec(eev,_indices[idx]) # store the result
       eem = get_eem_set(epm_A,val)
       vec = get_Bie(eem)[:,_indices[idx]] #la colonne de A associé à la variable xᵢ
@@ -85,20 +85,20 @@ module M_3_parallel
     tmp_epv = create_epv(_columns1)
 
     _columns2 = Vector{Elemental_elt_vec{T}}([])
-    other_scalars = Vector{T}([]) # constant vecteur	
-    for i in other_indices	
+    other_scalars = Vector{T}([]) # constant vecteur
+    for i in other_indices
       for (idx,val) in enumerate(comp_list)
-        eev = get_eev(epv_x, val) # retrieve elemental element vector				
-        tmp = findfirst((id->id==i), eev.indices) # find the corresponding index 
+        eev = get_eev(epv_x, val) # retrieve elemental element vector
+        tmp = findfirst((id->id==i), eev.indices) # find the corresponding index
         if tmp != nothing
-          push!(other_scalars, get_vec(eev,tmp) - res[i]) # the difference between the element linear system solution and the current solution				
+          push!(other_scalars, get_vec(eev,tmp) - res[i]) # the difference between the element linear system solution and the current solution
           eem = get_eem_set(epm_A,val)
           vec = get_Bie(eem)[:,tmp] #la colonne de A associé à la variable xᵢ
           indices = get_indices(eem)
           nie = get_nie(eem)
           push!(_columns2, Elemental_elt_vec{T}(vec,indices,nie))
-        end 
-      end 
+        end
+      end
     end
     # other_epv = create_epv(_columns2)
 
@@ -115,12 +115,12 @@ module M_3_parallel
     f_prim(xi) = sum(multiplicator .* val(xi))
 
     f_seconde() = sum((v -> 2*(v^2)).(scale_epv(tmp_epv, ones(T,length(comp_list)))))
-    
-    # _bary = mean(_x)		
+
+    # _bary = mean(_x)
     # xk = _bary
     vector_bool[index] == false ? xk = 1. : xk = res[index]
-    
-    # @show xk, f(xk), f_prim(xk), f_seconde()		
+
+    # @show xk, f(xk), f_prim(xk), f_seconde()
     s1 = f_prim(xk)/f_seconde()
     s2 = -f_prim(xk)/f_seconde()
     # @show s1,s2
@@ -129,13 +129,13 @@ module M_3_parallel
     # @show f(xk + s1), f(xk + s2)
     if f(xk + s1) < f(xk + s2)
       xi_opt = xk + s1
-    else 			
+    else
       xi_opt = xk + s2
-    end 
+    end
     # @show xi_opt
-    vector_bool[index]	= true
-    res[index] = xi_opt				
-    return xi_opt				
-  end 
+    vector_bool[index]= true
+    res[index] = xi_opt
+    return xi_opt
+  end
 
 end 

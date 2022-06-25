@@ -36,7 +36,7 @@ function init_eelom_LSR1(elt_var :: Vector{Int}; T=Float64)
   counter = Counter_elt_mat()
   eelom = Elemental_elom_sr1{T}(nie, elt_var, Bie, counter)
   return eelom
-end 
+end
 
 """
     eelom =LSR1_eelom_rand(nie, T=T, n=n)
@@ -44,12 +44,12 @@ end
 Returns an `Elemental_elom_sr1` of type `T` with `nie` random indices within the range `1:n`.
 """
 function LSR1_eelom_rand(nie :: Int; T=Float64, n=nie^2)
-  indices = rand(1:n, nie) 		
+  indices = rand(1:n, nie)
   Bie = LinearOperators.LSR1Operator(T, nie)
   counter = Counter_elt_mat()
-  eelom = Elemental_elom_sr1{T}(nie, indices, Bie, counter)    
+  eelom = Elemental_elom_sr1{T}(nie, indices, Bie, counter)
   return eelom
-end 
+end
 
 """
     eelom = LSR1_eelom(nie, T=T, index=index)
@@ -60,9 +60,9 @@ function LSR1_eelom(nie :: Int; T=Float64, index=1)
   indices = [index:1:index+nie-1;]
   Bie = LinearOperators.LSR1Operator(T, nie)
   counter = Counter_elt_mat()
-  eelom = Elemental_elom_sr1{T}(nie, indices, Bie, counter)    
+  eelom = Elemental_elom_sr1{T}(nie, indices, Bie, counter)
   return eelom
-end 
+end
 
 """
     index_eelom_sr1!(eelom)

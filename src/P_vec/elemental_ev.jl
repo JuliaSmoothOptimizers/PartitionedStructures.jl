@@ -8,20 +8,20 @@ import Base.==, Base.copy, Base.similar
 export Elemental_elt_vec
 export ones_eev, new_eev, specific_ones_eev
 export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
-  
+
 # we assume that the values of vec are associate to indices.
 """
 Elemental_elt_vec{T} <: Elt_vec{T}
 
     Type that represents an elemental element vector.
-"""  
+"""
 mutable struct Elemental_elt_vec{T} <: Elt_vec{T}
   vec :: Vector{T} # length(vec) == nᵢᴱ
   indices :: Vector{Int} # length(indices) == nᵢᴱ
   nie :: Int
 end
 
-@inline (==)(eev1 :: Elemental_elt_vec{T}, eev2 :: Elemental_elt_vec{T}) where T = (get_indices(eev1) == get_indices(eev2)) && (get_vec(eev1) == get_vec(eev2)) && (get_nie(eev1) == get_nie(eev2))		
+@inline (==)(eev1 :: Elemental_elt_vec{T}, eev2 :: Elemental_elt_vec{T}) where T = (get_indices(eev1) == get_indices(eev2)) && (get_vec(eev1) == get_vec(eev2)) && (get_nie(eev1) == get_nie(eev2))
 @inline similar(eev :: Elemental_elt_vec{T}) where T = Elemental_elt_vec{T}(Vector{T}(undef,get_nie(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 @inline copy(eev :: Elemental_elt_vec{T}) where T = Elemental_elt_vec{T}(Vector{T}(get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 
@@ -44,7 +44,7 @@ Create an elemental element vector, with `nie` values at `1` placed at indices w
 
 Create an elemental element vector, with `nie` randoms values multiplied by `mul` placed at indices in range `index:index+nie`, with .
 """
-@inline specific_ones_eev(nie :: Int,index :: Int; T=Float64, mul :: Float64=1.) = Elemental_elt_vec((xi -> mul*xi).(rand(T, nie)), [index:index+nie-1;], nie)	
+@inline specific_ones_eev(nie :: Int,index :: Int; T=Float64, mul :: Float64=1.) = Elemental_elt_vec((xi -> mul*xi).(rand(T, nie)), [index:index+nie-1;], nie)
 
 """
     eev_from_sparse_vec(sparse_vec)
@@ -65,7 +65,7 @@ end
 Create a sparse vector from the element element vector eev.
 """
 sparse_vec_from_eev(eev :: Elemental_elt_vec{T}; n :: Int=maximum(get_indices(eev))) where T = sparsevec(get_indices(eev), get_vec(eev), n)
-  
+
 """
     create_eev(vector_indices)
 
@@ -76,6 +76,6 @@ function create_eev(elt_var :: Vector{Int}; type=Float64)
   eev_value = rand(type, nie)
   eev = Elemental_elt_vec{type}(eev_value, elt_var, nie)
   return eev
-end 
+end
 
 end

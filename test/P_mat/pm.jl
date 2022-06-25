@@ -4,7 +4,7 @@ using PartitionedStructures.ModElemental_em
 using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_part_mat
 
-@testset "first tests on epm" begin 
+@testset "first tests on epm" begin
   N = 4
   n = 10
   nie = 3
@@ -36,7 +36,7 @@ using PartitionedStructures.M_part_mat
   perm_spm1 = copy(get_spm(pm1))
   perm_pm1 = copy(pm1)
   @test perm_pm1 != original_spm1
-end 
+end
 
 @testset "pm PartiallySeparableNLPModels" begin
   N = 15

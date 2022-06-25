@@ -36,13 +36,13 @@ export get_v, build_v!
 export get_eev_value
 
 export Part_mat
-export Elemental_pv, Elemental_pm, Elemental_plom_bfgs  
+export Elemental_pv, Elemental_pm, Elemental_plom_bfgs
 export identity_epm, identity_eplom_LBFGS, identity_eplom_LSR1, identity_eplom_LOSE
 
 export update, update!
 export PBFGS_update!, PBFGS_update
 export PSR1_update!, PSR1_update
-export PSE_update, PSE_update!  
+export PSE_update, PSE_update!
 export PLBFGS_update, PLBFGS_update!
 export PLSR1_update, PLSR1_update!
 export PLSE_update, PLSE_update!
@@ -50,7 +50,7 @@ export PLSE_update, PLSE_update!
 export full_check_epv_epm
 export epm_from_epv, eplom_lbfgs_from_epv, eplom_lose_from_epv, eplom_lsr1_from_epv
 export create_epv_eplom, epv_from_eplom, epv_from_epm
-export mul_epm_vector, mul_epm_vector!, mul_epm_epv  
+export mul_epm_vector, mul_epm_vector!, mul_epm_epv
 export Counter_elt_mat, string_counters_iter, string_counters_total
 export prod_part_vectors
 

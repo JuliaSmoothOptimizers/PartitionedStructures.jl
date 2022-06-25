@@ -32,7 +32,7 @@ Creates a `nie` identity elemental element matrix of type `T` based from the vec
 function create_id_eem(elt_var :: Vector{Int}; T=Float64)
   nie = length(elt_var)
   Bie = zeros(T, nie, nie)
-  [Bie[i, i]=1 for i in 1:nie]  
+  [Bie[i, i]=1 for i in 1:nie]
   counter = Counter_elt_mat()
   eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter)
   return eem
@@ -43,27 +43,27 @@ end
 
 Returns a `nie` identity elemental element matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function identity_eem(nie :: Int; T=Float64, n=nie^2) 
+function identity_eem(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
   Bie = zeros(T, nie, nie)
-  [Bie[i, i]=1 for i in 1:nie]		
+  [Bie[i, i]=1 for i in 1:nie]
   counter = Counter_elt_mat()
   eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter)
   return eem
-end 
+end
 
 """
     eem = ones_eem(nie; T=T, n=n)
 
 Returns a `nie` ones elemental element matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function ones_eem(nie :: Int; T=Float64, n=nie^2) 
+function ones_eem(nie :: Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
-  Bie = ones(T, nie, nie)		
+  Bie = ones(T, nie, nie)
   counter = Counter_elt_mat()
   eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter)
   return eem
-end 
+end
 
 """
     eem = fixed_ones_eem(index, nie; type=T, mul=mul)
@@ -72,14 +72,14 @@ Creates a `nie` elemental element matrix of type `T` at indices `index:index+nie
 All the components of the element matrix are set to `1` except the diagonal terms that are set to `mul`.
 This method is used to define diagonal dominant element matrix.
 """
-function fixed_ones_eem(i :: Int, nie :: Int; T=Float64, mul=5.) 
+function fixed_ones_eem(i :: Int, nie :: Int; T=Float64, mul=5.)
   indices = [i:(i+nie-1);]
-  Bie = ones(T, nie, nie)		
+  Bie = ones(T, nie, nie)
   [Bie[i, i] = mul for i in 1:nie]
   counter = Counter_elt_mat()
   eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter)
   return eem
-end 
+end
 
 """
     eem = one_size_bloc(index; T=T)

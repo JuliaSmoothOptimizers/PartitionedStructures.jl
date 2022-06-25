@@ -24,7 +24,7 @@ mutable struct Elemental_plom{T} <: Part_LO_mat{T}
   spm :: SparseMatrixCSC{T,Int}
   L :: SparseMatrixCSC{T,Int}
   component_list :: Vector{Vector{Int}}
-  permutation :: Vector{Int} # n-size vector 
+  permutation :: Vector{Int} # n-size vector
 end
 
 """
@@ -51,7 +51,7 @@ Returns the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 @inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
 @inline copy(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 @inline similar(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
-  
+
 """
     identity_eplom_LOSE(vec_indices, N, n; T=T)
 
@@ -76,12 +76,12 @@ Creates an elemental partitionned limited-memory operator PLSE of `N` (deduced f
 Each element overlaps the coordinates of the next element by `overlapping` components.
 Each element is randomly (rand() > p) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
 """
-function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)		
+function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)
   overlapping < nie || error("l'overlapping doit être plus faible que nie")
   mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
 
   indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
-  eelom_set = map(i -> rand() > prob ? LBFGS_eelom(nie;T=T,index=i) : LSR1_eelom(nie;T=T,index=i), indices)	
+  eelom_set = map(i -> rand() > prob ? LBFGS_eelom(nie;T=T,index=i) : LSR1_eelom(nie;T=T,index=i), indices)
   N = length(indices)
   spm = spzeros(T,n,n)
   L = spzeros(T,n,n)
@@ -90,7 +90,7 @@ function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, pr
   eplom = Elemental_plom{T}(N,n,eelom_set,spm,L,component_list,no_perm)
   initialize_component_list!(eplom)
   return eplom
-end 
+end
 
 """
     PLBFGS_eplom_rand(N,n; type, nie)
@@ -99,14 +99,14 @@ Create an elemental partitionned limited-memory operator PLSE of `N` elemental e
 The size of each element is `nie`, whose positions are random in the range `1:n`.
 Each element is randomly (rand() > p) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
 """
-function PLBFGSR1_eplom_rand(N :: Int, n ::Int; T=Float64, nie::Int=5, prob=0.5)		
+function PLBFGSR1_eplom_rand(N :: Int, n ::Int; T=Float64, nie::Int=5, prob=0.5)
   eelom_set = map(i -> rand() > prob ? LBFGS_eelom_rand(nie;T=T,n=n) : LSR1_eelom_rand(nie;T=T,n=n), [1:N;])
   spm = spzeros(T,n,n)
   L = spzeros(T,n,n)
   component_list = map(i -> Vector{Int}(undef,0), [1:n;])
   no_perm = [1:n;]
   eplom = Elemental_plom{T}(N,n,eelom_set,spm,L,component_list,no_perm)
-  initialize_component_list!(eplom)	
+  initialize_component_list!(eplom)
   return eplom
 end
 

@@ -4,17 +4,17 @@ using ..M_part_mat, ..ModElemental_pm
 
 """
     frontale!(epm)
-    
-Produce the Cholesky factorization of the elemental partitioned matrix `epm` using a frontal method.
+
+Produce the Cholesky factorization of the elemental partitioned-matrix `epm` using a frontal method.
 The sparse factor `L` is stored in `epm.L`.
 """
-function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T	
+function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T
   if perm != [1:get_n(epm);]
     permute!(epm, perm) # apply the permutation
   end
   set_spm!(epm) #(re)-build the sparse matrix of epm
   set_L_to_spm!(epm) # copy on spm on L
-  
+
 
   N = get_N(epm)
   n = get_n(epm)
@@ -44,14 +44,14 @@ function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) wh
         for up_var in _current_var+1:j-1
           v_up = get_L(epm,j,up_var) - ( f_cr_j * get_L(epm,up_var,_current_var))
           set_L!(epm,j,up_var,v_up)
-        end 
+        end
         # update of the j-th pivot
         v_up = get_L(epm,j,j) - f_cr_j^2
         set_L!(epm,j,j,v_up)
-      end 						
-    end 			
-    not_treated[_current_var] = false	# update of boolean list
-    actualise_front!(front, not_treated) # deleting the _current_var of the front 
+      end
+    end
+    not_treated[_current_var] = false# update of boolean list
+    actualise_front!(front, not_treated) # deleting the _current_var of the front
   end
   return get_L(epm)
 end

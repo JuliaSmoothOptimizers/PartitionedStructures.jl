@@ -31,7 +31,7 @@ using PartitionedStructures.M_abstract_element_struct
   @test get_vec(ev2) == v2
   @test get_indices(ev2) == i2
   @test get_lin_comb(ev2) == lc2
-end 
+end
 
 @testset "Test ev min/max indices" begin
   for i in 1:20
@@ -44,9 +44,9 @@ end
     n_min = min_indices(elt_ev_set)
     @test n_max <= nᵢ^2
     @test n_min <= nᵢ^2
-    @test n_max >= 0	
+    @test n_max >= 0
     @test n_min >= 0
-  end 
+  end
 end
 
 @testset "interface SparseVector" begin
@@ -58,7 +58,7 @@ end
   _sx = sparse_vec_from_eev(ex; n=n)
   _ex = eev_from_sparse_vec(sx)
 
-  @test sx == _sx	
+  @test sx == _sx
   @test ex == _ex
 
   # hardcode
@@ -66,17 +66,17 @@ end
   ex = Elemental_elt_vec([1:3;],[1:2:5;],3)
   _sx = sparse_vec_from_eev(ex; n=n)
   _ex = eev_from_sparse_vec(sx)
-  
+
   @test _sx == sx
   @test _ex == ex
 
-  #internal 
+  #internal
   nᵢᴱ = 5
   eev1 = Elemental_elt_vec([1:5;],[1:2:9;],nᵢᴱ)
   v1 = get_vec(eev1)
   i1 = get_indices(eev1)
   lin_com = spzeros(eltype(v1),nᵢᴱ,nᵢᴱ) # identity matrix Matrix(I,n,n) didn't work
-  [lin_com[i,i] = 1 for i in 1:nᵢᴱ] 
+  [lin_com[i,i] = 1 for i in 1:nᵢᴱ]
   sv = sparsevec(i1,v1)
   _tmp = rand(Int,nᵢᴱ)
 
