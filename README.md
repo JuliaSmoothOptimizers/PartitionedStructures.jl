@@ -63,8 +63,8 @@ Method                 | Description
 `mul_epm_vector`       | Returns the vector resulting of a product partitioned-matrix vector
 `build_v!`             | Builds the vector associated to a partitioned-vector
 `get_v`                | Returns the vector associated to a partitioned-vector  **Warning: it doesn't build the vector**
-`set_epv!`             | Sets the value of every element vectors
-`minus_epv!`           | Applies a unary minus on every element vector of a partitioned-vector
+`set_epv!`             | Sets the value of every element-vectors
+`minus_epv!`           | Applies a unary minus on every element-vector of a partitioned-vector
 `add_epv!`             | Performs an elementwise addition between two partitioned-vectors
 
 

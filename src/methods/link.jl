@@ -16,7 +16,7 @@ export string_counters_iter, string_counters_total
     epv = epv_from_eplom(epm)
 
 Create an elemental partitioned-vector `epv` with the same partitioned structure than `eplom`.
-Each element vector of `epv` is set to a random vector of suitable size.
+Each element-vector of `epv` is set to a random vector of suitable size.
 """
 @inline epv_from_eplom(eplom) = epv_from_epm(eplom)
 
@@ -24,7 +24,7 @@ Each element vector of `epv` is set to a random vector of suitable size.
     epv = epv_from_epm(epm)
 
 Create an elemental partitioned-vector `epv` with the same partitioned structure than `epm`.
-Each element vector of `epv` is set to a random vector of suitable size.
+Each element-vector of `epv` is set to a random vector of suitable size.
 """
 function epv_from_epm(epm :: T) where T <: Part_mat{Y} where Y <: Number
   N = get_N(epm)

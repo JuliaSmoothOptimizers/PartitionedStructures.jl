@@ -74,7 +74,7 @@ Get the matrix of the `i`-th elemental element-matrix of `epm`.
 """
 @inline get_eem_set_Bie(epm :: Elemental_pm{T}, i :: Int) where T = get_Bie(get_eem_set(epm, i))
 
-@inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1).== get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
+@inline (==)(epm1 :: Elemental_pm{T}, epm2 :: Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1) == get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
 @inline copy(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), copy.(get_eem_set(epm)), copy(get_spm(epm)), copy(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
 @inline similar(epm :: Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), similar.(get_eem_set(epm)), similar(get_spm(epm)), similar(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
 
@@ -200,7 +200,7 @@ end
     part_mat(;n=n, T=T, nie=nie, overlapping=overlapping, mul=mul)
 
 Define a elemental partitioned-matrix formed by `N` (deduced from `n` and `nie`) elemental element-matrices of size `nie`.
-Each elemental element-matrix overlaps the previousand the next element by `overlapping`.
+Each elemental element-matrix overlaps the previous and the next element by `overlapping`.
 """
 function part_mat(;n :: Int=9, T=Float64, nie :: Int=5, overlapping :: Int=1, mul=5.)
   overlapping < nie || error("the overlapping must be lower than nie")

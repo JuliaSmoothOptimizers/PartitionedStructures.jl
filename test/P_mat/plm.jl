@@ -38,7 +38,6 @@ end
   @test mapreduce((x -> x>0), my_and, eigvals(B)) # test definite positiveness
 end
 
-
 @testset "test elemental partitioned linear operator matrix (PLSR1 operator)" begin
   n=10
   nie=4
@@ -68,8 +67,9 @@ end
   n = 20
   nie = 5
   s = rand(n)
-  element_variables = map( (i -> rand(1:n,nie) ),1:N)
+  element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LBFGS(element_variables, N, n)
+  @test eplom == identity_eplom_LBFGS(element_variables)
   epv = epv_from_epm(eplom)
   update(eplom, epv, s)
 end
@@ -79,8 +79,9 @@ end
   n = 20
   nie = 5
   s = rand(n)
-  element_variables = map( (i -> rand(1:n,nie) ),1:N)
+  element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LSR1(element_variables, N, n)
+  @test eplom == identity_eplom_LSR1(element_variables)
   epv = epv_from_epm(eplom)
   update(eplom, epv, s)
 end
@@ -89,9 +90,10 @@ end
   N = 15
   n = 20
   nie = 5
-  s = rand(n)
-  element_variables = map( (i -> rand(1:n,nie) ),1:N)
+  element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LOSE(element_variables, N, n)
+  @test eplom == identity_eplom_LOSE(element_variables)
+  s = rand(n)
   epv = epv_from_epm(eplom)
   update(eplom, epv, s)
 end

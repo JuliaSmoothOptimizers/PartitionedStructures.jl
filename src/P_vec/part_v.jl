@@ -38,9 +38,9 @@ Add `value` (resp `values`) to the vector associated to the partitioned-vector `
 """
     build_v(pv)
 
-Build the vector v from the partitionned vector pv.
-Call specialised method depending the type of the element vector inside pv
-For now if there is mix of elemental and internal element vectors it must be previously transform as internal partitioned-vector.
+Build the vector v from the partitioned-vector pv.
+Call specialised method depending the type of the element-vector inside pv
+For now if there is mix of elemental and internal element-vectors it must be previously transform as internal partitioned-vector.
 """
 @inline build_v(pv :: T) where T <: Part_v = begin build_v!(pv); return get_v(pv) end
 @inline build_v!(pv :: T) where T <: Part_v = error("M_part_v.build_v!() should not be call")

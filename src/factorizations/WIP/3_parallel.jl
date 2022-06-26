@@ -73,7 +73,7 @@ module M_3_parallel
     _indices = Vector{Int}(undef,length(comp_list))
     _columns1 = Vector{Elemental_elt_vec{T}}(undef,length(comp_list))
     for (idx,val) in enumerate(comp_list)
-      eev = get_eev(epv_x, val) # retrieve elemental element vector
+      eev = get_eev(epv_x, val) # retrieve elemental element-vector
       _indices[idx] = findfirst((id->id==index), eev.indices) # find the corresponding index
       _x[idx] = get_vec(eev,_indices[idx]) # store the result
       eem = get_eem_set(epm_A,val)
@@ -88,7 +88,7 @@ module M_3_parallel
     other_scalars = Vector{T}([]) # constant vecteur
     for i in other_indices
       for (idx,val) in enumerate(comp_list)
-        eev = get_eev(epv_x, val) # retrieve elemental element vector
+        eev = get_eev(epv_x, val) # retrieve elemental element-vector
         tmp = findfirst((id->id==i), eev.indices) # find the corresponding index
         if tmp != nothing
           push!(other_scalars, get_vec(eev,tmp) - res[i]) # the difference between the element linear system solution and the current solution

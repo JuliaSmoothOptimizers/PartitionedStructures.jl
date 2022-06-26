@@ -17,8 +17,8 @@ If you take a look at the code, you will see some
 
 Acronyms  | Description
 ----------|------------
-`eev`     | elemental element vector
-`iev`     | internal element vector
+`eev`     | elemental element-vector
+`iev`     | internal element-vector
 `epv`     | elemental partitioned-vector
 `ipv`     | internal partitioned-vector
 `eem`     | elemental element-matrix

@@ -9,7 +9,7 @@ include("utils.jl")
 include("ab_elt_struct.jl")
 include("ab_ps_struct.jl")
 
-# Define the partitionned vector and the partitionned matrices
+# Define the partitioned-vector and the partitionned matrices
 include("P_vec/_include.jl")
 include("P_mat/_include.jl")
 

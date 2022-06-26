@@ -77,11 +77,11 @@ U = [U1, U2]
 n = length(x0)
 partitioned_gradient_x0 = create_epv(U, n) # creates the partitioned-vector
 ```
-We set the value of each element vector to the corresponding element gradient
+We set the value of each element-vector to the corresponding element gradient
 ```@example PartitionedStructures
 vector_gradient_element(x, U) = [∇f1(x[U[1]]), ∇f2(x[U[2]])] :: Vector{Vector{Float64}} # returns every element gradient
 
-set_epv!(partitioned_gradient_x0, vector_gradient_element(x0, U)) # sets each element vector to its corresponding element gradient
+set_epv!(partitioned_gradient_x0, vector_gradient_element(x0, U)) # sets each element-vector to its corresponding element gradient
 
 build_v!(partitioned_gradient_x0) # builds the gradient vector
 @test get_v(partitioned_gradient_x0) == ∇f(x0) # with the same value as the gradient
@@ -136,7 +136,7 @@ and compute the difference of the partitioned-gradients `partitioned_gradient_di
 ```@example PartitionedStructures
 partitioned_gradient_difference = copy(partitioned_gradient_x0) # copy to avoid side effects on partitioned_gradient_x0
 minus_epv!(partitioned_gradient_difference) # applies a unary minus to every element gradient
-add_epv!(partitioned_gradient_x1, partitioned_gradient_difference) # add the element vector of partitioned_gradient_x1 to the correspond element vector of partitioned_gradient_difference
+add_epv!(partitioned_gradient_x1, partitioned_gradient_difference) # add the element-vector of partitioned_gradient_x1 to the correspond element-vector of partitioned_gradient_difference
 
 build_v!(partitioned_gradient_difference) # computes the vector y
 @test get_v(partitioned_gradient_difference) == y

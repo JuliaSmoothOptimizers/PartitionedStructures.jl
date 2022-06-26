@@ -1,5 +1,7 @@
 module ModElemental_plom
+
 using SparseArrays, LinearOperators
+using ..Utils
 using ..M_part_mat, ..M_abstract_part_struct
 using ..M_elt_mat, ..M_abstract_element_struct, ..ModElemental_elom_bfgs, ..ModElemental_elom_sr1
 
@@ -48,16 +50,19 @@ Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom :: Elemental_plom{T}, i :: Int) where T = get_eelom_set(eplom, i)
 
-@inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) .== get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
+@inline (==)(eplom1 :: Elemental_plom{T}, eplom2 :: Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) == get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
 @inline copy(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 @inline similar(eplom :: Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 
 """
+    identity_eplom_LOSE(vec_indices; N, n, T=T)
     identity_eplom_LOSE(vec_indices, N, n; T=T)
 
 Create an elemental partitionned limited-memory operator of `N` elemental element linear operators initialized with LBFGS operators.
 The positions are given by the vector of the element variables `element_variables`.
 """
+identity_eplom_LOSE(element_variables :: Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64) = identity_eplom_LOSE(element_variables, N, n; T)
+
 function identity_eplom_LOSE(element_variables :: Vector{Vector{Int}}, N :: Int, n :: Int; T=Float64)
   eelom_set = map( (elt_var -> init_eelom_LBFGS(elt_var; T=T)), element_variables)
   spm = spzeros(T, n, n)

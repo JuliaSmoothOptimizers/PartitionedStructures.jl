@@ -13,7 +13,7 @@ export create_ipv, ipv_from_epv, rand_ipv
 """
 Internal_elt_vec{T} <: Elt_vec{T}
 
-    Type that represents an internal element vector.
+    Type that represents an internal element-vector.
 """
 mutable struct Internal_pv{T} <: Part_v{T}
   N :: Int
@@ -44,7 +44,7 @@ end
 """
     new_internal_pv(N,n;nᵢ,T)
 
-Define an internal partitionned vector of N elemental nᵢ-sized vector simulating a n-sized T-vector.
+Define an internal partitioned-vector of N elemental nᵢ-sized vector simulating a n-sized T-vector.
 """
 function rand_ipv(N :: Int,n :: Int; nᵢ=3, T=Float64)
   iev_set = Vector{Internal_elt_vec{T}}(undef,N)

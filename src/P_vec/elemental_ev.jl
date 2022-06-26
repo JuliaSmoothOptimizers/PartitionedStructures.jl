@@ -11,9 +11,9 @@ export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
 
 # we assume that the values of vec are associate to indices.
 """
-Elemental_elt_vec{T} <: Elt_vec{T}
+    Elemental_elt_vec{T} <: Elt_vec{T}
 
-    Type that represents an elemental element vector.
+Type that represents an elemental element-vector.
 """
 mutable struct Elemental_elt_vec{T} <: Elt_vec{T}
   vec :: Vector{T} # length(vec) == nᵢᴱ
@@ -26,31 +26,31 @@ end
 @inline copy(eev :: Elemental_elt_vec{T}) where T = Elemental_elt_vec{T}(Vector{T}(get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 
 """
-    new_eev(nie; T, n)
+    eem = new_eev(nie; T, n)
 
-Create an elemental element vector, with `nie` randoms values placed at indices within the range `1:n`.
+Create an elemental element-vector of size `nie`, with random values and whose the indices are within the range `1:n`.
 """
 @inline new_eev(nᵢ :: Int; T=Float64, n=nᵢ^2) = Elemental_elt_vec(rand(T,nᵢ), sample(1:n, nᵢ, replace = false), nᵢ)
 
 """
-    ones_eev(nie; T, n)
+    eem = ones_eev(nie; T, n)
 
-Create an elemental element vector, with `nie` values at `1` placed at indices within the range `1:n`.
+Create an elemental element-vector of size `nie` with values set to `1` and whose the indices are within the range `1:n`.
 """
 @inline ones_eev(nᵢ :: Int; T=Float64, n=nᵢ^2) = Elemental_elt_vec(ones(T,nᵢ), sample(1:n, nᵢ, replace = false), nᵢ)
 
 """
-    specific_ones_eev(nie, index; T, mul)
+    eem = specific_ones_eev(nie, index; T, mul)
 
-Create an elemental element vector, with `nie` randoms values multiplied by `mul` placed at indices in range `index:index+nie`, with .
+Create an elemental element-vector of size `nie`, of random values multiplied by `mul` and whose indices are in range `index:index+nie`.
 """
-@inline specific_ones_eev(nie :: Int,index :: Int; T=Float64, mul :: Float64=1.) = Elemental_elt_vec((xi -> mul*xi).(rand(T, nie)), [index:index+nie-1;], nie)
+@inline specific_ones_eev(nie :: Int, index :: Int; T=Float64, mul :: Float64=1.) = Elemental_elt_vec((xi -> mul*xi).(rand(T, nie)), [index:index+nie-1;], nie)
 
 """
-    eev_from_sparse_vec(sparse_vec)
+    eem = eev_from_sparse_vec(sparse_vec)
 
-eev_from_sparse_vec is an interface with SparseArrays.SparseVector.
-The indices and the values of the elemental element vector are define using findnz(sparse_vec).
+Define an elemental element-vector from a `SparseVector` `sparsevec`.
+The indices and the values are define with `findnz(sparse_vec)`.
 """
 function eev_from_sparse_vec(v :: SparseVector{T,Y}) where {T, Y}
   (indices, vec) = findnz(v)
@@ -60,16 +60,17 @@ function eev_from_sparse_vec(v :: SparseVector{T,Y}) where {T, Y}
 end
 
 """
-    sparse_vec_from_eev(eev)
+    sp_vec = sparse_vec_from_eev(eev)
 
-Create a sparse vector from the element element vector eev.
+Create a `SparseVector` from the element element-vector `eev`.
 """
 sparse_vec_from_eev(eev :: Elemental_elt_vec{T}; n :: Int=maximum(get_indices(eev))) where T = sparsevec(get_indices(eev), get_vec(eev), n)
 
 """
-    create_eev(vector_indices)
+    eem = create_eev(elt_var)
 
-Create a random elemental element vector from `vector_indices`.
+Create a random elemental element-vector `eem` from the elemental variables `elt_var`.
+`eem` is set to random values.
 """
 function create_eev(elt_var :: Vector{Int}; type=Float64)
   nie = length(elt_var)

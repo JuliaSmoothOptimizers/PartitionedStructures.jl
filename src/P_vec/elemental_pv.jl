@@ -1,6 +1,7 @@
 module ModElemental_pv
 using SparseArrays
 
+using ..Utils
 using ..M_abstract_element_struct, ..M_elt_vec, ..ModElemental_ev # element modules
 using ..M_abstract_part_struct, ..M_part_v  # partitoned modules
 
@@ -18,9 +19,9 @@ export epv_from_epv!, epv_from_v, epv_from_v!
 export prod_part_vectors
 
 """
-Elemental_pv{T} <: Part_v{T}
+    Elemental_pv{T} <: Part_v{T}
 
-    Type that represents an elemental partitioned-vector.
+Type that represents an elemental partitioned-vector.
 """
 mutable struct Elemental_pv{T} <: Part_v{T}
   N :: Int
@@ -52,9 +53,9 @@ end
 @inline copy(ep :: Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), copy.(get_eev_set(ep)), Vector{T}(get_v(ep)))
 
 """
-    build_v!(pv)
+    build_v!(epv)
 
-Build from pv the vector v according to the information of each {evᵢ}ᵢ
+Build the vector `epv.v` by accumulating the contribution of each elemental element-vector.
 """
 function M_part_v.build_v!(epv :: Elemental_pv{T}) where T
   reset_v!(epv)
@@ -80,15 +81,14 @@ end
 """
     minus_epv!(epv)
 
-Build in place the -epv, by inversing the value of each elemental element vector.
+Build in place the `-epv`, by inversing the value of each elemental element-vector.
 """
 minus_epv!(epv :: Elemental_pv{T}) where T <: Number = map( (eev -> set_minus_vec!(eev)), get_eev_set(epv))
 
 """
-    add_epv!(epv1,epv2)
+    add_epv!(epv1, epv2)
 
-Build in place of epv2 the addition of epv1 and epv2.
-Concretely each corresponding elemental vector will be add.
+Build in place of `epv2` the elementwise addition of `epv1` and `epv2`.
 """
 function add_epv!(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T <: Number
   full_check_epv_epm(epv1,epv2) || @error("epv1 mismatch epv2 in add_epv!")
@@ -100,16 +100,21 @@ function add_epv!(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T <: N
 end
 
 """
-    create_elemental_pv(elt_ev_set)
+    epv = create_epv(eev_set)
+    epv = create_epv(eev_set, n)
 
-create an elemental partitioned-vector from a collection (vector) of: sparse vector, elemental element vector or a vector of indices.
+Create an elemental partitioned-vector from a vector `eev_set` of: `SparseVector`, elemental element-vector or a vector of indices.
 """
 @inline create_epv(sp_set :: Vector{SparseVector{T,Y}}; kwargs...) where {T,Y} = create_epv(eev_from_sparse_vec.(sp_set); kwargs...)
+
 function create_epv(eev_set :: Vector{Elemental_elt_vec{T}}; n=max_indices(eev_set)) where T
   N = length(eev_set)
   v = zeros(T,n)
   Elemental_pv{T}(N, n, eev_set, v)
 end
+
+@inline create_epv(vec_elt_var::Vector{Vector{Int}}; n::Int=max_indices(vec_elt_var), type=Float64) = create_epv(vec_elt_var, n; type)
+
 function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type=Float64)
   eev_set = map((elt_var -> create_eev(elt_var,type=type)), vec_elt_var)
   epv = create_epv(eev_set; n=n)
@@ -119,7 +124,7 @@ end
 """
     set_epv!(epv, vec_value_eev)
 
-Set the values of the elemental element vectors of epv to the components of `vec_value_eev`.
+Set the values of the elemental element-vectors of `epv` with the components of `vec_value_eev`.
 """
 function set_epv!(epv :: Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T <: Number
   N = get_N(epv)
@@ -128,6 +133,11 @@ function set_epv!(epv :: Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) wher
   return epv
 end
 
+"""
+    v = scale_epv(epv, scalars)
+
+Return a vector `v` from `epv` where the contribution of each element-vector is multiply by the corresponding value from `scalars`.
+"""
 function scale_epv(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T <: Number
   _tmp_v = get_v(epv)
   res_v = scale_epv!(epv, scalars)
@@ -135,6 +145,12 @@ function scale_epv(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T <: Numb
   return res_v
 end
 
+"""
+    v = scale_epv!(epv :: Elemental_pv{T}, scalars)
+
+Return a vector `v` from `epv` where the contribution of each element-vector is multiply by the corresponding value from `scalars`.
+`v` is extract from `epv.v`
+"""
 function scale_epv!(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T
   get_N(epv)==length(scalars) || error("epv, N != length(scalars")
   reset_v!(epv)
@@ -155,9 +171,9 @@ Tests structures fonctions
 =#
 
 """
-    new_elemental_pv(N,n;nᵢ,T)
+    epv = new_elemental_pv(N,n;nᵢ,T)
 
-Define an elemental partitionned vector of N elemental nᵢ-sized vector simulating a n-sized T-vector.
+Define an elemental partitioned-vector of `N` elemental element-vector of size `nᵢ` whose values are randoms and the indices are in the range `1:n`.
 """
 function rand_epv(N :: Int,n :: Int; nie=3, T=Float64)
   eev_set = [new_eev(nie;T=T,n=n) for i in 1:N]
@@ -166,9 +182,9 @@ function rand_epv(N :: Int,n :: Int; nie=3, T=Float64)
 end
 
 """
-    ones_kchained_epv(N, k; T)
+    epv = ones_kchained_epv(N, k; T)
 
-Construct a `N`-partitionned `k`-sized vector such as n = N+k.
+Construct an elemental partitioned-vector of `N` elemental element-vector of size `k` which overlaps the next element-vector on `k-1` variables.
 """
 function ones_kchained_epv(N :: Int, k :: Int; T=Float64)
   n = N+k
@@ -178,6 +194,12 @@ function ones_kchained_epv(N :: Int, k :: Int; T=Float64)
   return Elemental_pv{T}(N, n, eev_set, v)
 end
 
+"""
+    epv = part_vec(; n, T, nie, overlapping, mul)
+
+Define a elemental partitioned-vector formed by `N` (deduced from `n` and `nie`) elemental element-vectors of size `nie`.
+Each elemental element-vector overlaps the previous and the next element by `overlapping`.
+"""
 function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
   overlapping < nie || error("the overlapping must be lower than nie")
   mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
@@ -192,10 +214,10 @@ end
 Base.Vector(pv :: Elemental_pv{T}) where T = begin build_v!(pv); get_v(pv) end
 
 """
-    epv_from_v(x, epv)
+    epv = epv_from_v(x, epv)
 
 Define a new elemental partitioned-vector from `x` that have the same structure than epv.
-The value of each elemental element vector comes from the corresponding indices of `x`.
+The value of each elemental element-vector comes from the corresponding indices of `x`.
 Usefull to define Uᵢ x, ∀ x.
 """
 function epv_from_v(x :: Vector{T}, shape_epv :: Elemental_pv{T}) where T
@@ -207,7 +229,7 @@ end
 """
     epv_from_v!(epv, x)
 
-Set the values of the element partitioned-vector epv to `x`.
+Set the values of the element partitioned-vector `epv` to `x`.
 Usefull to define Uᵢ x, ∀ x.
 """
 function epv_from_v!(epv_x :: Elemental_pv{T}, x :: Vector{T}) where T
@@ -231,7 +253,7 @@ end
 """
     initialize_component_list!(epm)
 
-initialize_component_list! Build for each index i (∈ {1,...,n}) the list of the blocs using i.
+Build for each index i (∈ {1,...,n}) the list of the elements using the variables `i`.
 """
 function initialize_component_list!(epv::Elemental_pv)
   N = get_N(epv)
@@ -245,6 +267,12 @@ function initialize_component_list!(epv::Elemental_pv)
   end
 end
 
+"""
+    (acc, res) = prod_part_vectors(epv1, epv2)
+
+Perform an elementwise scalar product between the two elemental partitioned-vector `epv1` and `epv2`.
+The sum of the element scalar product are accumulate in `acc`, and the details of each element scalar product is in `res` of length `N`.
+"""
 function prod_part_vectors(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T
   full_check_epv_epm(epv1,epv2) || @error("different partitioned structures between eplom_B and epv_y")
   N = get_N(epv1)

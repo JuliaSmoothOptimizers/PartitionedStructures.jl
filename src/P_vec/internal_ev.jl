@@ -17,7 +17,7 @@ export build_tmp!
 """
 Internal_elt_vec{T} <: Elt_vec{T}
 
-    Type that represents an internal element vector.
+    Type that represents an internal element-vector.
 """
 mutable struct Internal_elt_vec{T} <: Elt_vec{T}
   vec :: Vector{T} # size nᵢᴵ
