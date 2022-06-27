@@ -1,4 +1,4 @@
-# unsupported right now
+# unsupported for now
 module M_internal_pv
 
 using LinearAlgebra
@@ -11,9 +11,9 @@ export get_iev, get_iev_set
 export create_ipv, ipv_from_epv, rand_ipv
 
 """
-Internal_elt_vec{T} <: Elt_vec{T}
+    Internal_elt_vec{T} <: Elt_vec{T}
 
-    Type that represents an internal element-vector.
+Type that represents an internal element-vector.
 """
 mutable struct Internal_pv{T} <: Part_v{T}
   N :: Int

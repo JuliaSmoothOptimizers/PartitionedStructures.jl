@@ -46,7 +46,7 @@ module M_2_parallel
     comp_list = ModElemental_pm.get_component_list(epm_A,index) # element list using tha i-th variable
     _x = Vector{T}(undef,length(comp_list))
     ss_epm_A = get_eem_sub_set(epm_A, comp_list)
-    ss_epv_x = get_eevs(epv_x, comp_list)
+    ss_epv_x = get_eev_subset(epv_x, comp_list)
     _indices = get_indices.(ss_epv_x)
     __indices = mapreduce((x->x),((indice,indicei) -> vcat(indice, indicei)), _indices)
     every_indices = unique(__indices)

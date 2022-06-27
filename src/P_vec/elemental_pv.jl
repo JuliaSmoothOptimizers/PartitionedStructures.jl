@@ -10,7 +10,7 @@ import Base.==, Base.similar, Base.copy
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 export Elemental_pv
-export get_eev_set, get_eev, get_eev_value, get_eevs
+export get_eev_set, get_eev, get_eev_value, get_eev_subset
 export set_eev!, minus_epv!, add_epv!
 export set_epv!
 export create_epv, ones_kchained_epv, part_vec, rand_epv
@@ -42,7 +42,7 @@ end
 @inline get_eev(pv :: Elemental_pv{T}, i :: Int) where T = pv.eev_set[i]
 @inline get_ee_struct(pv :: Elemental_pv{T}) where T = get_eev_set(pv)
 @inline get_ee_struct(pv :: Elemental_pv{T}, i :: Int) where T = get_eev(pv,i)
-@inline get_eevs(pv :: Elemental_pv{T}, indices :: Vector{Int}) where T = pv.eev_set[indices]
+@inline get_eev_subset(pv :: Elemental_pv{T}, indices :: Vector{Int}) where T = pv.eev_set[indices]
 @inline get_eev_value(pv :: Elemental_pv{T}, i :: Int) where T = get_vec(get_eev(pv,i))
 @inline get_eev_value(pv :: Elemental_pv{T}, i :: Int, j :: Int) where T = get_vec(get_eev(pv,i))[j]
 @inline set_eev!(pv :: Elemental_pv{T}, i :: Int, j::Int, val:: T) where T = set_vec!(get_eev(pv,i),j,val)
@@ -69,7 +69,6 @@ function M_part_v.build_v!(epv :: Elemental_pv{T}) where T
   end
 end
 
-# # function M_part_v.build_v!(epv :: Elemental_pv{T}) where T
 # function build_v2!(epv :: Elemental_pv{T}) where T
   # reset_v!(epv)
   # N = get_N(epv)
@@ -165,10 +164,6 @@ function scale_epv!(epv :: Elemental_pv{T}, scalars :: Vector{T}) where T
   end
   return get_v(epv)
 end
-
-#=
-Tests structures fonctions
-=#
 
 """
     epv = new_elemental_pv(N,n;nᵢ,T)
@@ -271,7 +266,8 @@ end
     (acc, res) = prod_part_vectors(epv1, epv2)
 
 Perform an elementwise scalar product between the two elemental partitioned-vector `epv1` and `epv2`.
-The sum of the element scalar product are accumulate in `acc`, and the details of each element scalar product is in `res` of length `N`.
+`acc` accumulates the sum of the element-vectors scalar product.
+`res` contrains the details of every element-vector scalar product.
 """
 function prod_part_vectors(epv1 :: Elemental_pv{T}, epv2 :: Elemental_pv{T}) where T
   full_check_epv_epm(epv1,epv2) || @error("different partitioned structures between eplom_B and epv_y")

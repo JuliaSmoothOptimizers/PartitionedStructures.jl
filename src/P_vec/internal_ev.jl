@@ -1,4 +1,4 @@
-# unsupported right now
+# unsupported for now
 module M_internal_elt_vec
 
 using LinearAlgebra, SparseArrays, StatsBase
@@ -15,9 +15,9 @@ export build_tmp!
 # distinguish from internal_elt_vec
 # Be careful with the order of the indices
 """
-Internal_elt_vec{T} <: Elt_vec{T}
+    Internal_elt_vec{T} <: Elt_vec{T}
 
-    Type that represents an internal element-vector.
+Type that represents an internal element-vector.
 """
 mutable struct Internal_elt_vec{T} <: Elt_vec{T}
   vec :: Vector{T} # size nᵢᴵ

@@ -65,7 +65,7 @@ module M_3_parallel
     comp_list = ModElemental_pm.get_component_list(epm_A,index) # element list using tha i-th variable
     _x = Vector{T}(undef,length(comp_list))
     ss_epm_A = get_eem_sub_set(epm_A, comp_list)
-    ss_epv_x = get_eevs(epv_x, comp_list) #récupère le sous ensemble d' eev utilisés
+    ss_epv_x = get_eev_subset(epv_x, comp_list) #récupère le sous ensemble d' eev utilisés
     _indices = get_indices.(ss_epv_x) # récupère la totalité des indices du sous-ensemble d' eev
     every_indices = mapreduce((x->x),((indice,indicei) -> unique(vcat(indice, indicei))), _indices) # Les concatène sans répétition
     other_indices = filter((idx -> idx!=index && vector_bool[idx]), every_indices)
