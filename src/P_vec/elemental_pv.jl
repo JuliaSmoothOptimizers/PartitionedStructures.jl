@@ -69,14 +69,6 @@ function M_part_v.build_v!(epv :: Elemental_pv{T}) where T
   end
 end
 
-# function build_v2!(epv :: Elemental_pv{T}) where T
-  # reset_v!(epv)
-  # N = get_N(epv)
-  # for i in 1:N
-    # eevᵢ = get_eev(epv,i)
-    # add_v!(epv, get_indices(eevᵢ), get_vec(eevᵢ))
-  # end
-# end
 """
     minus_epv!(epv)
 
