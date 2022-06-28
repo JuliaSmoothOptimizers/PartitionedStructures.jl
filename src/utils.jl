@@ -8,21 +8,21 @@ export my_and, max_indices, min_indices
 """
     my_and(a :: Bool,b :: Bool)
 
-Return `a && b`
+Return `a && b`.
 """
 my_and = (a :: Bool,b :: Bool) -> (a && b)
 
 """
     indice_max = max_indices(list_of_element_variables :: Vector{Vector{T}}) where T
 
-Return the maximum of the element variables in `list_of_element_variables`.
+Return the maximum index of the element variables in `list_of_element_variables`.
 """
 max_indices(elt_vars :: Vector{Vector{T}}) where T <: Number = isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars))
 
 """
     indice_min = min_indices(list_of_element_variables :: Vector{Vector{T}}) where T
 
-Return the minimum of the element variables in `list_of_element_variables`.
+Return the minimum index of the element variables in `list_of_element_variables`.
 """
 min_indices(elt_vars :: Vector{Vector{T}}) where T <: Number = isempty(elt_vars) ? 0 : minimum(minimum.(elt_vars))
 
@@ -64,7 +64,7 @@ end
     SR1(s, y, B)
     SR1(x0, x1, g0, g1, B)
 
-Perform the BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
+Perform the SR1 update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
 SR1(s :: Vector{Y}, y :: Vector{Y}, B :: Array{Y,2}; kwargs...) where Y <: Number = begin B_1=similar(B); SR1!(s,y,B,B_1;kwargs...); B_1 end
 SR1(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}; kwargs...) where Y <: Number = begin B_1=similar(B); SR1!(x_1 - x, g_1 - g, B, B_1; kwargs...); B_1 end
@@ -73,7 +73,7 @@ SR1(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Arr
     SR1!(s, y, B, B1)
     SR1!(x0, x1, g0, g1, B, B1)
 
-Perform the BFGS update in place of the matrix `B1` by using the vectors `s = x1 - x0` and `y = g1 - g0` and the current matrix `B`.
+Perform the SR1 update in place of the matrix `B1` by using the vectors `s = x1 - x0` and `y = g1 - g0` and the current matrix `B`.
 """
 SR1!(x :: Vector{Y}, x_1 :: Vector{Y}, g :: Vector{Y}, g_1 :: Vector{Y}, B :: Array{Y,2}, B_1 :: Array{Y,2}) where Y <: Number = SR1!(x_1 - x, g_1 - g, B, B_1)
 SR1!(s :: Vector{Y}, y :: Vector{Y}, B :: Symmetric{Y,Matrix{Y}}, B_1 :: Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number = SR1!(s,y,B.data, B_1.data; kwargs...)
