@@ -20,10 +20,11 @@ using PartitionedStructures.M_abstract_element_struct
   @test get_indices(ev1) == i1
 
   # internal
+	p = 0.3
   ev2 = new_iev(nᵢᴱ,nᵢᴵ)
   v2 = rand(nᵢᴵ)
   i2 = [1:nᵢᴱ:nᵢᴱ^2;]
-  lc2 = rand(nᵢᴵ, nᵢᴱ)
+  lc2 = sprand(nᵢᴵ, nᵢᴱ, p)
   set_vec!(ev2,v2)
   set_indices!(ev2,i2)
   set_lin_comb!(ev2,lc2)

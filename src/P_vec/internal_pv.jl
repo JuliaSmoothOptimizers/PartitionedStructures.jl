@@ -13,7 +13,7 @@ export create_ipv, ipv_from_epv, rand_ipv
 """
     Internal_elt_vec{T} <: Elt_vec{T}
 
-Type that represents an internal element-vector.
+Type that represents an internal partitioned-vector.
 """
 mutable struct Internal_pv{T} <: Part_v{T}
   N :: Int
@@ -22,9 +22,29 @@ mutable struct Internal_pv{T} <: Part_v{T}
   v :: Vector{T}
 end
 
+"""
+    iev_set = get_iev_set(ipv :: Internal_pv{T}) where T
+
+Warning: unsupported and not tested.
+Return the set of internal element-vectors `iev_set`, which are contribuating to the internal partitioned-vector `ipv`.
+"""
 @inline get_iev_set(ipv :: Internal_pv{T}) where T = ipv.iev_set
+
+"""
+    iev = get_iev(ipv :: Internal_pv{T}, i :: Int) where T
+
+Warning: unsupported and not tested.
+Return the `i`-th internal element-vector of the internal partitioned-vector `ipv`.
+"""
 @inline get_iev(ipv :: Internal_pv{T}, i :: Int) where T = ipv.iev_set[i] # i <= N
 
+"""
+    ipv = ipv_from_epv(epv :: Elemental_pv{T}) where T
+
+Warning: unsupported and not tested.
+Return an internal partitioned-vector `ipv` from the elemental partitioned vector `epv`.
+The internal variables of every internal element-vectors are the same as the elemental variables of the elemental element-vectors.
+"""
 function ipv_from_epv(epv :: Elemental_pv{T}) where T
   N = get_N(epv)
   n = get_n(epv)
@@ -34,7 +54,13 @@ function ipv_from_epv(epv :: Elemental_pv{T}) where T
   return ipv
 end
 
-function create_ipv(iev_set :: Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)  ) where T
+"""
+    ipv = create_ipv(iev_set :: Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
+
+Warning: unsupported and not tested.
+Return an internal partitioned-vector `ipv` from the set of internal element-vectors `iev_set`.
+"""
+function create_ipv(iev_set :: Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
   N = length(iev_set)
   v = zeros(T,n)
   ipv = Internal_pv{T}(N, n, iev_set, v)
@@ -44,7 +70,8 @@ end
 """
     new_internal_pv(N,n;nᵢ,T)
 
-Define an internal partitioned-vector of N elemental nᵢ-sized vector simulating a n-sized T-vector.
+Warning: unsupported and not tested.
+Define an internal partitioned-vector of `N` elemental element-vectors of size `nᵢ` and type `T`.
 """
 function rand_ipv(N :: Int,n :: Int; nᵢ=3, T=Float64)
   iev_set = Vector{Internal_elt_vec{T}}(undef,N)
@@ -57,8 +84,14 @@ function rand_ipv(N :: Int,n :: Int; nᵢ=3, T=Float64)
   return Internal_pv{T}(N, n, iev_set, v)
 end
 
-# Warning: the order of ipv.indices is crucial to get the expected result.
-# the order of ipv.lin_comb, ipv.vec, ipv.indices must be synchronise
+"""
+    build_v!(ipv :: Internal_pv{T}) where T
+
+Warning1: unsupported and not tested.
+Build in place the vector `ipv.v` by accumating the contributions of every internal element-vector.
+Warning2: the order of `ipv.indices` is crucial to get the expected result.
+The order of `ipv.lin_comb`, `ipv.vec`, `ipv.indices` must be synchronized.
+"""
 function M_part_v.build_v!(ipv :: Internal_pv{T}) where T
   reset_v!(ipv)
   N = get_N(ipv)
@@ -72,7 +105,7 @@ function M_part_v.build_v!(ipv :: Internal_pv{T}) where T
       add_v!(ipv, _id_j, val)
     end
   end
-  # return get_v(ipv)
+  return ipv
 end
 
 end
