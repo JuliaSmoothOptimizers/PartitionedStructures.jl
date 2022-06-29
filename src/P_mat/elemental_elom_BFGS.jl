@@ -21,7 +21,7 @@ mutable struct Elemental_elom_bfgs{T}<:LOEltMat{T}
   counter::Counter_elt_mat
 end
 
-@inline (==)(eelom1::Elemental_elom_bfgs{T}, eelom2::Elemental_elom_bfgs{T}) where T = (get_nie(eelom1)==get_nie(eelom2)) && begin v=rand(get_nie(eelom1)); (get_Bie(eelom1)*v==get_Bie(eelom2)*v) end && (get_indices(eelom1)==get_indices(eelom2))
+@inline (==)(eelom1::Elemental_elom_bfgs{T}, eelom2::Elemental_elom_bfgs{T}) where T = (get_nie(eelom1)==get_nie(eelom2)) && (get_indices(eelom1)==get_indices(eelom2)) && begin v=rand(get_nie(eelom1)); (get_Bie(eelom1)*v==get_Bie(eelom2)*v) end
 @inline copy(eelom::Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), deepcopy(get_Bie(eelom)), copy(get_cem(eelom)))
 @inline similar(eelom::Elemental_elom_bfgs{T}) where T = Elemental_elom_bfgs{T}(copy(get_nie(eelom)), copy(get_indices(eelom)), similar(get_Bie(eelom)), copy(get_cem(eelom)))
 
