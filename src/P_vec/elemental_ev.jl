@@ -16,12 +16,12 @@ export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
 Type that represents an elemental element-vector.
 """
 mutable struct Elemental_elt_vec{T}<:Elt_vec{T}
-  vec::Vector{T} # length(vec) == nᵢᴱ
-  indices::Vector{Int} # length(indices) == nᵢᴱ
+  vec::Vector{T} # length(vec)==nᵢᴱ
+  indices::Vector{Int} # length(indices)==nᵢᴱ
   nie::Int
 end
 
-@inline (==)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T}) where T = (get_indices(eev1) == get_indices(eev2)) && (get_vec(eev1) == get_vec(eev2)) && (get_nie(eev1) == get_nie(eev2))
+@inline (==)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T}) where T = (get_indices(eev1)==get_indices(eev2)) && (get_vec(eev1)==get_vec(eev2)) && (get_nie(eev1)==get_nie(eev2))
 @inline similar(eev::Elemental_elt_vec{T}) where T = Elemental_elt_vec{T}(Vector{T}(undef,get_nie(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 @inline copy(eev::Elemental_elt_vec{T}) where T = Elemental_elt_vec{T}(Vector{T}(get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 

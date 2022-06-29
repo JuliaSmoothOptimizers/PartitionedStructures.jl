@@ -80,9 +80,9 @@ end
   s1 = x1 - x0
   s2 = x2 - x1
 
-  @test f(x0) == f_pss(x0, U)
-  @test f(x1) == f_pss(x1, U)
-  @test f(x2) == f_pss(x2, U)
+  @test f(x0)==f_pss(x0, U)
+  @test f(x1)==f_pss(x1, U)
+  @test f(x2)==f_pss(x2, U)
 
   ∇f(x) = [2x[1] + x[2], x[1] + 2x[2] + 3x[3], 2x[3] + 3x[2]]
   ∇f1(x) = [2x[1] + x[2], x[1]]
@@ -93,7 +93,7 @@ end
     gradient[U2] .+= ∇f2(x[U[2]])
     return gradient
   end
-  @test ∇f(x0) == ∇f_pss(x0, U)
+  @test ∇f(x0)==∇f_pss(x0, U)
   y1 = (∇f(x1) .- ∇f(x0))
   element1_y1 = ∇f1(x1[U1]) .- ∇f1(x0[U1])
   element2_y1 = ∇f2(x1[U2]) .- ∇f2(x0[U2])
@@ -131,9 +131,9 @@ end
   build_v!(partitioned_gradient_x0)
   build_v!(partitioned_gradient_x1)
   build_v!(partitioned_gradient_x2)
-  @test get_v(partitioned_gradient_x0) == ∇f(x0)
-  @test get_v(partitioned_gradient_x1) == ∇f(x1)
-  @test get_v(partitioned_gradient_x2) == ∇f(x2)
+  @test get_v(partitioned_gradient_x0)==∇f(x0)
+  @test get_v(partitioned_gradient_x1)==∇f(x1)
+  @test get_v(partitioned_gradient_x2)==∇f(x2)
 
   # build partitioned-gradient difference, epv_y1
   partitioned_gradient_difference = copy(partitioned_gradient_x0)
@@ -148,8 +148,8 @@ end
 
   build_v!(partitioned_gradient_difference)
   build_v!(partitioned_gradient_difference2)
-  @test get_v(partitioned_gradient_difference) == y1
-  @test get_v(partitioned_gradient_difference2) == y2
+  @test get_v(partitioned_gradient_difference)==y1
+  @test get_v(partitioned_gradient_difference2)==y2
 
   using LinearAlgebra
   @test dot(s1,y1) > 0
@@ -167,15 +167,15 @@ end
   B_BFGS2 = BFGS(s2,y2,B_BFGS1)
 
   B_PBFGS1 = update(partitioned_matrix, partitioned_gradient_difference, s1; name=:pbfgs)
-  @test norm(mul_epm_vector(partitioned_matrix, s1) - y1) == 0.
+  @test norm(mul_epm_vector(partitioned_matrix, s1) - y1)==0.
   update!(partitioned_matrix, partitioned_gradient_difference2, s2; name=:pbfgs)
   B_PBFGS2 = Matrix(partitioned_matrix)
 
   norm(B_BFGS1 * s1 - y1)
-  @test norm(B_BFGS1 * s1 - y1) == 0.
+  @test norm(B_BFGS1 * s1 - y1)==0.
 
   norm(B_PBFGS1 * s1 - y1)
-  @test norm(B_PBFGS1 * s1 - y1) == 0.
+  @test norm(B_PBFGS1 * s1 - y1)==0.
 
 
   partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
@@ -190,16 +190,16 @@ end
   B_PLBFGS = update(partitioned_linear_operator_PLBFGS, partitioned_gradient_difference, s1)
   B_PLSE = update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s1)
 
-  @test norm(B_PSR1 * s1 - y1) == 0.
-  @test norm(B_PSE * s1 - y1) == 0.
-  @test norm(B_PLBFGS * s1 - y1) == 0.
-  @test norm(B_PLSE * s1 - y1) == 0.
+  @test norm(B_PSR1 * s1 - y1)==0.
+  @test norm(B_PSE * s1 - y1)==0.
+  @test norm(B_PLBFGS * s1 - y1)==0.
+  @test norm(B_PLSE * s1 - y1)==0.
 
 
   # There is also a PLSR1 approximation, but is not fullt working since there is some issues with LSR1Operator
   partitioned_linear_operator_PLSR1 = eplom_lsr1_from_epv(partitioned_gradient_x0)
   B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s1)
-  # @test norm(B_PLSR1 * s1 - y1) == 0. # the second element hessian approximation is not update,
+  # @test norm(B_PLSR1 * s1 - y1)==0. # the second element hessian approximation is not update,
   # the partitioned quasi-Newton approximation doesn't satisfiy the secan equation.
 
 end

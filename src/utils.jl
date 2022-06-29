@@ -10,7 +10,7 @@ export my_and, max_indices, min_indices
 
 Return `a && b`.
 """
-my_and = (a::Bool,b::Bool) -> (a && b)
+my_and = (a::Bool, b::Bool) -> (a && b)
 
 """
     indice_max = max_indices(list_of_element_variables::Vector{Vector{T}}) where T
@@ -32,8 +32,15 @@ min_indices(elt_vars::Vector{Vector{T}}) where T<:Number = isempty(elt_vars) ? 0
 
 Perform the BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
-BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number = begin B_1=similar(B); BFGS!(s,y,B,B_1;kwargs...); B_1 end
-BFGS(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number = begin B_1=similar(B); BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...); B_1 end
+function BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+ B_1 = similar(B); BFGS!(s,y,B,B_1;kwargs...)
+ return B_1 
+end
+
+function BFGS(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+  B_1 = similar(B); BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...)
+  return B_1
+end
 
 """
     BFGS!(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B0::Array{Y,2}, B1::Array{Y,2}; kwargs...) where Y<:Number
@@ -67,8 +74,17 @@ end
 
 Perform the SR1 update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
-SR1(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number = begin B_1=similar(B); SR1!(s,y,B,B_1;kwargs...); B_1 end
-SR1(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number = begin B_1=similar(B); SR1!(x_1 - x, g_1 - g, B, B_1; kwargs...); B_1 end
+function SR1(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+  B_1=similar(B)
+  SR1!(s,y,B,B_1;kwargs...)
+  B_1
+end
+
+function SR1(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+  B_1=similar(B)
+  SR1!(x_1 - x, g_1 - g, B, B_1; kwargs...)
+  B_1
+end
 
 """
     SR1!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
@@ -101,8 +117,17 @@ end
 Perform a BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0` if the curvature condition `dot(s,y) > eps(eltype(s))` holds.
 Otherwise, it performs a SR1 update with `B, s, y`.
 """
-SE(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number = begin B_1=similar(B); SE!(s,y,B,B_1;kwargs...); B_1 end
-SE(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number = begin B_1=similar(B); SE!(x_1 - x, g_1 - g, B, B_1; kwargs...); B_1 end
+function SE(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+  B_1=similar(B)
+  SE!(s,y,B,B_1;kwargs...)
+  B_1
+end
+
+function SE(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+  B_1=similar(B)
+  SE!(x_1 - x, g_1 - g, B, B_1; kwargs...)
+  B_1
+end
 
 """
     SE!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number

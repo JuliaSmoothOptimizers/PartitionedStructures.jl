@@ -12,13 +12,13 @@ using PartitionedStructures.PartitionedQuasiNewton
   epm_B11 = PBFGS_update(epm_B1,epv_y1,s)
   epm_B12 = PSR1_update(epm_B1,epv_y1,s)
 
-  @test Matrix(epm_B1) == transpose(Matrix(epm_B1))
+  @test Matrix(epm_B1)==transpose(Matrix(epm_B1))
   @test Matrix(epm_B11) != Matrix(epm_B1)
   @test Matrix(epm_B11) != Matrix(epm_B12)
   @test mapreduce((x -> x>0), my_and, eigvals(Matrix(epm_B11))) #test positive eigensvalues
 
-  @test Matrix(epm_B11) == transpose(Matrix(epm_B11))
-  @test Matrix(epm_B12) == transpose(Matrix(epm_B12))
+  @test Matrix(epm_B11)==transpose(Matrix(epm_B11))
+  @test Matrix(epm_B12)==transpose(Matrix(epm_B12))
 
   @test_throws DimensionMismatch PBFGS_update(epm_B1,epv_y2,s)
   @test_throws DimensionMismatch PSR1_update(epm_B1,epv_y2,s)

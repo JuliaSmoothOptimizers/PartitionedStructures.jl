@@ -48,7 +48,7 @@ end
 @inline set_eev!(pv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T = set_vec!(get_eev(pv,i),j,val)
 @inline set_eev!(pv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T = set_vec!(get_eev(pv,i),vec)
 
-@inline (==)(ep1::Elemental_pv{T},ep2::Elemental_pv{T}) where T = (get_N(ep1) == get_N(ep2)) && (get_n(ep1) == get_n(ep2)) && (get_eev_set(ep1) == get_eev_set(ep2))
+@inline (==)(ep1::Elemental_pv{T},ep2::Elemental_pv{T}) where T = (get_N(ep1)==get_N(ep2)) && (get_n(ep1)==get_n(ep2)) && (get_eev_set(ep1)==get_eev_set(ep2))
 @inline similar(ep::Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef,get_n(ep)))
 @inline copy(ep::Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), copy.(get_eev_set(ep)), Vector{T}(get_v(ep)))
 
@@ -119,7 +119,7 @@ Set the values of the elemental element-vectors of `epv` with the components of 
 """
 function set_epv!(epv::Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T<:Number
   N = get_N(epv)
-  length(vec_value_eev) == N || @error("The size of vec_value_eev does not match the size of get_N(epv)")
+  length(vec_value_eev)==N || @error("The size of vec_value_eev does not match the size of get_N(epv)")
   map(i -> set_eev!(epv, i, vec_value_eev[i]), 1:N)
   return epv
 end
@@ -189,7 +189,7 @@ Each elemental element-vector overlaps the previous and the next element by `ove
 """
 function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
   overlapping < nie || error("the overlapping must be lower than nie")
-  mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
+  mod(n-(nie-overlapping), nie-overlapping)==mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must holds")
   indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
   eev_set = map(i -> specific_ones_eev(nie,i;T=T, mul=mul), indices)
   N = length(eev_set)

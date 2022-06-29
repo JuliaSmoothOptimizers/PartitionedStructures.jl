@@ -50,7 +50,7 @@ Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom::Elemental_plom{T}, i::Int) where T = get_eelom_set(eplom, i)
 
-@inline (==)(eplom1::Elemental_plom{T}, eplom2::Elemental_plom{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) == get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
+@inline (==)(eplom1::Elemental_plom{T}, eplom2::Elemental_plom{T}) where T = (get_N(eplom1)==get_N(eplom2)) && (get_n(eplom1)==get_n(eplom2)) && (get_eelom_set(eplom1)==get_eelom_set(eplom2)) && (get_permutation(eplom1)==get_permutation(eplom2))
 @inline copy(eplom::Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),copy.(get_eelom_set(eplom)),copy(get_spm(eplom)), copy(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 @inline similar(eplom::Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 
@@ -83,7 +83,7 @@ Each element is randomly (`rand() > p`) choose between an elemental element LBFG
 """
 function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)
   overlapping < nie || error("l'overlapping doit être plus faible que nie")
-  mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
+  mod(n-(nie-overlapping), nie-overlapping)==mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must holds")
 
   indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
   eelom_set = map(i -> rand() > prob ? LBFGS_eelom(nie;T=T,index=i) : LSR1_eelom(nie;T=T,index=i), indices)

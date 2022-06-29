@@ -74,7 +74,7 @@ Get the matrix of the `i`-th elemental element-matrix of `epm`.
 """
 @inline get_eem_set_Bie(epm::Elemental_pm{T}, i::Int) where T = get_Bie(get_eem_set(epm, i))
 
-@inline (==)(epm1::Elemental_pm{T}, epm2::Elemental_pm{T}) where T = (get_N(epm1) == get_N(epm2)) && (get_n(epm1) == get_n(epm2)) && (get_eem_set(epm1) == get_eem_set(epm2)) && (get_permutation(epm1) == get_permutation(epm2))
+@inline (==)(epm1::Elemental_pm{T}, epm2::Elemental_pm{T}) where T = (get_N(epm1)==get_N(epm2)) && (get_n(epm1)==get_n(epm2)) && (get_eem_set(epm1)==get_eem_set(epm2)) && (get_permutation(epm1)==get_permutation(epm2))
 @inline copy(epm::Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), copy.(get_eem_set(epm)), copy(get_spm(epm)), copy(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
 @inline similar(epm::Elemental_pm{T}) where T = Elemental_pm{T}(copy(get_N(epm)), copy(get_n(epm)), similar.(get_eem_set(epm)), similar(get_spm(epm)), similar(get_L(epm)), copy(get_component_list(epm)), copy(get_permutation(epm)))
 
@@ -161,7 +161,7 @@ Define a partitioned `nie` bloc separable matrix.
 Each elemental element-matrix is composed of `1` except the diagonal terms which are of value `mul`.
 """
 function n_i_sep(n::Int; T=Float64, nie::Int=5, mul=5.)
-  mod(n, nie) == 0 || error("n must be a multiple of nie")
+  mod(n, nie)==0 || error("n must be a multiple of nie")
   eem_set = map(i -> fixed_ones_eem(i, nie; T=T, mul=mul), [1:nie:n;])
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
@@ -181,7 +181,7 @@ The partitioned-matrix is composed by `N ≈ (n/nie)*2` elemental element-matric
 The diagonal terms of each elemental element-matrix are of value `mul`, whereas the other terms are set to 1.
 """
 function n_i_SPS(n::Int; T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
-  mod(n, nie) == 0 || error("n must be a multiple of nie")
+  mod(n, nie)==0 || error("n must be a multiple of nie")
   overlapping < nie || error("the overlapping must be lower than nie")
   eem_set1 = map(i -> fixed_ones_eem(i, nie; T=T, mul=mul), [1:nie:n;])
   eem_set2 = map(i -> fixed_ones_eem(i, 2*overlapping; T=T, mul=mul), [nie-overlapping:nie:n-nie-overlapping;])
@@ -204,7 +204,7 @@ Each elemental element-matrix overlaps the previous and the next element by `ove
 """
 function part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
   overlapping < nie || error("the overlapping must be lower than nie")
-  mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must holds")
+  mod(n-(nie-overlapping), nie-overlapping)==mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must holds")
   indices = filter(x -> x <= n-nie+1, vcat(1, (x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
   eem_set = map(i -> fixed_ones_eem(i, nie;T=T, mul=mul), indices)
   spm = spzeros(T, n, n)

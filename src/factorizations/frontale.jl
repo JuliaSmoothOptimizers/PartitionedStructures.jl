@@ -34,7 +34,7 @@ function frontale!(epm::Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) wher
     actualise_not_added!(front, not_added) # update of boolean list
 
     for j in front
-      if j == _current_var # pivot (1st iter)
+      if j==_current_var # pivot (1st iter)
         v = sqrt(get_L(epm,_current_var,_current_var))
         set_L!(epm,_current_var,_current_var,v)
       else # terms below the pivot

@@ -31,9 +31,9 @@ The PSE update is run by default, you can apply a PBFGS or a PSR1 update with th
 """
 @inline update!(epm::T, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where T<:Part_mat{Y} where Y<:Number= update!(epm, epv_y, epv_from_v(s, epv_y); kwargs...)
 @inline function update!(epm::T, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; name=:pse, kwargs...) where T<:Part_mat{Y} where Y<:Number
-  (name == :pse) && PSE_update!(epm, epv_y, epv_s; kwargs...)
-  (name == :pbfgs) && PBFGS_update!(epm, epv_y, epv_s; kwargs...)
-  (name == :psr1) && PSR1_update!(epm, epv_y, epv_s; kwargs...)
+  (name==:pse) && PSE_update!(epm, epv_y, epv_s; kwargs...)
+  (name==:pbfgs) && PBFGS_update!(epm, epv_y, epv_s; kwargs...)
+  (name==:psr1) && PSR1_update!(epm, epv_y, epv_s; kwargs...)
   return epm
 end
 

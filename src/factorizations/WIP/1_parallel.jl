@@ -18,7 +18,7 @@ module M_1_parallel
     check_epv_epm(epm_A, epv_b)
     N = get_N(epm_A)
     n = get_n(epm_A)
-    length(res) == n || @error("wrong size res first_parallel!")
+    length(res)==n || @error("wrong size res first_parallel!")
 
     #résolution de chaque system linéaire élément
     for i in [1:N;]

@@ -2,10 +2,10 @@ using PartitionedStructures.Utils
 
 @testset "test utils" begin
   @testset "my_and" begin
-    @test my_and(true, false) == my_and(false, true)
-    @test my_and(true, false) == false
-    @test my_and(false, false) == false
-    @test my_and(true, true) == true
+    @test my_and(true, false)==my_and(false, true)
+    @test my_and(true, false)==false
+    @test my_and(false, false)==false
+    @test my_and(true, true)==true
   end
 
   @testset "BFGS" begin
@@ -17,17 +17,17 @@ using PartitionedStructures.Utils
 
     B1 = BFGS(s,y,B)
 
-    @test B1 == transpose(B1)
+    @test B1==transpose(B1)
     @test isapprox(B1*s, y)
 
     B2 = BFGS(s,-s,B)
-    @test B2 == B
+    @test B2==B
 
     B2_x2 = BFGS(s,-s,B_x2)
-    @test B2_x2 == B_x2
+    @test B2_x2==B_x2
 
     B3 = BFGS(s,-s,B_x2; index=5, reset=4)
-    @test B3 == B
+    @test B3==B
   end
 
   @testset "SR1" begin
@@ -38,16 +38,16 @@ using PartitionedStructures.Utils
     y = (x -> x/2).(ones(n))
 
     B1 = SR1(s,y,B)
-    @test B1 == transpose(B1)
+    @test B1==transpose(B1)
     @test isapprox(B1*s, y)
 
     B2 = SR1(s,s,B)
-    @test B2 == B
+    @test B2==B
 
     B2_x2 = SR1((x-> 1/2*x).(s),s,B_x2)
-    @test B2_x2 == B_x2
+    @test B2_x2==B_x2
 
     B3 = SR1((x-> 1/2*x).(s),s,B_x2; index=5, reset=4)
-    @test B3 == B
+    @test B3==B
   end
 end 

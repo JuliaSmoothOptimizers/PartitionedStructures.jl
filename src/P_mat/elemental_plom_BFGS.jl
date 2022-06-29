@@ -39,7 +39,7 @@ Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
 @inline get_ee_struct(eplom::Elemental_plom_bfgs{T}, i::Int) where T = get_eelom_set(eplom, i)
 
-@inline (==)(eplom1::Elemental_plom_bfgs{T}, eplom2::Elemental_plom_bfgs{T}) where T = (get_N(eplom1) == get_N(eplom2)) && (get_n(eplom1) == get_n(eplom2)) && (get_eelom_set(eplom1) == get_eelom_set(eplom2)) && (get_permutation(eplom1) == get_permutation(eplom2))
+@inline (==)(eplom1::Elemental_plom_bfgs{T}, eplom2::Elemental_plom_bfgs{T}) where T = (get_N(eplom1)==get_N(eplom2)) && (get_n(eplom1)==get_n(eplom2)) && (get_eelom_set(eplom1)==get_eelom_set(eplom2)) && (get_permutation(eplom1)==get_permutation(eplom2))
 @inline copy(eplom::Elemental_plom_bfgs{T}) where T = Elemental_plom_bfgs{T}(copy(get_N(eplom)), copy(get_n(eplom)), copy.(get_eelom_set(eplom)), copy(get_spm(eplom)), copy(get_L(eplom)), copy(get_component_list(eplom)), copy(get_permutation(eplom)))
 @inline similar(eplom::Elemental_plom_bfgs{T}) where T = Elemental_plom_bfgs{T}(copy(get_N(eplom)), copy(get_n(eplom)), similar.(get_eelom_set(eplom)), similar(get_spm(eplom)), similar(get_L(eplom)), copy(get_component_list(eplom)), copy(get_permutation(eplom)))
 
@@ -71,7 +71,7 @@ Each element overlaps the coordinates of the next element by `overlapping` compo
 """
 function PLBFGS_eplom(; n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)
   overlapping < nie || error("the overlapping must be lower than nie")
-  mod(n-(nie-overlapping), nie-overlapping) == mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over) == mod(over, nie-over) must hold")
+  mod(n-(nie-overlapping), nie-overlapping)==mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must hold")
 
   indices = filter(x -> x <= n-nie+1, vcat(1, (x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
   eelom_set = map(i -> LBFGS_eelom(nie; T=T, index=i), indices)

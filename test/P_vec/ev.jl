@@ -16,11 +16,11 @@ using PartitionedStructures.M_abstract_element_struct
   set_vec!(ev1,v1)
   set_indices!(ev1,i1)
 
-  @test get_vec(ev1) == v1
-  @test get_indices(ev1) == i1
+  @test get_vec(ev1)==v1
+  @test get_indices(ev1)==i1
 
   # internal
-	p = 0.3
+  p = 0.3
   ev2 = new_iev(nᵢᴱ,nᵢᴵ)
   v2 = rand(nᵢᴵ)
   i2 = [1:nᵢᴱ:nᵢᴱ^2;]
@@ -29,9 +29,9 @@ using PartitionedStructures.M_abstract_element_struct
   set_indices!(ev2,i2)
   set_lin_comb!(ev2,lc2)
 
-  @test get_vec(ev2) == v2
-  @test get_indices(ev2) == i2
-  @test get_lin_comb(ev2) == lc2
+  @test get_vec(ev2)==v2
+  @test get_indices(ev2)==i2
+  @test get_lin_comb(ev2)==lc2
 end
 
 @testset "Test ev min/max indices" begin
@@ -59,8 +59,8 @@ end
   _sx = sparse_vec_from_eev(ex; n=n)
   _ex = eev_from_sparse_vec(sx)
 
-  @test sx == _sx
-  @test ex == _ex
+  @test sx==_sx
+  @test ex==_ex
 
   # hardcode
   sx = sparsevec([1:2:5;],[1:3;],n)
@@ -68,8 +68,8 @@ end
   _sx = sparse_vec_from_eev(ex; n=n)
   _ex = eev_from_sparse_vec(sx)
 
-  @test _sx == sx
-  @test _ex == ex
+  @test _sx==sx
+  @test _ex==ex
 
   #internal
   nᵢᴱ = 5
@@ -85,7 +85,7 @@ end
   iev2 = Internal_elt_vec(v1,i1,lin_com,nᵢᴱ,nᵢᴱ, _tmp)
   iev3 = iev_from_sparse_vec(sv)
 
-  @test iev1 == iev2
-  @test iev1 == iev3
-  @test iev2 == iev3
+  @test iev1==iev2
+  @test iev1==iev3
+  @test iev2==iev3
 end

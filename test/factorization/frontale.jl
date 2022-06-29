@@ -12,7 +12,7 @@ using PartitionedStructures.M_frontale
       pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
       sp_pm = SparseMatrixCSC(pm)
       m = Matrix(pm)
-      @test Matrix(sp_pm) == m
+      @test Matrix(sp_pm)==m
 
       LLT = cholesky(m)
       L_chol = LLT.L

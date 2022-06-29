@@ -12,7 +12,7 @@ using PartitionedStructures.M_elt_mat, PartitionedStructures.ModElemental_em
   p = [1:n;]
   p_view = Vector(view(p, ModElemental_em.get_indices(eem1)))
   permute!(eem1,p_view)
-  @test cp_eem1 == eem1
+  @test cp_eem1==eem1
 
   p = sample(1:n, n, replace=false)
   p_view = Vector(view(p, (rand(1:n,nie))))

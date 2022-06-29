@@ -73,7 +73,7 @@ Set the internal dimension `iev.nii` of the internal element-vector to `nii`.
 """
 @inline set_nii!(iev::Internal_elt_vec{T}, nii::Int) where T = iev.nii = nii
 
-(==)(iev1::Internal_elt_vec{T}, iev2::Internal_elt_vec{T}) where T = (get_vec(iev1)==get_vec(iev2)) && (get_indices(iev1)==get_indices(iev2)) && (get_lin_comb(iev1) == get_lin_comb(iev2)) && (get_nie(iev1)==get_nie(iev2)) && (get_nii(iev1)==get_nii(iev2))
+(==)(iev1::Internal_elt_vec{T}, iev2::Internal_elt_vec{T}) where T = (get_vec(iev1)==get_vec(iev2)) && (get_indices(iev1)==get_indices(iev2)) && (get_lin_comb(iev1)==get_lin_comb(iev2)) && (get_nie(iev1)==get_nie(iev2)) && (get_nii(iev1)==get_nii(iev2))
 
 """
     iev = new_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5)

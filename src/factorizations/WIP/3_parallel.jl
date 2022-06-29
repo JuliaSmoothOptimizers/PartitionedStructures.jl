@@ -21,7 +21,7 @@ module M_3_parallel
     check_epv_epm(epm_A, epv_b)
     N = get_N(epm_A)
     n = get_n(epm_A)
-    length(res) == n || @error("wrong size res first_parallel!")
+    length(res)==n || @error("wrong size res first_parallel!")
     vector_bool = zeros(Bool,n)
 
     #résolution de chaque system linéaire élément
@@ -118,7 +118,7 @@ module M_3_parallel
 
     # _bary = mean(_x)
     # xk = _bary
-    vector_bool[index] == false ? xk = 1. : xk = res[index]
+    vector_bool[index]==false ? xk = 1. : xk = res[index]
 
     # @show xk, f(xk), f_prim(xk), f_seconde()
     s1 = f_prim(xk)/f_seconde()

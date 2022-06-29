@@ -27,7 +27,7 @@ function okoubi!(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}, epv_x::Elementa
   check_epv_epm(epm_A, epv_b)
   N = get_N(epm_A)
   n = get_n(epm_A)
-  length(res) == n || @error("wrong size res first_parallel!")
+  length(res)==n || @error("wrong size res first_parallel!")
 
   # solve each element linear system
   for i in [1:N;]

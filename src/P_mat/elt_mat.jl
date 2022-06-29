@@ -44,7 +44,7 @@ Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
     Counter_elt_mat
 
 Count for a element-matrix the update performed on it, from its definition.
-`total_update + total_reset + total_untouched == iter `.
+`total_update + total_reset + total_untouched==iter `.
 """
 mutable struct Counter_elt_mat
   total_update::Int # count the total of update perform by the element linear operator
@@ -81,17 +81,17 @@ total_info(cem::Counter_elt_mat) = (cem.total_update, cem.total_untouched, cem.c
 Updates the `cem` counter given the index `qn` from the quasi-Newton update.
 """
 function update_counter_elt_mat!(cem::Counter_elt_mat, qn::Int)
-  if qn == 1
+  if qn==1
     cem.total_update += 1
     cem.current_update += 1
     cem.current_untouched = 0
     cem.current_reset = 0
-  elseif qn == 0
+  elseif qn==0
     cem.total_untouched += 1
     cem.current_untouched += 1
     cem.current_update = 0
     cem.current_reset = 0
-  else # qn == -1
+  else # qn==-1
     cem.total_reset += 1
     cem.current_reset += 1
     cem.current_untouched = 0

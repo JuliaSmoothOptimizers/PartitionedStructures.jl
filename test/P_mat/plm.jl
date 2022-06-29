@@ -13,18 +13,18 @@ using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedSt
       Bie_bfgs = LinearOperators.LBFGSOperator(T, nie)
       Bie_sr1 = LinearOperators.LSR1Operator(T, nie)
       counter = Counter_elt_mat()
-      @test Elemental_elom_bfgs{T}(nie,indices,Bie_bfgs, counter) == LBFGS_eelom(nie;T=T, index=index)
-      @test Elemental_elom_sr1{T}(nie,indices,Bie_sr1, counter) == LSR1_eelom(nie;T=T, index=index)
+      @test Elemental_elom_bfgs{T}(nie,indices,Bie_bfgs, counter)==LBFGS_eelom(nie;T=T, index=index)
+      @test Elemental_elom_sr1{T}(nie,indices,Bie_sr1, counter)==LSR1_eelom(nie;T=T, index=index)
     end
   end
 
   a = LBFGS_eelom(5)
   A = Matrix(get_Bie(a))
-  @test A == transpose(A)
+  @test A==transpose(A)
 
   a = LSR1_eelom(5)
   A = Matrix(get_Bie(a))
-  @test A == transpose(A)
+  @test A==transpose(A)
 end
 
 @testset "test elemental partitioned linear operator matrix (PBFGS operator)" begin
@@ -33,7 +33,7 @@ end
   over=2
   (eplom_B,epv_y) = create_epv_eplom_bfgs(; n=n, nie=nie, overlapping=over)
   B = Matrix(eplom_B)
-  @test B == transpose(B)
+  @test B==transpose(B)
 
   @test mapreduce((x -> x>0), my_and, eigvals(B)) # test definite positiveness
 end
@@ -44,7 +44,7 @@ end
   over=2
   (eplom_B,epv_y) = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
   B = Matrix(eplom_B)
-  @test B == transpose(B)
+  @test B==transpose(B)
 
   @test mapreduce((x -> x>0), my_and, eigvals(B)) # test definite positiveness
 end
@@ -54,12 +54,12 @@ end
   nie=4
   over=2
   eplom = PLBFGSR1_eplom(;n=n,nie=nie,overlapping=over)
-  @test Matrix(eplom) == transpose(Matrix(eplom))
+  @test Matrix(eplom)==transpose(Matrix(eplom))
 
   eplom_B,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)
   s = ones(n)
   B = Matrix(eplom_B)
-  @test B == transpose(B)
+  @test B==transpose(B)
 end
 
 @testset "eplom_bfgs PartiallySeparableNLPModels" begin
@@ -69,7 +69,7 @@ end
   s = rand(n)
   element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LBFGS(element_variables, N, n)
-  @test eplom == identity_eplom_LBFGS(element_variables)
+  @test eplom==identity_eplom_LBFGS(element_variables)
   epv = epv_from_epm(eplom)
   update(eplom, epv, s)
 end
@@ -81,7 +81,7 @@ end
   s = rand(n)
   element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LSR1(element_variables, N, n)
-  @test eplom == identity_eplom_LSR1(element_variables)
+  @test eplom==identity_eplom_LSR1(element_variables)
   epv = epv_from_epm(eplom)
   update(eplom, epv, s)
 end
@@ -92,7 +92,7 @@ end
   nie = 5
   element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LOSE(element_variables, N, n)
-  @test eplom == identity_eplom_LOSE(element_variables)
+  @test eplom==identity_eplom_LOSE(element_variables)
   s = rand(n)
   epv = epv_from_epm(eplom)
   update(eplom, epv, s)

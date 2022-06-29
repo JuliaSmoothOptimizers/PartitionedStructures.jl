@@ -20,7 +20,7 @@ mutable struct Elemental_em{T}<:DenseEltMat{T}
   counter::Counter_elt_mat
 end
 
-@inline (==)(eem1::Elemental_em{T}, eem2::Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_Bie(eem1)== get_Bie(eem2)) && (get_indices(eem1)== get_indices(eem2))
+@inline (==)(eem1::Elemental_em{T}, eem2::Elemental_em{T}) where T = (get_nie(eem1)==get_nie(eem2)) && (get_Bie(eem1)==get_Bie(eem2)) && (get_indices(eem1)==get_indices(eem2))
 @inline copy(eem::Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_Bie(eem)), copy(get_cem(eem)))
 @inline similar(eem::Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)), copy(get_cem(eem)))
 
