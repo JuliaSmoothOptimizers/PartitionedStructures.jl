@@ -16,7 +16,7 @@ export PSE_update, PSE_update!
 Perform the PBFGS update onto a copy of the elemental partitioned-matrix `epm_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `epm_B`.
 """
-function PBFGS_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+function PBFGS_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epm_copy = copy(epm_B)
   PBFGS_update!(epm_copy,epv_y,s; kwargs...)
   return epm_copy
@@ -28,13 +28,13 @@ end
 
 Perform the PBFGS update onto the elemental partitioned-matrix `epm_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
-function PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+function PBFGS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epv_s = epv_from_v(s, epv_y)
   PBFGS_update!(epm_B, epv_y, epv_s; kwargs...)
   return epm_B
 end
 
-function PBFGS_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T
+function PBFGS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
   full_check_epv_epm(epm_B,epv_y) || @error("different partitioned structures between epm_B and epv_y")
   full_check_epv_epm(epm_B,epv_s) || @error("different partitioned structures between epm_B and epv_s")
   N = get_N(epm_B)
@@ -59,7 +59,7 @@ end
 Perform the PSR1 update onto a copy of the elemental partitioned-matrix `epm_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `epm_B`.
 """
-function PSR1_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+function PSR1_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epm_copy = copy(epm_B)
   PSR1_update!(epm_copy,epv_y,s; kwargs...)
   return epm_copy
@@ -71,13 +71,13 @@ end
 
 Performs the PSR1 update onto the elemental partitioned-matrix `epm_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
-function PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+function PSR1_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epv_s = epv_from_v(s, epv_y)
   PSR1_update!(epm_B, epv_y, epv_s; kwargs...)
   return epm_B
 end
 
-function PSR1_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T
+function PSR1_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
   full_check_epv_epm(epm_B,epv_y) || @error("different partitioned structures between epm_B and epv_y")
   full_check_epv_epm(epm_B,epv_s) || @error("different partitioned structures between epm_B and epv_s")
   N = get_N(epm_B)
@@ -102,7 +102,7 @@ end
 Perform the PSE update onto a copy of the elemental partitioned-matrix `epm_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `epm_B`.
 """
-function PSE_update(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+function PSE_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epm_copy = copy(epm_B)
   PSE_update!(epm_copy,epv_y,s; kwargs...)
   return epm_copy
@@ -114,13 +114,13 @@ end
 
 Perform the PSE update onto the elemental partitioned-matrix `epm_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
-function PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, s :: Vector{T}; kwargs...) where T
+function PSE_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epv_s = epv_from_v(s, epv_y)
   PSE_update!(epm_B, epv_y, epv_s; kwargs...)
   return epm_B
 end
 
-function PSE_update!(epm_B :: Elemental_pm{T}, epv_y :: Elemental_pv{T}, epv_s :: Elemental_pv{T}; verbose=true, kwargs...) where T
+function PSE_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
   full_check_epv_epm(epm_B,epv_y) || @error("different partitioned structures between epm_B and epv_y")
   full_check_epv_epm(epm_B,epv_s) || @error("different partitioned structures between epm_B and epv_s")
   N = get_N(epm_B)

@@ -122,7 +122,7 @@ end
   partitioned_gradient_x2 = create_epv(U, n)
 
   # vector_gradient_element(x, U) = Vector{Vector{Float64}}([∇f1(x[U[1]]), ∇f2(x[U[2]])])
-  vector_gradient_element(x, U) = [∇f1(x[U[1]]), ∇f2(x[U[2]])] :: Vector{Vector{Float64}}
+  vector_gradient_element(x, U) = [∇f1(x[U[1]]), ∇f2(x[U[2]])]::Vector{Vector{Float64}}
   set_epv!(partitioned_gradient_x0, vector_gradient_element(x0, U))
   set_epv!(partitioned_gradient_x1, vector_gradient_element(x1, U))
 

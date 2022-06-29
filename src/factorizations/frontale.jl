@@ -8,7 +8,7 @@ using ..M_part_mat, ..ModElemental_pm
 Produce the Cholesky factorization of the elemental partitioned-matrix `epm` using a frontal method.
 The sparse factor `L` is stored in `epm.L`.
 """
-function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T
+function frontale!(epm::Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T
   if perm != [1:get_n(epm);]
     permute!(epm, perm) # apply the permutation
   end
@@ -56,10 +56,10 @@ function frontale!(epm :: Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) wh
   return get_L(epm)
 end
 
-select_var(crl_var :: Vector{Int}, not_treated :: Vector{Bool}) = filter!(var -> not_treated[var], crl_var)
+select_var(crl_var::Vector{Int}, not_treated::Vector{Bool}) = filter!(var -> not_treated[var], crl_var)
 
-actualise_not_added!(front :: Vector{Int}, not_added :: Vector{Bool}) = map(i -> not_added[i] = false, front)
-actualise_front!(front :: Vector{Int}, not_treated :: Vector{Bool}) = filter!(var -> not_treated[var], front)
+actualise_not_added!(front::Vector{Int}, not_added::Vector{Bool}) = map(i -> not_added[i] = false, front)
+actualise_front!(front::Vector{Int}, not_treated::Vector{Bool}) = filter!(var -> not_treated[var], front)
 
 export frontale!
 

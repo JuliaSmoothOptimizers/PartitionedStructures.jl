@@ -9,27 +9,27 @@ export Elemental_em
 export identity_eem, create_id_eem, fixed_ones_eem, ones_eem, one_size_bloc
 
 """
-    Elemental_em{T} <: DenseEltMat{T}
+    Elemental_em{T}<:DenseEltMat{T}
 
 Type that represents an elemental element-matrix.
 """
-mutable struct Elemental_em{T} <: DenseEltMat{T}
-  nie :: Int # nᵢᴱ
-  indices :: Vector{Int} # size nᵢᴱ
-  Bie :: Symmetric{T, Matrix{T}} # size nᵢᴱ × nᵢᴱ
-  counter :: Counter_elt_mat
+mutable struct Elemental_em{T}<:DenseEltMat{T}
+  nie::Int # nᵢᴱ
+  indices::Vector{Int} # size nᵢᴱ
+  Bie::Symmetric{T, Matrix{T}} # size nᵢᴱ × nᵢᴱ
+  counter::Counter_elt_mat
 end
 
-@inline (==)(eem1 :: Elemental_em{T}, eem2 :: Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_Bie(eem1)== get_Bie(eem2)) && (get_indices(eem1)== get_indices(eem2))
-@inline copy(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_Bie(eem)), copy(get_cem(eem)))
-@inline similar(eem :: Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)), copy(get_cem(eem)))
+@inline (==)(eem1::Elemental_em{T}, eem2::Elemental_em{T}) where T = (get_nie(eem1)== get_nie(eem2)) && (get_Bie(eem1)== get_Bie(eem2)) && (get_indices(eem1)== get_indices(eem2))
+@inline copy(eem::Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), copy(get_Bie(eem)), copy(get_cem(eem)))
+@inline similar(eem::Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)), copy(get_cem(eem)))
 
 """
     eem = create_id_eem(elt_var; T=T)
 
 Create a `nie` identity elemental element-matrix of type `T` based on the vector of the elemental variables `elt_var`.
 """
-function create_id_eem(elt_var :: Vector{Int}; T=Float64)
+function create_id_eem(elt_var::Vector{Int}; T=Float64)
   nie = length(elt_var)
   Bie = zeros(T, nie, nie)
   [Bie[i, i]=1 for i in 1:nie]
@@ -43,7 +43,7 @@ end
 
 Return a `nie` identity elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function identity_eem(nie :: Int; T=Float64, n=nie^2)
+function identity_eem(nie::Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
   Bie = zeros(T, nie, nie)
   [Bie[i, i]=1 for i in 1:nie]
@@ -57,7 +57,7 @@ end
 
 Return a `nie` ones elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function ones_eem(nie :: Int; T=Float64, n=nie^2)
+function ones_eem(nie::Int; T=Float64, n=nie^2)
   indices = rand(1:n, nie)
   Bie = ones(T, nie, nie)
   counter = Counter_elt_mat()
@@ -72,7 +72,7 @@ Create a `nie` elemental element-matrix of type `T` at indices `index:index+nie-
 All the components of the element-matrix are set to `1` except the diagonal terms that are set to `mul`.
 This method is used to define diagonal dominant element-matrix.
 """
-function fixed_ones_eem(i :: Int, nie :: Int; T=Float64, mul=5.)
+function fixed_ones_eem(i::Int, nie::Int; T=Float64, mul=5.)
   indices = [i:(i+nie-1);]
   Bie = ones(T, nie, nie)
   [Bie[i, i] = mul for i in 1:nie]
@@ -86,7 +86,7 @@ end
 
 Return an elemental element-matrix of type `T` of size one at `index`.
 """
-one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
+one_size_bloc(index::Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
 
 """
     permute!(eem, p)
@@ -94,6 +94,6 @@ one_size_bloc(index :: Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(o
 Set the indices of the element variables of `eem` to `p`.
 Must be use with caution.
 """
-permute!(eem :: Elemental_em{T}, p :: Vector{Int}) where T = eem.indices .= p
+permute!(eem::Elemental_em{T}, p::Vector{Int}) where T = eem.indices .= p
 
 end 

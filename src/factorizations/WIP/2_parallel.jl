@@ -7,14 +7,14 @@ module M_2_parallel
 
   export second_parallel, second_parallel!
 
-  function second_parallel(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}) where T
+  function second_parallel(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}) where T
     epv_x = similar(epv_b)
     res = Vector{T}(undef, get_n(epm_A))
     second_parallel!(epm_A, epv_b, epv_x, res)
     return res
   end
 
-  function second_parallel!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, res :: Vector{T}) where T
+  function second_parallel!(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}, epv_x::Elemental_pv{T}, res::Vector{T}) where T
     check_epv_epm(epm_A, epv_b)
     N = get_N(epm_A)
     n = get_n(epm_A)
@@ -42,7 +42,7 @@ module M_2_parallel
       subproblem(epm_A, epv_b, epv_x, comp_list, i)
   define the subproblem which must be solve for the i-th variable
   """
-  function subproblem!(epm_A :: Elemental_pm{T}, epv_b :: Elemental_pv{T}, epv_x :: Elemental_pv{T}, index :: Int, vector_bool:: Vector{Bool}, res :: Vector{T}) where T
+  function subproblem!(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}, epv_x::Elemental_pv{T}, index::Int, vector_bool:: Vector{Bool}, res::Vector{T}) where T
     comp_list = ModElemental_pm.get_component_list(epm_A,index) # element list using tha i-th variable
     _x = Vector{T}(undef,length(comp_list))
     ss_epm_A = get_eem_sub_set(epm_A, comp_list)

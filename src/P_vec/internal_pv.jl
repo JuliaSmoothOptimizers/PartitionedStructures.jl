@@ -11,41 +11,41 @@ export get_iev, get_iev_set
 export create_ipv, ipv_from_epv, rand_ipv
 
 """
-    Internal_elt_vec{T} <: Elt_vec{T}
+    Internal_elt_vec{T}<:Elt_vec{T}
 
 Type that represents an internal partitioned-vector.
 """
-mutable struct Internal_pv{T} <: Part_v{T}
-  N :: Int
-  n :: Int
-  iev_set :: Vector{Internal_elt_vec{T}}
-  v :: Vector{T}
+mutable struct Internal_pv{T}<:Part_v{T}
+  N::Int
+  n::Int
+  iev_set::Vector{Internal_elt_vec{T}}
+  v::Vector{T}
 end
 
 """
-    iev_set = get_iev_set(ipv :: Internal_pv{T}) where T
+    iev_set = get_iev_set(ipv::Internal_pv{T}) where T
 
 Warning: unsupported and not tested.
 Return the set of internal element-vectors `iev_set`, which are contribuating to the internal partitioned-vector `ipv`.
 """
-@inline get_iev_set(ipv :: Internal_pv{T}) where T = ipv.iev_set
+@inline get_iev_set(ipv::Internal_pv{T}) where T = ipv.iev_set
 
 """
-    iev = get_iev(ipv :: Internal_pv{T}, i :: Int) where T
+    iev = get_iev(ipv::Internal_pv{T}, i::Int) where T
 
 Warning: unsupported and not tested.
 Return the `i`-th internal element-vector of the internal partitioned-vector `ipv`.
 """
-@inline get_iev(ipv :: Internal_pv{T}, i :: Int) where T = ipv.iev_set[i] # i <= N
+@inline get_iev(ipv::Internal_pv{T}, i::Int) where T = ipv.iev_set[i] # i <= N
 
 """
-    ipv = ipv_from_epv(epv :: Elemental_pv{T}) where T
+    ipv = ipv_from_epv(epv::Elemental_pv{T}) where T
 
 Warning: unsupported and not tested.
 Return an internal partitioned-vector `ipv` from the elemental partitioned vector `epv`.
 The internal variables of every internal element-vectors are the same as the elemental variables of the elemental element-vectors.
 """
-function ipv_from_epv(epv :: Elemental_pv{T}) where T
+function ipv_from_epv(epv::Elemental_pv{T}) where T
   N = get_N(epv)
   n = get_n(epv)
   iev_set = iev_from_eev.(get_eev_set(epv))
@@ -55,12 +55,12 @@ function ipv_from_epv(epv :: Elemental_pv{T}) where T
 end
 
 """
-    ipv = create_ipv(iev_set :: Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
+    ipv = create_ipv(iev_set::Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
 
 Warning: unsupported and not tested.
 Return an internal partitioned-vector `ipv` from the set of internal element-vectors `iev_set`.
 """
-function create_ipv(iev_set :: Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
+function create_ipv(iev_set::Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
   N = length(iev_set)
   v = zeros(T,n)
   ipv = Internal_pv{T}(N, n, iev_set, v)
@@ -73,7 +73,7 @@ end
 Warning: unsupported and not tested.
 Define an internal partitioned-vector of `N` elemental element-vectors of size `nᵢ` and type `T`.
 """
-function rand_ipv(N :: Int,n :: Int; nᵢ=3, T=Float64)
+function rand_ipv(N::Int,n::Int; nᵢ=3, T=Float64)
   iev_set = Vector{Internal_elt_vec{T}}(undef,N)
   for i in 1:N
     nᵢᴱ = rand(max(nᵢ-1,0):nᵢ+1)
@@ -85,14 +85,14 @@ function rand_ipv(N :: Int,n :: Int; nᵢ=3, T=Float64)
 end
 
 """
-    build_v!(ipv :: Internal_pv{T}) where T
+    build_v!(ipv::Internal_pv{T}) where T
 
 Warning1: unsupported and not tested.
 Build in place the vector `ipv.v` by accumating the contributions of every internal element-vector.
 Warning2: the order of `ipv.indices` is crucial to get the expected result.
 The order of `ipv.lin_comb`, `ipv.vec`, `ipv.indices` must be synchronized.
 """
-function M_part_v.build_v!(ipv :: Internal_pv{T}) where T
+function M_part_v.build_v!(ipv::Internal_pv{T}) where T
   reset_v!(ipv)
   N = get_N(ipv)
   for i in 1:N
