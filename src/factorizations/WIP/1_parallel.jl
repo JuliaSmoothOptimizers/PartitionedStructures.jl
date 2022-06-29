@@ -59,7 +59,7 @@ module M_1_parallel
     end
     tmp_epv = create_epv(_columns)
 
-    f(xi) = sum( (y->y^2).(scale_epv(tmp_epv, (i -> _x[i]-xi).([1:length(comp_list);]))) )
+    f(xi) = sum( (y->y^2).(scale_epv(tmp_epv, (i -> _x[i]-xi).([1:length(comp_list);]))))
     multiplicator = (λᵢ -> 2*λᵢ).(scale_epv(tmp_epv, ones(T,length(comp_list))))
     val(xi) = scale_epv(tmp_epv, (i -> _x[i]-xi).([1:length(comp_list);]))
     f_prim(xi) = sum(multiplicator .* val(xi))

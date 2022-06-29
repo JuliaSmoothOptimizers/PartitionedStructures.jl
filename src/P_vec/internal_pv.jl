@@ -68,7 +68,7 @@ function create_ipv(iev_set::Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)
 end
 
 """
-    new_internal_pv(N,n;nᵢ,T)
+    ipv = new_internal_pv(N::Int,n::Int; nᵢ=3, T=Float64)
 
 Warning: unsupported and not tested.
 Define an internal partitioned-vector of `N` elemental element-vectors of size `nᵢ` and type `T`.

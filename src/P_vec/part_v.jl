@@ -15,24 +15,24 @@ abstract type Part_v{T}<:Part_struct{T} end
 
 Return the vector `pv.v` of the partitioned-vector `pv`.
 """
-@inline get_v(pv::T ) where T<:Part_v = pv.v
+@inline get_v(pv::T) where T<:Part_v = pv.v
 
 """
-    set_v!(pv::T, v::Vector{Y} ) where {Y, T<:Part_v{Y}}
-    set_v!(pv::T, i::Int, value::Y ) where {Y, T<:Part_v{Y}}
+    set_v!(pv::T, v::Vector{Y}) where {Y, T<:Part_v{Y}}
+    set_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}}
 
 Set the components of the vector `pv.v` (resp. `pv.v[i]`) from the partitioned-vector `pv` to the vector `v` (resp. `value`).
 """
-@inline set_v!(pv::T, v::Vector{Y} ) where {Y, T<:Part_v{Y}} = pv.v = v
-@inline set_v!(pv::T, i::Int, value::Y ) where {Y, T<:Part_v{Y}} = pv.v[i] = value
+@inline set_v!(pv::T, v::Vector{Y}) where {Y, T<:Part_v{Y}} = pv.v = v
+@inline set_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}} = pv.v[i] = value
 
 """
-    add_v!(pv::T, i::Int, value::Y ) where {Y, T<:Part_v{Y}}
+    add_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}}
     add_v!(pv::T, indices::Vector{Int}, values::Vector{Y}) where {Y, T<:Part_v{Y}}
 
 Add `value` (resp `values`) to the vector of the partitioned-vector `pv.v` at the indice `i` (resp `indices`).
 """
-@inline add_v!(pv::T, i::Int, value::Y ) where {Y, T<:Part_v{Y}} = pv.v[i] += value
+@inline add_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}} = pv.v[i] += value
 @inline add_v!(pv::T, indices::Vector{Int}, values::Vector{Y}) where {Y, T<:Part_v{Y}} = get_v(pv)[indices] .+= values
 
 """

@@ -22,7 +22,7 @@ using PartitionedStructures.M_frontale
       m_frontale = L_frontale * L_frontale'
 
       @test norm(L_chol - L_frontale) ≤ 1e-6
-      @test norm(m_frontale - m ) ≤ 1e-6
+      @test norm(m_frontale - m) ≤ 1e-6
     end
   end
 
@@ -41,6 +41,6 @@ using PartitionedStructures.M_frontale
     m_frontale = L_frontale * L_frontale'
 
     @test norm(L_chol - L_frontale) ≤ 1e-6
-    @test norm(m_frontale - m ) ≤ 1e-6
+    @test norm(m_frontale - m) ≤ 1e-6
   end
 end 

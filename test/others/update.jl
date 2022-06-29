@@ -41,7 +41,7 @@ end
   n = 150
   N = 100
   ni = 9
-  sp_vec_elt(ni::Int, n; p=ni/n ) = sprand(Float64, n, p)
+  sp_vec_elt(ni::Int, n; p=ni/n) = sprand(Float64, n, p)
   vec_sp_eev = map(i -> sp_vec_elt(ni, n), 1:N)
   map(spx -> begin spx.nzval .*= 100; spx.nzval .-= 50 end, vec_sp_eev)
   epv = create_epv(vec_sp_eev)

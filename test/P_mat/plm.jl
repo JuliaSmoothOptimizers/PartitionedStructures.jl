@@ -67,7 +67,7 @@ end
   n = 20
   nie = 5
   s = rand(n)
-  element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
+  element_variables = vcat(map( (i -> rand(1:n,nie)),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LBFGS(element_variables, N, n)
   @test eplom==identity_eplom_LBFGS(element_variables)
   epv = epv_from_epm(eplom)
@@ -79,7 +79,7 @@ end
   n = 20
   nie = 5
   s = rand(n)
-  element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
+  element_variables = vcat(map( (i -> rand(1:n,nie)),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LSR1(element_variables, N, n)
   @test eplom==identity_eplom_LSR1(element_variables)
   epv = epv_from_epm(eplom)
@@ -90,7 +90,7 @@ end
   N = 15
   n = 20
   nie = 5
-  element_variables = vcat(map( (i -> rand(1:n,nie) ),1:N-1), [[4,8,12,16,20]])
+  element_variables = vcat(map( (i -> rand(1:n,nie)),1:N-1), [[4,8,12,16,20]])
   eplom = identity_eplom_LOSE(element_variables, N, n)
   @test eplom==identity_eplom_LOSE(element_variables)
   s = rand(n)
