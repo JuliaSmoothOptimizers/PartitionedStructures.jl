@@ -38,18 +38,37 @@ function Elemental_pv{T}(N::Int, n::Int, eev_set::Vector{Elemental_elt_vec{T}}, 
   return epv
 end
 
-@inline get_eev_set(pv::Elemental_pv{T}) where T = pv.eev_set
-@inline get_eev(pv::Elemental_pv{T}, i::Int) where T = pv.eev_set[i]
+"""
+    eev_set = get_eev_set(epv::Elemental_pv{T}) where T
+
+Return either the vector of every elemental element-vector of the elemental partitioned-vector `epv` or the `i`-th elemental element-vector.
+"""
+@inline get_eev_set(epv::Elemental_pv{T}) where T = epv.eev_set
+@inline get_eev(epv::Elemental_pv{T}, i::Int) where T = epv.eev_set[i]
 
 # docstring defined in M_abstract_part_struct.get_ee_struct
-@inline get_ee_struct(pv::Elemental_pv{T}) where T = get_eev_set(pv)
-@inline get_ee_struct(pv::Elemental_pv{T}, i::Int) where T = get_eev(pv,i)
+@inline get_ee_struct(epv::Elemental_pv{T}) where T = get_eev_set(epv)
+@inline get_ee_struct(epv::Elemental_pv{T}, i::Int) where T = get_eev(epv,i)
 
-@inline get_eev_subset(pv::Elemental_pv{T}, indices::Vector{Int}) where T = pv.eev_set[indices]
-@inline get_eev_value(pv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev(pv,i))
-@inline get_eev_value(pv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev(pv,i))[j]
-@inline set_eev!(pv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T = set_vec!(get_eev(pv,i),j,val)
-@inline set_eev!(pv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T = set_vec!(get_eev(pv,i),vec)
+"""
+    get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T
+
+Returns a subset of the elemental element vector composing the elemental partitioned-vector `epv`.
+`indices` selects the differents elemental element-vector needed.
+"""
+@inline get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T = epv.eev_set[indices]
+
+"""
+    eev_i_value = get_eev_value(epv::Elemental_pv{T}, i::Int) where T
+    eev_ij_value = get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T 
+
+Return either the value of the `i`-th elemental element-vector of the elemental partitioned-vector `epv` or only the `j`-th component of the `i`-th elemental element-vector.
+"""
+@inline get_eev_value(epv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev(epv,i))
+@inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev(epv,i))[j]
+
+@inline set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T = set_vec!(get_eev(epv,i),j,val)
+@inline set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T = set_vec!(get_eev(epv,i),vec)
 
 @inline (==)(ep1::Elemental_pv{T},ep2::Elemental_pv{T}) where T = (get_N(ep1)==get_N(ep2)) && (get_n(ep1)==get_n(ep2)) && (get_eev_set(ep1)==get_eev_set(ep2))
 @inline similar(ep::Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef,get_n(ep)))
@@ -101,14 +120,13 @@ end
 Create an elemental partitioned-vector from a vector `eev_set` of: `SparseVector`, elemental element-vector or a vector of indices.
 """
 @inline create_epv(sp_set::Vector{SparseVector{T,Y}}; kwargs...) where {T,Y} = create_epv(eev_from_sparse_vec.(sp_set); kwargs...)
+@inline create_epv(vec_elt_var::Vector{Vector{Int}}; n::Int=max_indices(vec_elt_var), type=Float64) = create_epv(vec_elt_var, n; type)
 
 function create_epv(eev_set::Vector{Elemental_elt_vec{T}}; n=max_indices(eev_set)) where T
   N = length(eev_set)
   v = zeros(T,n)
   Elemental_pv{T}(N, n, eev_set, v)
 end
-
-@inline create_epv(vec_elt_var::Vector{Vector{Int}}; n::Int=max_indices(vec_elt_var), type=Float64) = create_epv(vec_elt_var, n; type)
 
 function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type=Float64)
   eev_set = map((elt_var -> create_eev(elt_var,type=type)), vec_elt_var)
@@ -202,9 +220,9 @@ function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Flo
   return epv
 end
 
-function Base.Vector(pv::Elemental_pv{T}) where T
-	build_v!(pv)
-	get_v(pv)
+function Base.Vector(epv::Elemental_pv{T}) where T
+	build_v!(epv)
+	get_v(epv)
 end
 
 """
@@ -279,6 +297,7 @@ function prod_part_vectors(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
 
     vec1 = get_vec(eev1)
     vec2 = get_vec(eev2)
+
     yts = dot(vec1, vec2)
     res[idx] = yts
     acc += yts

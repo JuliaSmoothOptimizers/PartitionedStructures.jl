@@ -127,23 +127,18 @@ Sets the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
 @inline set_L_to_spm!(pm::T) where T<:Part_mat = pm.L .= pm.spm
 
 """
-    eelmon_set = get_eelom_set(plm::T) where T<:Part_LO_mat
-
-Returns the vector of every elemental element linear operator `plm.eelom_set`.
-"""
-@inline get_eelom_set(plm::T) where T<:Part_LO_mat = plm.eelom_set
-
-"""
+    eelom_set = get_eelom_set(plm::T) where T<:Part_LO_mat
     eelom = get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat
 
-Returns the `i`-th elemental element linear operator `plm.eelom_set[i]`.
+Returns either the vector of every elemental element linear-operator `plm.eelom_set` or the `i`-th elemental element linear-operator `plm.eelom_set[i]`..
 """
+@inline get_eelom_set(plm::T) where T<:Part_LO_mat = plm.eelom_set
 @inline get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat = @inbounds plm.eelom_set[i]
 
 """
     eelom_subset = get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
 
-Returns a subset of the elemental element linear operators composing `plm`.
+Returns a subset of the elemental element linear operators composing the elemental partitioned linear-operator `plm`.
 `indices` selects the differents elemental element linear operators needed.
 """
 @inline get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat = plm.eelom_set[indices]
