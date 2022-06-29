@@ -50,4 +50,5 @@ using PartitionedStructures.Utils
     B3 = SR1((x-> 1/2*x).(s),s,B_x2; index=5, reset=4)
     @test B3==B
   end
-end 
+  
+end

@@ -138,4 +138,4 @@ module M_3_parallel
     return xi_opt
   end
 
-end 
+end

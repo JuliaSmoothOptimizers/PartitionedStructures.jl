@@ -62,4 +62,4 @@ actualise_front!(front::Vector{Int}, not_treated::Vector{Bool}) = filter!(var ->
 
 export frontale!
 
-end 
+end

@@ -94,4 +94,4 @@ function PLSR1_eplom_rand(N::Int, n::Int; T=Float64, nie::Int=5)
   return eplom
 end
 
-end 
+end

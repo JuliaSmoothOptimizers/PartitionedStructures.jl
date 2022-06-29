@@ -121,4 +121,4 @@ module M_2_parallel
     return xi_opt
   end
 
-end 
+end

@@ -96,4 +96,4 @@ Must be use with caution.
 """
 permute!(eem::Elemental_em{T}, p::Vector{Int}) where T = eem.indices .= p
 
-end 
+end

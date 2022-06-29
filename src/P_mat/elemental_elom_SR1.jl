@@ -71,4 +71,4 @@ Reset the LSR1 linear operator of the elemental element linear operator matrix `
 """
 reset_eelom_sr1!(eelom::Elemental_elom_sr1{T}) where T<:Number = eelom.Bie = LinearOperators.LSR1Operator(T, eelom.nie)
 
-end 
+end

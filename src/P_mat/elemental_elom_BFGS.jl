@@ -71,4 +71,4 @@ Reset the LBFGS linear operator of the elemental element linear operator `eelom`
 """
 reset_eelom_bfgs!(eelom::Elemental_elom_bfgs{T}) where T<:Number = eelom.Bie = LinearOperators.LBFGSOperator(T, eelom.nie)
 
-end 
+end
