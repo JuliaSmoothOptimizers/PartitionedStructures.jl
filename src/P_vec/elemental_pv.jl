@@ -44,11 +44,11 @@ end
 Return either the vector of every elemental element-vector of the elemental partitioned-vector `epv` or the `i`-th elemental element-vector.
 """
 @inline get_eev_set(epv::Elemental_pv{T}) where T = epv.eev_set
-@inline get_eev(epv::Elemental_pv{T}, i::Int) where T = epv.eev_set[i]
+@inline get_eev_set(epv::Elemental_pv{T}, i::Int) where T = epv.eev_set[i]
 
 # docstring defined in M_abstract_part_struct.get_ee_struct
 @inline get_ee_struct(epv::Elemental_pv{T}) where T = get_eev_set(epv)
-@inline get_ee_struct(epv::Elemental_pv{T}, i::Int) where T = get_eev(epv,i)
+@inline get_ee_struct(epv::Elemental_pv{T}, i::Int) where T = get_eev_set(epv,i)
 
 """
     get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T
@@ -64,11 +64,11 @@ Returns a subset of the elemental element vector composing the elemental partiti
 
 Return either the value of the `i`-th elemental element-vector of the elemental partitioned-vector `epv` or only the `j`-th component of the `i`-th elemental element-vector.
 """
-@inline get_eev_value(epv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev(epv,i))
-@inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev(epv,i))[j]
+@inline get_eev_value(epv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev_set(epv,i))
+@inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev_set(epv,i))[j]
 
-@inline set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T = set_vec!(get_eev(epv,i),j,val)
-@inline set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T = set_vec!(get_eev(epv,i),vec)
+@inline set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T = set_vec!(get_eev_set(epv,i),j,val)
+@inline set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T = set_vec!(get_eev_set(epv,i),vec)
 
 @inline (==)(ep1::Elemental_pv{T},ep2::Elemental_pv{T}) where T = (get_N(ep1)==get_N(ep2)) && (get_n(ep1)==get_n(ep2)) && (get_eev_set(ep1)==get_eev_set(ep2))
 @inline similar(ep::Elemental_pv{T}) where T = Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef,get_n(ep)))
@@ -83,7 +83,7 @@ function M_part_v.build_v!(epv::Elemental_pv{T}) where T
   reset_v!(epv)
   N = get_N(epv)
   for i in 1:N
-    eevᵢ = get_eev(epv,i)
+    eevᵢ = get_eev_set(epv,i)
     nᵢᴱ = get_nie(eevᵢ)
     for j in 1:nᵢᴱ
       add_v!(epv, get_indices(eevᵢ,j), get_vec(eevᵢ,j))
@@ -107,8 +107,8 @@ function add_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T<:Number
   full_check_epv_epm(epv1,epv2) || @error("epv1 mismatch epv2 in add_epv!")
   N = get_N(epv1)
   for i in 1:N
-    vec1 = get_vec(get_eev(epv1,i))
-    set_add_vec!(get_eev(epv2,i), vec1)
+    vec1 = get_vec(get_eev_set(epv1,i))
+    set_add_vec!(get_eev_set(epv2,i), vec1)
   end
   return epv2
 end
@@ -169,7 +169,7 @@ function scale_epv!(epv::Elemental_pv{T}, scalars::Vector{T}) where T
   reset_v!(epv)
   N = get_N(epv)
   for i in 1:N
-    eevᵢ = get_eev(epv,i)
+    eevᵢ = get_eev_set(epv,i)
     nᵢᴱ = get_nie(eevᵢ)
     scalar = scalars[i]
     for j in 1:nᵢᴱ
@@ -246,7 +246,7 @@ Usefull to define Uᵢ x, ∀ x.
 """
 function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where T
   for idx in 1:get_N(epv_x)
-    set_eev!(epv_x, idx, x[get_indices(get_eev(epv_x,idx))]) # met le vecteur élément comme une copie de x
+    set_eev!(epv_x, idx, x[get_indices(get_eev_set(epv_x,idx))]) # met le vecteur élément comme une copie de x
   end
 end
 
@@ -271,7 +271,7 @@ function initialize_component_list!(epv::Elemental_pv)
   N = get_N(epv)
   n = get_n(epv)
   for i in 1:N
-    epvᵢ = get_eev(epv,i)
+    epvᵢ = get_eev_set(epv,i)
     _indices = get_indices(epvᵢ)
     for j in _indices # changer peut-être
       push!(get_component_list(epv,j),i)
@@ -292,8 +292,8 @@ function prod_part_vectors(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
   acc = (T)(0)
   res = Vector{T}(undef, N)
   for idx in 1:N
-    eev1 = get_eev(epv1,idx)
-    eev2 = get_eev(epv2,idx)
+    eev1 = get_eev_set(epv1,idx)
+    eev2 = get_eev_set(epv2,idx)
 
     vec1 = get_vec(eev1)
     vec2 = get_vec(eev2)

@@ -41,8 +41,8 @@ function PBFGS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::El
   for i in 1:N
     eemi = get_eem_set(epm_B, i)
     Bi = get_Bie(eemi)
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     index = get_index(eemi)
     update = BFGS!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
     cem = get_cem(eemi)
@@ -84,8 +84,8 @@ function PSR1_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Ele
   for i in 1:N
     eemi = get_eem_set(epm_B, i)
     Bi = get_Bie(eemi)
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     index = get_index(eemi)
     update = SR1!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
     cem = get_cem(eemi)
@@ -128,8 +128,8 @@ function PSE_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elem
   for i in 1:N
     eemi = get_eem_set(epm_B, i)
     Bi = get_Bie(eemi)
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     index = get_index(eemi)
     update = SE!(si, yi, Bi, Bi; index=index, kwargs...) # return 0 or 1
     cem = get_cem(eemi)

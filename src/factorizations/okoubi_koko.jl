@@ -37,13 +37,13 @@ function okoubi!(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}, epv_x::Elementa
   for i in 1:n
     _comp_list = ModElemental_pm.get_component_list(epm_A,i) # element list using tha i-th variable
     if length(_comp_list)==1 # in case only one element uses it
-      eev = get_eev(epv_x, _comp_list[1]) # retrieve elemental element-vector
+      eev = get_eev_set(epv_x, _comp_list[1]) # retrieve elemental element-vector
       j = findfirst((index->index==i), eev.indices) # find the corresponding index
       res[i] = get_vec(eev,j) # store the result
     else
       s = Vector{T}(undef,length(_comp_list))
       for (idx,val) in enumerate(_comp_list)
-        eev = get_eev(epv_x, val) # retrieve elemental element-vector
+        eev = get_eev_set(epv_x, val) # retrieve elemental element-vector
         j = findfirst((index->index==i), eev.indices) # find the corresponding index
         s[idx] = get_vec(eev,j) # store the results
       end

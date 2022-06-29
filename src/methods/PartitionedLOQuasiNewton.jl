@@ -43,8 +43,8 @@ function PLBFGS_update!(eplom_B::Elemental_plom_bfgs{T}, epv_y::Elemental_pv{T},
   N = get_N(eplom_B)
   for i in 1:N
     eelomi = get_eelom_set(eplom_B, i)
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     index = get_index(eelomi)
     if (dot(si,yi) > eps(T))
       Bi = get_Bie(eelomi)
@@ -94,8 +94,8 @@ function PLSR1_update!(eplom_B::Elemental_plom_sr1{T}, epv_y::Elemental_pv{T}, e
   N = get_N(eplom_B)
   for i in 1:N
     eelomi = get_eelom_set(eplom_B, i)
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     Bi = get_Bie(eelomi)
     ri = yi .- Bi*si
     index = get_index(eelomi)
@@ -150,8 +150,8 @@ function Part_update!(eplom_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}
   N = get_N(eplom_B)
   for i in 1:N
     Bi = get_Bie(get_eelom_set(eplom_B, i))
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     push!(Bi, si, yi)
   end
 end
@@ -197,8 +197,8 @@ function PLSE_update!(eplom_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}
   for i in 1:N
     eelom = get_eelom_set(eplom_B, i)
     Bi = get_Bie(eelom)
-    si = get_vec(get_eev(epv_s,i))
-    yi = get_vec(get_eev(epv_y,i))
+    si = get_vec(get_eev_set(epv_s,i))
+    yi = get_vec(get_eev_set(epv_y,i))
     ri = yi .- Bi*si
     index = get_index(eelom)
     if isa(Bi, LBFGSOperator{T})
