@@ -218,11 +218,7 @@ function part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
   return epm
 end
 
-"""
-    initialize_component_list!(epm::Elemental_pm)
-
-Build for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
-"""
+# docstring in M_abstract_part_struct.initialize_component_list!
 function initialize_component_list!(epm::Elemental_pm)
   N = get_N(epm)
   n = get_n(epm)
@@ -236,12 +232,7 @@ function initialize_component_list!(epm::Elemental_pm)
   return get_component_list(epm)
 end
 
-"""
-    set_spm!(epm::Elemental_pm{T}) where T
-
-Build the sparse matrix of `eplom` in `eplom.spm` from the blocs `eplom.eelom_set`.
-The sparse matrix is built with respect to the indices of each elemental element linear operator.
-"""
+# docstring in M_part_mat.set_spm!
 function set_spm!(epm::Elemental_pm{T}) where T
   reset_spm!(epm) # epm.spm .= 0
   N = get_N(epm)

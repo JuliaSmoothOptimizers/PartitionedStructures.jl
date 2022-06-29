@@ -22,7 +22,29 @@ abstract type Part_mat{T}<:Part_struct{T} end
 "Abstract type representing partitioned-matrix using linear operators"
 abstract type Part_LO_mat{T}<:Part_mat{T} end
 
+"""
+    set_spm!(pm::P) where {T<:Number, P<:Part_mat{T}}
+
+Builds the sparse matrix of the partitioned matrix `pm` in `pm.spm` by gathering the contribution of every element-matrix.
+The sparse matrix is built with respect to the indices of each elemental element linear operator.
+"""
 @inline set_spm!(pm::T) where T<:Part_mat = @error("should not be called")
+
+function set_spm!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
+  reset_spm!(plm) # plm.spm .= 0
+  N = get_N(plm)
+  n = get_n(plm)
+  spm = get_spm(plm)
+  for i in 1:N
+    plmᵢ = get_eelom_set(plm,i)
+    nie = get_nie(plmᵢ)
+    Bie = get_Bie(plmᵢ)
+    indicesᵢ = get_indices(plmᵢ)
+    value_Bie = zeros(T,nie,nie)
+    map( (i -> value_Bie[:,i] .= Bie*SparseVector(nie,[i],[1])), 1:nie)
+    spm[indicesᵢ,indicesᵢ] .+= value_Bie
+  end
+end
 
 """
     spm = get_spm(pm::T) where T<:Part_mat
@@ -133,7 +155,11 @@ Returns the linear operator of the `i`-th elemental element linear operator of `
 """
 @inline get_eelom_set_Bie(plm::T, i::Int) where T<:Part_LO_mat = get_Bie(get_eelom_set(plm, i))
 
+"""
+    set_eelom_set!(eplom::Elemental_plom{T}, i::Int, eelom::Y) where Y<:LOEltMat{T} where T
 
+Set the `i`-th elemental element linear-operator `eplom.eelom` to the`eelom`.
+"""
 @inline set_eelom_set!(plm::T) where T<:Part_LO_mat = @error("should not be called")
 
 """
@@ -143,11 +169,7 @@ Returns the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
 """
 @inline get_ee_struct_Bie(pm::T, i::Int) where T<:Part_mat = get_Bie(get_ee_struct(pm, i))
 
-"""
-    initialize_component_list!(plm)
-
-Builds for each index i (∈ {1, ..., n}) a list of the elements using the i-th variable.
-"""
+# docstring in M_abstract_part_struct.initialize_component_list!
 function initialize_component_list!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
   N = get_N(plm)
   for i in 1:N
@@ -156,28 +178,6 @@ function initialize_component_list!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
     for j in _indices
       push!(get_component_list(plm, j), i)
     end
-  end
-end
-
-"""
-    set_spm!set_spm!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
-
-Builds the sparse matrix of `plm` in `plm.spm` from all the elemental element linear operator.
-The sparse matrix is built with respect to the indices of each elemental element linear operator.
-"""
-function set_spm!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
-  reset_spm!(plm) # plm.spm .= 0
-  N = get_N(plm)
-  n = get_n(plm)
-  spm = get_spm(plm)
-  for i in 1:N
-    plmᵢ = get_eelom_set(plm,i)
-    nie = get_nie(plmᵢ)
-    Bie = get_Bie(plmᵢ)
-    indicesᵢ = get_indices(plmᵢ)
-    value_Bie = zeros(T,nie,nie)
-    map( (i -> value_Bie[:,i] .= Bie*SparseVector(nie,[i],[1])), 1:nie)
-    spm[indicesᵢ,indicesᵢ] .+= value_Bie
   end
 end
 

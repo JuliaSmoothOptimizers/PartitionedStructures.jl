@@ -25,18 +25,8 @@ mutable struct Elemental_plom_bfgs{T}<:Part_LO_mat{T}
   permutation::Vector{Int} # n-size vector
 end
 
-"""
-    eelom_set = get_ee_struct(eplom::Elemental_plom_bfgs{T}) where T
-
-Return the vector of every elemental element linear operator `eplom.eelom_set`.
-"""
+# docstring defined in M_abstract_part_struct.get_ee_struct
 @inline get_ee_struct(eplom::Elemental_plom_bfgs{T}) where T = get_eelom_set(eplom)
-
-"""
-    eelom = get_ee_struct(eplom::Elemental_plom_bfgs{T}, i::Int) where T
-
-Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
-"""
 @inline get_ee_struct(eplom::Elemental_plom_bfgs{T}, i::Int) where T = get_eelom_set(eplom, i)
 
 @inline (==)(eplom1::Elemental_plom_bfgs{T}, eplom2::Elemental_plom_bfgs{T}) where T = (get_N(eplom1)==get_N(eplom2)) && (get_n(eplom1)==get_n(eplom2)) && (get_eelom_set(eplom1)==get_eelom_set(eplom2)) && (get_permutation(eplom1)==get_permutation(eplom2))

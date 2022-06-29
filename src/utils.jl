@@ -14,13 +14,16 @@ my_and = (a::Bool, b::Bool) -> (a && b)
 
 """
     indice_max = max_indices(list_of_element_variables::Vector{Vector{T}}) where T
+    indice_max = max_indices(elt_set::Vector{T}) where T<:Element_struct
 
 Return the maximum index of the element variables in `list_of_element_variables`.
 """
 max_indices(elt_vars::Vector{Vector{T}}) where T<:Number = isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars))
+  
 
 """
     indice_min = min_indices(list_of_element_variables::Vector{Vector{T}}) where T
+    indice_min = min_indices(elt_set::Vector{T}) where T<:Element_struct
 
 Return the minimum index of the element variables in `list_of_element_variables`.
 """

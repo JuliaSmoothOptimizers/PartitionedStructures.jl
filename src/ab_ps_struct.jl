@@ -1,4 +1,3 @@
-
 module M_abstract_part_struct
 using ..M_abstract_element_struct
 import Base.==
@@ -56,9 +55,19 @@ Check if each element-structure of both partitioned-structures depend of the sam
 """
 @inline full_check_epv_epm(ep1::Y, ep2::Z) where {Y<:Part_struct, Z<:Part_struct} = check_epv_epm(ep1,ep2) && get_component_list(ep1)==get_component_list(ep2)
 
-# define the function, initialize_component_list! is instantiated in the modules: ModElemental_pv, ModElemental_pm...
+"""
+    initialize_component_list!(ps::T) where T<:Part_struct)
+
+Build for each index i (∈ {1,..., n}) a list of the elements (⊆ {1,...,N}) using the i-th variable.
+"""
 initialize_component_list!(ps::T) where T<:Part_struct = @error("should not be called")
 
-# define the function, initialize_component_list! is instantiated in the modules: ModElemental_pv, ModElemental_pm...
+"""
+    ee_vector = get_ee_struct(eps::Part_struct{T}) where T
+    ee = get_ee_struct(eps::Part_struct{T}, i::Int) where T
+
+Return the vector composed of every elemental element `ee_vector` from the elemental partitioned-structure `eps` or the `i`-th elemental element of `eps`.
+"""
 get_ee_struct(ps::T) where T<:Part_struct = @error("should not be called")
+
 end

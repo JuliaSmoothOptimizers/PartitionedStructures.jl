@@ -40,8 +40,11 @@ end
 
 @inline get_eev_set(pv::Elemental_pv{T}) where T = pv.eev_set
 @inline get_eev(pv::Elemental_pv{T}, i::Int) where T = pv.eev_set[i]
+
+# docstring defined in M_abstract_part_struct.get_ee_struct
 @inline get_ee_struct(pv::Elemental_pv{T}) where T = get_eev_set(pv)
 @inline get_ee_struct(pv::Elemental_pv{T}, i::Int) where T = get_eev(pv,i)
+
 @inline get_eev_subset(pv::Elemental_pv{T}, indices::Vector{Int}) where T = pv.eev_set[indices]
 @inline get_eev_value(pv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev(pv,i))
 @inline get_eev_value(pv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev(pv,i))[j]

@@ -7,7 +7,7 @@ export get_indices, get_nie
 export set_indices!, set_nie!
 export max_indices, min_indices
 
-""" Supertype of every element-structure, ex : Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs, Internal_elt_vec, , ..."""
+""" Supertype of every element-structure, ex : Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs, Internal_elt_vec..."""
 abstract type Element_struct{T} end
 
 """

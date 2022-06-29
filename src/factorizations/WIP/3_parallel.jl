@@ -2,7 +2,7 @@ module M_3_parallel
 
   using LinearAlgebra, Statistics
   using LinearAlgebra: norm2
-  using ..M_abstract_element_struct, ..M_abstract_part_struct,  ..M_elt_mat, ..M_part_mat, ..ModElemental_pm, ..ModElemental_em
+  using ..M_abstract_element_struct, ..M_abstract_part_struct, ..M_elt_mat, ..M_part_mat, ..ModElemental_pm, ..ModElemental_em
   using ..M_elt_vec, ..M_part_v, ..ModElemental_ev, ..ModElemental_pv
   using ..Link
 

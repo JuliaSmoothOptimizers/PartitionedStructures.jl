@@ -31,7 +31,6 @@ using .ModElemental_pv, .ModElemental_pm, .ModElemental_plom_bfgs, .ModElemental
 using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
 using .Link, .Instances, .PartMatInterface
 
-
 # export the main methods of every submodule
 
 # structures and functions related to element structures
