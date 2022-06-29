@@ -154,6 +154,7 @@ function Part_update!(eplom_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}
     yi = get_vec(get_eev_set(epv_y,i))
     push!(Bi, si, yi)
   end
+  return eplom_B
 end
 
 """

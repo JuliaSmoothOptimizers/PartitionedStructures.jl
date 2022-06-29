@@ -62,9 +62,9 @@ The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 """
 function create_epv_eplom_sr1(;n=9,nie=5,overlapping=1, mul_v=100.)
-eplom = PLSR1_eplom(;n=n,nie=nie,overlapping=overlapping)
-epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
-return (eplom,epv)
+  eplom = PLSR1_eplom(;n=n,nie=nie,overlapping=overlapping)
+  epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
+  return (eplom,epv)
 end
 
 """

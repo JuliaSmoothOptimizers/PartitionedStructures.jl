@@ -42,7 +42,7 @@ end
   N = 15
   n = 20
   nie = 5
-  element_variables = vcat(map( (i -> rand(1:n,nie)),1:N-1), [[4,8,12,16,20]])
+  element_variables = vcat(map((i -> rand(1:n,nie)),1:N-1), [[4,8,12,16,20]])
   identity_epm(element_variables,N,n)
   identity_epm(element_variables)
   @test identity_epm(element_variables,N,n)==identity_epm(element_variables)

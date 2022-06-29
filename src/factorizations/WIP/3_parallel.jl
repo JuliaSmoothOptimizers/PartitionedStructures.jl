@@ -108,7 +108,7 @@ module M_3_parallel
     first_scalars(xi) = (i -> _x[i]-xi).([1:length(comp_list);])
     every_scalars(xi) = vcat(first_scalars(xi), other_scalars)
 
-    f(xi) = sum( (y->y^2).(scale_epv(sub_prob_epv, every_scalars(xi))))
+    f(xi) = sum((y->y^2).(scale_epv(sub_prob_epv, every_scalars(xi))))
 
     multiplicator = (λᵢ -> 2*λᵢ).(scale_epv(tmp_epv, ones(T,length(comp_list))))
     val(xi) = scale_epv(sub_prob_epv, every_scalars(xi))

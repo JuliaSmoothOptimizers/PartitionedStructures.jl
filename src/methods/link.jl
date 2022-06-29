@@ -129,7 +129,7 @@ The method returns `result`, a vector similar to `x`.
 """
 function mul_epm_vector(epm::T, x::Vector{Y}) where T<:Part_mat{Y} where Y<:Number
   epv = epv_from_epm(epm)
-  mul_epm_vector(epm, epv, x)
+  return mul_epm_vector(epm, epv, x)  
 end
 
 function mul_epm_vector(epm::T, epv::Elemental_pv{Y}, x::Vector{Y}) where T<:Part_mat{Y} where Y<:Number
@@ -149,6 +149,7 @@ The result is stored in `res`, a vector similar to `x`.
 function mul_epm_vector!(res::Vector{Y}, epm::T, x::Vector{Y}) where T<:Part_mat{Y} where Y<:Number
   epv = epv_from_epm(epm)
   mul_epm_vector!(res, epm, epv, x)
+  return res
 end
 
 function mul_epm_vector!(res::Vector{Y}, epm::T, epv::Elemental_pv{Y}, x::Vector{Y}) where T<:Part_mat{Y} where Y<:Number
@@ -156,6 +157,7 @@ function mul_epm_vector!(res::Vector{Y}, epm::T, epv::Elemental_pv{Y}, x::Vector
   mul_epm_epv!(epv, epm, epv)
   build_v!(epv)
   res .= get_v(epv)
+  return res
 end
 
 """

@@ -41,9 +41,10 @@ function set_spm!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
     Bie = get_Bie(plmᵢ)
     indicesᵢ = get_indices(plmᵢ)
     value_Bie = zeros(T,nie,nie)
-    map( (i -> value_Bie[:,i] .= Bie*SparseVector(nie,[i],[1])), 1:nie)
+    map((i -> value_Bie[:,i] .= Bie*SparseVector(nie,[i],[1])), 1:nie)
     spm[indicesᵢ,indicesᵢ] .+= value_Bie
   end
+  return plm
 end
 
 """
@@ -174,6 +175,7 @@ function initialize_component_list!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
       push!(get_component_list(plm, j), i)
     end
   end
+  return plm
 end
 
 function Base.Matrix(pm::P) where {T<:Number, P<:Part_mat{T}}

@@ -126,6 +126,9 @@ end
 Warning: unsupported and not tested.
 Build in place `iev.tmp`, the contribution of the internal element-vector `iev` as a part of a partitioned-vector.
 """
-build_tmp!(iev::Internal_elt_vec{T}) where T = mul!(iev._tmp, transpose(iev.lin_comb), iev.vec)
+function build_tmp!(iev::Internal_elt_vec{T}) where T
+  mul!(iev._tmp, transpose(iev.lin_comb), iev.vec)
+  return iev
+end
 
 end

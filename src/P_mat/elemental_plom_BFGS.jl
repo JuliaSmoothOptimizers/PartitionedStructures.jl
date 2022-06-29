@@ -43,7 +43,7 @@ The positions are given by the vector of the element variables `element_variable
 identity_eplom_LBFGS(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64) = identity_eplom_LBFGS(element_variables, N, n; T)
 
 function identity_eplom_LBFGS(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
-  eelom_set = map( (elt_var -> init_eelom_LBFGS(elt_var; T=T)), element_variables)
+  eelom_set = map((elt_var -> init_eelom_LBFGS(elt_var; T=T)), element_variables)
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])

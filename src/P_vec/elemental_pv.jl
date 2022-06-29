@@ -103,7 +103,7 @@ end
 
 Build in place the `-epv`, by inversing the value of each elemental element-vector.
 """
-minus_epv!(epv::Elemental_pv{T}) where T<:Number = map( (eev -> set_minus_vec!(eev)), get_eev_set(epv))
+minus_epv!(epv::Elemental_pv{T}) where T<:Number = map((eev -> set_minus_vec!(eev)), get_eev_set(epv))
 
 """
     add_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T})
@@ -281,7 +281,7 @@ function initialize_component_list!(epv::Elemental_pv)
       push!(get_component_list(epv,j),i)
     end
   end
-  return epv #
+  return epv
 end
 
 """

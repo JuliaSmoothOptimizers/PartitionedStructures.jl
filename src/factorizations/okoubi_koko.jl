@@ -5,6 +5,8 @@ using LinearAlgebra, Statistics
 using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_part_v, ..ModElemental_pm, ..ModElemental_pv
 using ..Link
 
+export okoubi, okoubi!
+
 """
     okoubi(epm, epv)
 
@@ -50,8 +52,7 @@ function okoubi!(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}, epv_x::Elementa
       res[i] = mean(s)
     end
   end
+  return epm_A
 end
-
-export okoubi, okoubi!
 
 end

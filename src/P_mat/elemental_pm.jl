@@ -89,7 +89,7 @@ The elemental variables are based from the indices informed in `element_variable
 identity_epm(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64) = identity_epm(element_variables, N, n; T=T)
 
 function identity_epm(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
-  eem_set = map( (elt_var -> create_id_eem(elt_var; T=T)), element_variables)
+  eem_set = map((elt_var -> create_id_eem(elt_var; T=T)), element_variables)
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
@@ -229,7 +229,7 @@ function initialize_component_list!(epm::Elemental_pm)
       push!(get_component_list(epm, j), i)
     end
   end
-  return get_component_list(epm)
+  return epm
 end
 
 # docstring in M_part_mat.set_spm!
@@ -249,6 +249,7 @@ function set_spm!(epm::Elemental_pm{T}) where T
       spm[real_i, real_j] += val
     end
   end
+  return epm
 end
 
 """
@@ -277,6 +278,7 @@ function permute!(epm::Elemental_pm{T}, p::Vector{Int}) where T
     new_component_list[i] = get_component_list(epm, p[i])
   end
   hard_reset_spm!(epm) # hard reset of the sparse matrix
+  return epm
 end
 
 """

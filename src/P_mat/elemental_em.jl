@@ -94,6 +94,9 @@ one_size_bloc(index::Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(one
 Set the indices of the element variables of `eem` to `p`.
 Must be use with caution.
 """
-permute!(eem::Elemental_em{T}, p::Vector{Int}) where T = eem.indices .= p
+function permute!(eem::Elemental_em{T}, p::Vector{Int}) where T
+  eem.indices .= p
+  return eem
+end
 
 end

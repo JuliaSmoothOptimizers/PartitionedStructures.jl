@@ -45,7 +45,7 @@ identity_eplom_LSR1(element_variables::Vector{Vector{Int}}; N::Int=length(elemen
 
 function identity_eplom_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
   length(element_variables) != N && @error("unvalid list of element indices, PLSR1")
-  eelom_set = map( (elt_var -> init_eelom_LSR1(elt_var; T=T)), element_variables)
+  eelom_set = map((elt_var -> init_eelom_LSR1(elt_var; T=T)), element_variables)
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
