@@ -61,7 +61,7 @@ The size of `tmp` is `iev.nie`.
     set_lin_comb!(iev::Internal_elt_vec{T}, lin_comb::SparseMatrixCSC{T,Int}) where T
 
 Warning: unsupported and not tested.
-Set the internal variables `iev.lin_comb` of the internal element-vector `iev` to the `lin_comb::SparseMatrixCSC`. 
+Set the internal variables `iev.lin_comb` of the internal element-vector `iev` to the `lin_comb::SparseMatrixCSC`.
 """
 @inline set_lin_comb!(iev::Internal_elt_vec{T}, lin_comb::SparseMatrixCSC{T,Int}) where T = iev.lin_comb = lin_comb
 

@@ -248,7 +248,7 @@ function set_spm!(epm::Elemental_pm{T}) where T
       real_j = get_indices(epmᵢ, j) # epmᵢ.indices[j]
       spm[real_i, real_j] += val
     end
-  end  
+  end
 end
 
 """

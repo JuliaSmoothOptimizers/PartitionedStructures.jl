@@ -12,7 +12,6 @@ import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 export Elemental_pv
 export get_eev_set, get_eev, get_eev_value, get_eev_subset
 export set_eev!, minus_epv!, add_epv!
-export set_epv!
 export create_epv, ones_kchained_epv, part_vec, rand_epv
 export scale_epv, scale_epv!
 export epv_from_epv!, epv_from_v, epv_from_v!
@@ -61,7 +60,7 @@ Return a subset of the elemental element vector composing the elemental partitio
 
 """
     eev_i_value = get_eev_value(epv::Elemental_pv{T}, i::Int) where T
-    eev_ij_value = get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T 
+    eev_ij_value = get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T
 
 Return either the value of the `i`-th elemental element-vector of the elemental partitioned-vector `epv` or only the `j`-th component of the `i`-th elemental element-vector.
 """
@@ -69,8 +68,8 @@ Return either the value of the `i`-th elemental element-vector of the elemental 
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev_set(epv,i))[j]
 
 """
-    set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T    
-    set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T    
+    set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T
+    set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T
 
 Set either the `i`-th elemental element-vector `epv` to `vec` or its `j`-th component to `val`.
 """

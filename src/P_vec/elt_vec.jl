@@ -20,7 +20,7 @@ Return the vector `ev.vec` or `ev.vec[i]` from an element-vector.
 @inline get_vec(ev::T, i::Int) where T<:Elt_vec = ev.vec[i]
 
 """
-    set_vec!(ev::T, vec::Vector{Y}) where {Y<:Number, T<:Elt_vec{Y}} 
+    set_vec!(ev::T, vec::Vector{Y}) where {Y<:Number, T<:Elt_vec{Y}}
     set_vec!(ev::T, i::Int, val::Y) where {Y<:Number, T<:Elt_vec{Y}}
 
 Set `ev.vec` to `vec` or `ev.vec[i] = val` of the element-vector `ev`.

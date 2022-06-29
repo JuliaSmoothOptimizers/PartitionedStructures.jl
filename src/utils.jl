@@ -19,7 +19,7 @@ my_and = (a::Bool, b::Bool) -> (a && b)
 Return the maximum index of the element variables in `list_of_element_variables`.
 """
 max_indices(elt_vars::Vector{Vector{T}}) where T<:Number = isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars))
-  
+
 
 """
     indice_min = min_indices(list_of_element_variables::Vector{Vector{T}}) where T
@@ -37,7 +37,7 @@ Perform the BFGS update over the matrix `B` by using the vectors `s = x1 - x0` a
 """
 function BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
  B_1 = similar(B); BFGS!(s,y,B,B_1;kwargs...)
- return B_1 
+ return B_1
 end
 
 function BFGS(x::Vector{Y}, x_1::Vector{Y}, g::Vector{Y}, g_1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
