@@ -198,7 +198,10 @@ function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Flo
   return epv
 end
 
-Base.Vector(pv::Elemental_pv{T}) where T = begin build_v!(pv); get_v(pv) end
+function Base.Vector(pv::Elemental_pv{T}) where T
+	build_v!(pv)
+	get_v(pv)
+end
 
 """
     epv = epv_from_v(x, epv)
