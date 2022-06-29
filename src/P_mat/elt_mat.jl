@@ -35,21 +35,21 @@ end
 """
     get_Bie(elt_mat::T) where T<:Elt_mat
 
-Returns the element-matrix `elt_mat.Bie`.
+Return the element-matrix `elt_mat.Bie`.
 """
 @inline get_Bie(elt_mat::T) where T<:Elt_mat = elt_mat.Bie
 
 """
     cem = get_counter_elt_mat(elt_mat::T) where T<:Elt_mat
 
-Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
+Return the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
 @inline get_counter_elt_mat(elt_mat::T) where T<:Elt_mat = elt_mat.counter
 
 """
     cem = get_cem(elt_mat::T) where T<:Elt_mat
 
-Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
+Return the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
 @inline get_cem(elt_mat::T) where T<:Elt_mat = elt_mat.counter
 
@@ -60,7 +60,6 @@ Return index: the number of the last partitioned-updates that did not update the
 If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.
 """
 @inline get_index(elt_mat::T) where T<:Elt_mat = get_current_untouched(elt_mat.counter)
-
 
 Counter_elt_mat() = Counter_elt_mat(0,0,0,0,0,0)
 copy(cem::Counter_elt_mat) = Counter_elt_mat(cem.total_update, cem.current_update, cem.total_untouched, cem.current_untouched, cem.total_reset, cem.current_reset)

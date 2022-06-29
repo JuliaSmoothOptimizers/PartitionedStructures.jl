@@ -31,6 +31,7 @@ mutable struct Elemental_pv{T}<:Part_v{T}
   component_list::Vector{Vector{Int}}
   permutation::Vector{Int} # n-size vector
 end
+
 function Elemental_pv{T}(N::Int, n::Int, eev_set::Vector{Elemental_elt_vec{T}}, v::Vector{T}; perm::Vector{Int}=[1:n;]) where T
   component_list = map(i -> Vector{Int}(undef,0), [1:n;])
   epv = Elemental_pv{T}(N,n,eev_set,v,component_list,perm)
@@ -51,9 +52,9 @@ Return either the vector of every elemental element-vector of the elemental part
 @inline get_ee_struct(epv::Elemental_pv{T}, i::Int) where T = get_eev_set(epv,i)
 
 """
-    get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T
+    eev_subset = get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T
 
-Returns a subset of the elemental element vector composing the elemental partitioned-vector `epv`.
+Return a subset of the elemental element vector composing the elemental partitioned-vector `epv`.
 `indices` selects the differents elemental element-vector needed.
 """
 @inline get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T = epv.eev_set[indices]
@@ -67,6 +68,12 @@ Return either the value of the `i`-th elemental element-vector of the elemental 
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev_set(epv,i))
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev_set(epv,i))[j]
 
+"""
+    set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T    
+    set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T    
+
+Set either the `i`-th elemental element-vector `epv` to `vec` or its `j`-th component to `val`.
+"""
 @inline set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T = set_vec!(get_eev_set(epv,i),j,val)
 @inline set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T = set_vec!(get_eev_set(epv,i),vec)
 
@@ -89,6 +96,7 @@ function M_part_v.build_v!(epv::Elemental_pv{T}) where T
       add_v!(epv, get_indices(eevᵢ,j), get_vec(eevᵢ,j))
     end
   end
+  return epv
 end
 
 """
@@ -125,7 +133,7 @@ Create an elemental partitioned-vector from a vector `eev_set` of: `SparseVector
 function create_epv(eev_set::Vector{Elemental_elt_vec{T}}; n=max_indices(eev_set)) where T
   N = length(eev_set)
   v = zeros(T,n)
-  Elemental_pv{T}(N, n, eev_set, v)
+  return Elemental_pv{T}(N, n, eev_set, v)
 end
 
 function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type=Float64)
@@ -222,7 +230,7 @@ end
 
 function Base.Vector(epv::Elemental_pv{T}) where T
 	build_v!(epv)
-	get_v(epv)
+	return get_v(epv)
 end
 
 """
@@ -248,6 +256,7 @@ function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where T
   for idx in 1:get_N(epv_x)
     set_eev!(epv_x, idx, x[get_indices(get_eev_set(epv_x,idx))]) # met le vecteur élément comme une copie de x
   end
+  return epv_x
 end
 
 """
@@ -260,16 +269,12 @@ function epv_from_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
   for idx in 1:get_N(epv1)
     set_eev!(epv1, idx, get_eev_value(epv2, idx))
   end
+  return epv1
 end
 
-"""
-    initialize_component_list!(epm)
-
-Build for each index i (∈ {1,...,n}) the list of the elements using the variables `i`.
-"""
+# docstring in M_abstract_part_struct.initialize_component_list!
 function initialize_component_list!(epv::Elemental_pv)
   N = get_N(epv)
-  n = get_n(epv)
   for i in 1:N
     epvᵢ = get_eev_set(epv,i)
     _indices = get_indices(epvᵢ)
@@ -277,6 +282,7 @@ function initialize_component_list!(epv::Elemental_pv)
       push!(get_component_list(epv,j),i)
     end
   end
+  return epv #
 end
 
 """

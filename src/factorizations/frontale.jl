@@ -15,7 +15,6 @@ function frontale!(epm::Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) wher
   set_spm!(epm) #(re)-build the sparse matrix of epm
   set_L_to_spm!(epm) # copy on spm on L
 
-
   N = get_N(epm)
   n = get_n(epm)
 

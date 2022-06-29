@@ -62,7 +62,6 @@ end
   epm_plse = PLSE_update(eplom_lose, epv, s)
 end
 
-
 @testset "Concrete example of the partitioned updates (verify the secant equation)" begin
   f(x) = x[1]^2 + x[2]^2 + x[3]^2 + x[1]*x[2] + 3x[2]*x[3]
   f1(x) = x[1]^2 + x[1]*x[2]
@@ -145,7 +144,6 @@ end
   minus_epv!(partitioned_gradient_difference2)
   add_epv!(partitioned_gradient_x2, partitioned_gradient_difference2)
 
-
   build_v!(partitioned_gradient_difference)
   build_v!(partitioned_gradient_difference2)
   @test get_v(partitioned_gradient_difference)==y1
@@ -177,7 +175,6 @@ end
   norm(B_PBFGS1 * s1 - y1)
   @test norm(B_PBFGS1 * s1 - y1)==0.
 
-
   partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
   partitioned_matrix_PSE = copy(partitioned_matrix_PSR1)
   partitioned_linear_operator_PLBFGS = eplom_lbfgs_from_epv(partitioned_gradient_x0)
@@ -194,7 +191,6 @@ end
   @test norm(B_PSE * s1 - y1)==0.
   @test norm(B_PLBFGS * s1 - y1)==0.
   @test norm(B_PLSE * s1 - y1)==0.
-
 
   # There is also a PLSR1 approximation, but is not fullt working since there is some issues with LSR1Operator
   partitioned_linear_operator_PLSR1 = eplom_lsr1_from_epv(partitioned_gradient_x0)

@@ -17,7 +17,7 @@ export Part_update, Part_update!
     copy_eplom_B = PLBFGS_update(eplom_B, epv_y, s)
 
 Perform the PLBFGS update onto a copy of the limited-memory partitioned operator `eplom_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
-Returns the updated copy of `eplom_B`.
+Return the updated copy of `eplom_B`.
 """
 function PLBFGS_update(eplom_B::Elemental_plom_bfgs{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
   epm_copy = copy(eplom_B)

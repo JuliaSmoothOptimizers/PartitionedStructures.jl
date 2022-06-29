@@ -59,14 +59,13 @@ Method                 | Description
 `epm_from_epv`         | Creates an `Elemental_pm` from the partitioned structure of an `Elemental_pv`
 `epv_from_epm`         | Creates an `Elemental_pv` from the partitioned structure of an `Elemental_pm`
 `epv_from_eplom`       | Creates an `Elemental_pv` from the partitioned structure of: an `Elemental_plom`, an `Elemental_plom_bfgs` or an `Elemental_plom_sr1`
-`mul_epm_epv`          | Returns a partitioned-vector from an elementwise product between a partitioned-matrix and a partitioned-vector
-`mul_epm_vector`       | Returns the vector resulting of a product partitioned-matrix vector
+`mul_epm_epv`          | Return a partitioned-vector from an elementwise product between a partitioned-matrix and a partitioned-vector
+`mul_epm_vector`       | Return the vector resulting of a product partitioned-matrix vector
 `build_v!`             | Builds the vector associated to a partitioned-vector
-`get_v`                | Returns the vector associated to a partitioned-vector  **Warning: it doesn't build the vector**
-`set_epv!`             | Sets the value of every element-vectors
+`get_v`                | Return the vector associated to a partitioned-vector  **Warning: it doesn't build the vector**
+`set_epv!`             | Set the value of every element-vectors
 `minus_epv!`           | Applies a unary minus on every element-vector of a partitioned-vector
 `add_epv!`             | Performs an elementwise addition between two partitioned-vectors
-
 
 ## Modules applying [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl)
 These structures are applied in the module

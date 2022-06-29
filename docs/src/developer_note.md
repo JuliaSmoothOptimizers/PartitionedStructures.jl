@@ -11,7 +11,6 @@ Uᵢ may be based from the *elemental* variables or the *internal* variables of 
 In consequence, the implementation of the linear operator Uᵢ, which support entirely the partial separability, change depending on internal or elemental variables.
 At the moment, we mainly developed the elemental partitioned structures, but we left the door open to the development of internal partitioned structures in the future.
 
-
 ## Abbreviations in the code
 If you take a look at the code, you will see some
 

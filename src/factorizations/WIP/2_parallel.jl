@@ -52,7 +52,6 @@ module M_2_parallel
     every_indices = unique(__indices)
     other_indices = filter((idx -> vector_bool[idx]),every_indices)
 
-
     _indices = Vector{Int}(undef,length(comp_list))
     _columns1 = Vector{Elemental_elt_vec{T}}(undef,length(comp_list))
     for (idx,val) in enumerate(comp_list)

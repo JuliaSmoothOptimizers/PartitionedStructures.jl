@@ -137,7 +137,6 @@ end
     SE!(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
     SE!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}, B1::Array{Y,2}; index=0, reset=4, ω = 1e-6, kwargs...)
 
-
 Perform a BFGS update in place of `B1` by using the matrix `B`, the vectors `s = x1 - x0` and `y = g1 - g0` if the curvature condition `dot(s,y) > eps(eltype(s))` holds.
 Otherwise, it performs a SR1 update onto `B1` with `B, s, y`.
 """

@@ -58,7 +58,7 @@ Get either the sparse matrix associated to the partitioned-matrix `pm` or `pm[i,
 """
     perm = get_permutation(pm::T) where T<:Part_mat
 
-Gets the current permutation of the partitioned-matrix `pm`.
+Get the current permutation of the partitioned-matrix `pm`.
 """
 @inline get_permutation(pm::T) where T<:Part_mat = pm.permutation
 
@@ -100,7 +100,7 @@ Reset the sparse matrix `pm.L`.
 """
     L = get_L(pm::T) where T<:Part_mat
 
-Returns the sparse matrix `pm.L`, who aims to store a Cholesky factor.
+Return the sparse matrix `pm.L`, who aims to store a Cholesky factor.
 By default `pm.L` is not instantiate.
 """
 @inline get_L(pm::T) where T<:Part_mat = pm.L
@@ -108,21 +108,21 @@ By default `pm.L` is not instantiate.
 """
     L_ij = get_L(pm::T, i::Int, j::Int) where T<:Part_mat
 
-Returns the value `pm.L[i,j]`, from the sparse matrix `pm.L`.
+Return the value `pm.L[i,j]`, from the sparse matrix `pm.L`.
 """
 @inline get_L(pm::T, i::Int, j::Int) where T<:Part_mat = @inbounds pm.L[i, j]
 
 """
     set_L!(pm::P, i::Int, j::Int, value::T) where {T<:Number, P<:Part_mat{T}}
 
-Sets the value of `pm.L[i,j] = value`.
+Set the value of `pm.L[i,j] = value`.
 """
 @inline set_L!(pm::P, i::Int, j::Int, value::T) where {T<:Number, P<:Part_mat{T}} = @inbounds pm.L[i, j] = value
 
 """
     set_L_to_spm!(pm::T) where T<:Part_mat
 
-Sets the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
+Set the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
 """
 @inline set_L_to_spm!(pm::T) where T<:Part_mat = pm.L .= pm.spm
 
@@ -130,7 +130,7 @@ Sets the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
     eelom_set = get_eelom_set(plm::T) where T<:Part_LO_mat
     eelom = get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat
 
-Returns either the vector of every elemental element linear-operator `plm.eelom_set` or the `i`-th elemental element linear-operator `plm.eelom_set[i]`..
+Return either the vector of every elemental element linear-operator `plm.eelom_set` or the `i`-th elemental element linear-operator `plm.eelom_set[i]`..
 """
 @inline get_eelom_set(plm::T) where T<:Part_LO_mat = plm.eelom_set
 @inline get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat = @inbounds plm.eelom_set[i]
@@ -138,7 +138,7 @@ Returns either the vector of every elemental element linear-operator `plm.eelom_
 """
     eelom_subset = get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
 
-Returns a subset of the elemental element linear operators composing the elemental partitioned linear-operator `plm`.
+Return a subset of the elemental element linear operators composing the elemental partitioned linear-operator `plm`.
 `indices` selects the differents elemental element linear operators needed.
 """
 @inline get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat = plm.eelom_set[indices]
@@ -146,21 +146,21 @@ Returns a subset of the elemental element linear operators composing the element
 """
     Bie = get_eelom_set_Bie(plm::T, i::Int) where T<:Part_LO_mat
 
-Returns the linear operator of the `i`-th elemental element linear operator of `plm`.
+Return the linear operator of the `i`-th elemental element linear operator of `plm`.
 """
 @inline get_eelom_set_Bie(plm::T, i::Int) where T<:Part_LO_mat = get_Bie(get_eelom_set(plm, i))
 
 """
-    set_eelom_set!(eplom::Elemental_plom{T}, i::Int, eelom::Y) where Y<:LOEltMat{T} where T
+    set_eelom_set!(eplo::P, i::Int, eelo::Y) where {T, P<:Part_LO_mat{T}, Y<:LOEltMat{T}}
 
-Set the `i`-th elemental element linear-operator `eplom.eelom` to the`eelom`.
+Set the `i`-th elemental element linear-operator `eplo.eelo` to `eelo`.
 """
-@inline set_eelom_set!(plm::T) where T<:Part_LO_mat = @error("should not be called")
+@inline set_eelom_set!(eplo::T) where T<:Part_LO_mat = @error("should not be called")
 
 """
     get_ee_struct_Bie(pm::T, i::Int) where T<:Part_mat
 
-Returns the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
+Return the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
 """
 @inline get_ee_struct_Bie(pm::T, i::Int) where T<:Part_mat = get_Bie(get_ee_struct(pm, i))
 
