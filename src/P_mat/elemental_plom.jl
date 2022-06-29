@@ -15,7 +15,7 @@ export identity_eplom_LOSE, PLBFGSR1_eplom, PLBFGSR1_eplom_rand
 elom_type{T} = Union{Elemental_elom_sr1{T}, Elemental_elom_bfgs{T}}
 
 """
-    Elemental_plom_sr1{T}<:Part_LO_mat{T}
+    Elemental_plom{T}<:Part_LO_mat{T}
 
 Type that represents an elemental limited-memory partitioned quasi-Newton linear operator, each Bᵢ may use a LBFGS or LSR1 linear operator.
 """
@@ -30,14 +30,14 @@ mutable struct Elemental_plom{T}<:Part_LO_mat{T}
 end
 
 """
-    set_eelom_set!(eplom, i, eelom)
+    set_eelom_set!(eplom::Elemental_plom{T}, i::Int, eelom::Y) where Y<:LOEltMat{T} where T
 
 Set the `i`-th elemental elemental linear operator of `eplom` to `eelom`.
 """
 @inline set_eelom_set!(eplom::Elemental_plom{T}, i::Int, eelom::Y) where Y<:LOEltMat{T} where T = @inbounds eplom.eelom_set[i] = eelom
 
 """
-    eelom_set = get_ee_struct(eplom)
+    eelom_set = get_ee_struct(eplom::Elemental_plom{T}) where T
 
 Return the vector of every elemental element linear operator `eplom.eelom_set`.
 """
@@ -55,8 +55,8 @@ Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 @inline similar(eplom::Elemental_plom{T}) where T = Elemental_plom{T}(copy(get_N(eplom)),copy(get_n(eplom)),similar.(get_eelom_set(eplom)),similar(get_spm(eplom)), similar(get_L(eplom)),copy(get_component_list(eplom)),copy(get_permutation(eplom)))
 
 """
-    identity_eplom_LOSE(vec_indices; N, n, T=T)
-    identity_eplom_LOSE(vec_indices, N, n; T=T)
+    eplom = identity_eplom_LOSE(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64)
+    eplom = identity_eplom_LOSE(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
 
 Create an elemental partitionned limited-memory operator of `N` elemental element linear operators initialized with LBFGS operators.
 The positions are given by the vector of the element variables `element_variables`.
@@ -75,14 +75,14 @@ function identity_eplom_LOSE(element_variables::Vector{Vector{Int}}, N::Int, n::
 end
 
 """
-    PLBFGSR1_eplom(; n, type, nie, overlapping, prob)
+    eplom = PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)
 
 Create an elemental partitionned limited-memory operator PLSE of `N` (deduced from `n` and `nie`) elemental element linear operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
 Each element is randomly (`rand() > p`) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
 """
 function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, prob=0.5)
-  overlapping < nie || error("l'overlapping doit être plus faible que nie")
+  overlapping < nie || error("the overlapiing must be smaller than nie")
   mod(n-(nie-overlapping), nie-overlapping)==mod(overlapping, nie-overlapping) || error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must holds")
 
   indices = filter(x -> x <= n-nie+1, vcat(1,(x -> x + (nie-overlapping)).([1:nie-overlapping:n-(nie-overlapping);])))
@@ -98,7 +98,7 @@ function PLBFGSR1_eplom(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, pr
 end
 
 """
-    PLBFGS_eplom_rand(N,n; type, nie)
+    eplom = PLBFGSR1_eplom_rand(N::Int, n ::Int; T=Float64, nie::Int=5, prob=0.5)
 
 Create an elemental partitionned limited-memory operator PLSE of `N` elemental element linear operators.
 The size of each element is `nie`, whose positions are random in the range `1:n`.

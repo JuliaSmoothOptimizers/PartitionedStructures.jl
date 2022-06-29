@@ -25,7 +25,7 @@ end
 @inline similar(eem::Elemental_em{T}) where T = Elemental_em{T}(copy(get_nie(eem)), copy(get_indices(eem)), similar(get_Bie(eem)), copy(get_cem(eem)))
 
 """
-    eem = create_id_eem(elt_var; T=T)
+    eem = create_id_eem(elt_var::Vector{Int}; T=Float64)
 
 Create a `nie` identity elemental element-matrix of type `T` based on the vector of the elemental variables `elt_var`.
 """
@@ -39,7 +39,7 @@ function create_id_eem(elt_var::Vector{Int}; T=Float64)
 end
 
 """
-    eem = identity_eem(nie; T=T, n=n)
+    eem = identity_eem(nie::Int; T=Float64, n=nie^2)
 
 Return a `nie` identity elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
@@ -53,7 +53,7 @@ function identity_eem(nie::Int; T=Float64, n=nie^2)
 end
 
 """
-    eem = ones_eem(nie; T=T, n=n)
+    eem = ones_eem(nie::Int; T=Float64, n=nie^2)
 
 Return a `nie` ones elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
@@ -66,7 +66,7 @@ function ones_eem(nie::Int; T=Float64, n=nie^2)
 end
 
 """
-    eem = fixed_ones_eem(index, nie; type=T, mul=mul)
+    eem = fixed_ones_eem(i::Int, nie::Int; T=Float64, mul=5.)
 
 Create a `nie` elemental element-matrix of type `T` at indices `index:index+nie-1`.
 All the components of the element-matrix are set to `1` except the diagonal terms that are set to `mul`.
@@ -82,14 +82,14 @@ function fixed_ones_eem(i::Int, nie::Int; T=Float64, mul=5.)
 end
 
 """
-    eem = one_size_bloc(index; T=T)
+    eem = one_size_bloc(index::Int; T=Float64)
 
 Return an elemental element-matrix of type `T` of size one at `index`.
 """
 one_size_bloc(index::Int; T=Float64) = Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
 
 """
-    permute!(eem, p)
+    permute!(eem::Elemental_em{T}, p::Vector{Int}) where T
 
 Set the indices of the element variables of `eem` to `p`.
 Must be use with caution.

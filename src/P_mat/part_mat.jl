@@ -25,9 +25,8 @@ abstract type Part_LO_mat{T}<:Part_mat{T} end
 @inline set_spm!(pm::T) where T<:Part_mat = @error("should not be called")
 
 """
-    get_spm(pm)
-
-    get_spm(pm, i, j)
+    spm = get_spm(pm::T) where T<:Part_mat
+    spm_ij = get_spm(pm::T, i::Int, j::Int) where T<:Part_mat
 
 Get either the sparse matrix associated to the partitioned-matrix `pm` or `pm[i,j]`.
 """
@@ -35,28 +34,28 @@ Get either the sparse matrix associated to the partitioned-matrix `pm` or `pm[i,
 @inline get_spm(pm::T, i::Int, j::Int) where T<:Part_mat = @inbounds get_spm(pm)[i,j]
 
 """
-    get_permutation(pm)
+    perm = get_permutation(pm::T) where T<:Part_mat
 
 Gets the current permutation of the partitioned-matrix `pm`.
 """
 @inline get_permutation(pm::T) where T<:Part_mat = pm.permutation
 
 """
-    get_permutation(pm, perm)
+    set_permutation!(pm::T, perm::Vector{Int}) where T<:Part_mat
 
 Set the permutation of the partitioned-matrix `pm` to `perm`.
 """
 @inline set_permutation!(pm::T, perm::Vector{Int}) where T<:Part_mat = pm.permutation .= perm
 
 """
-    reset_spm!(pm)
+    reset_spm!(pm::T) where {Y<:Number, T<:Part_mat{Y}}
 
 Set the elements of sparse matrix `pm.spm` to `0`.
 """
-@inline reset_spm!(pm::T) where {Y<:Number, T<:Part_mat{Y}}   = pm.spm.nzval .= (Y)(0)
+@inline reset_spm!(pm::T) where {Y<:Number, T<:Part_mat{Y}} = pm.spm.nzval .= (Y)(0)
 
 """
-    hard_reset_spm!(pm)
+    hard_reset_spm!(pm::T) where T<:Part_mat
 
 Reset the sparse matrix `pm.spm`.
 """
@@ -70,14 +69,14 @@ Set the elements of sparse matrix `pm.L` to `0`.
 @inline reset_L!(pm::T) where T<:Part_mat{Y} where Y<:Number = pm.L.nzval .= (Y)(0)
 
 """
-    hard_reset_L!(pm)
+    hard_reset_L!(pm::T) where T<:Part_mat
 
 Reset the sparse matrix `pm.L`.
 """
 @inline hard_reset_L!(pm::T) where T<:Part_mat = pm.L = spzeros(T, get_n(pm), get_n(pm))
 
 """
-    L = get_L(pm)
+    L = get_L(pm::T) where T<:Part_mat
 
 Returns the sparse matrix `pm.L`, who aims to store a Cholesky factor.
 By default `pm.L` is not instantiate.
@@ -85,42 +84,42 @@ By default `pm.L` is not instantiate.
 @inline get_L(pm::T) where T<:Part_mat = pm.L
 
 """
-    Lij = get_L(pm, i, j)
+    L_ij = get_L(pm::T, i::Int, j::Int) where T<:Part_mat
 
 Returns the value `pm.L[i,j]`, from the sparse matrix `pm.L`.
 """
 @inline get_L(pm::T, i::Int, j::Int) where T<:Part_mat = @inbounds pm.L[i, j]
 
 """
-    set_L!(pm, i, j, value)
+    set_L!(pm::P, i::Int, j::Int, value::T) where {T<:Number, P<:Part_mat{T}}
 
 Sets the value of `pm.L[i,j] = value`.
 """
 @inline set_L!(pm::P, i::Int, j::Int, value::T) where {T<:Number, P<:Part_mat{T}} = @inbounds pm.L[i, j] = value
 
 """
-    set_L_to_spm!(pm, i, j, value)
+    set_L_to_spm!(pm::T) where T<:Part_mat
 
 Sets the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
 """
 @inline set_L_to_spm!(pm::T) where T<:Part_mat = pm.L .= pm.spm
 
 """
-    eelmon_set = get_eelom_set(plm)
+    eelmon_set = get_eelom_set(plm::T) where T<:Part_LO_mat
 
 Returns the vector of every elemental element linear operator `plm.eelom_set`.
 """
 @inline get_eelom_set(plm::T) where T<:Part_LO_mat = plm.eelom_set
 
 """
-    eelom = get_eelom_set(plm::Elemental_plom_bfgs{T}, i::Int)
+    eelom = get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat
 
 Returns the `i`-th elemental element linear operator `plm.eelom_set[i]`.
 """
 @inline get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat = @inbounds plm.eelom_set[i]
 
 """
-    eelom_subset = get_eelom_sub_set(plm, indices)
+    eelom_subset = get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
 
 Returns a subset of the elemental element linear operators composing `plm`.
 `indices` selects the differents elemental element linear operators needed.
@@ -128,7 +127,7 @@ Returns a subset of the elemental element linear operators composing `plm`.
 @inline get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat = plm.eelom_set[indices]
 
 """
-    Bie = get_eelom_set_Bie(plm, i)
+    Bie = get_eelom_set_Bie(plm::T, i::Int) where T<:Part_LO_mat
 
 Returns the linear operator of the `i`-th elemental element linear operator of `plm`.
 """
@@ -138,7 +137,7 @@ Returns the linear operator of the `i`-th elemental element linear operator of `
 @inline set_eelom_set!(plm::T) where T<:Part_LO_mat = @error("should not be called")
 
 """
-    get_ee_struct_Bie(pm, i)
+    get_ee_struct_Bie(pm::T, i::Int) where T<:Part_mat
 
 Returns the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
 """
@@ -161,7 +160,7 @@ function initialize_component_list!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
 end
 
 """
-    set_spm!(plm)
+    set_spm!set_spm!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
 
 Builds the sparse matrix of `plm` in `plm.spm` from all the elemental element linear operator.
 The sparse matrix is built with respect to the indices of each elemental element linear operator.

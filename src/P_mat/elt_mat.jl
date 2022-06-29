@@ -18,32 +18,9 @@ abstract type DenseEltMat{T}<:Elt_mat{T} end
 abstract type LOEltMat{T}<:Elt_mat{T} end
 
 """
-    get_Bie(elt_mat)
-
-Returns the element-matrix `elt_mat.Bie`.
-"""
-@inline get_Bie(elt_mat::T) where T<:Elt_mat = elt_mat.Bie
-
-"""
-    get_counter_elt_mat(elt_mat)
-
-Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
-"""
-@inline get_counter_elt_mat(elt_mat::T) where T<:Elt_mat = elt_mat.counter
-
-"""
-    get_cem(elt_mat)
-
-Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
-"""
-@inline get_cem(elt_mat::T) where T<:Elt_mat = elt_mat.counter
-
-@inline get_index(elt_mat::T) where T<:Elt_mat = get_current_untouched(elt_mat.counter)
-
-"""
     Counter_elt_mat
 
-Count for a element-matrix the update performed on it, from its definition.
+Count for an element-matrix the updates performed on it, from its allocation.
 `total_update + total_reset + total_untouched==iter `.
 """
 mutable struct Counter_elt_mat
@@ -55,30 +32,66 @@ mutable struct Counter_elt_mat
   current_reset::Int # ≤ 1 as long as reset ≥ 2 in any update performed
 end
 
+"""
+    get_Bie(elt_mat::T) where T<:Elt_mat
+
+Returns the element-matrix `elt_mat.Bie`.
+"""
+@inline get_Bie(elt_mat::T) where T<:Elt_mat = elt_mat.Bie
+
+"""
+    cem = get_counter_elt_mat(elt_mat::T) where T<:Elt_mat
+
+Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
+"""
+@inline get_counter_elt_mat(elt_mat::T) where T<:Elt_mat = elt_mat.counter
+
+"""
+    cem = get_cem(elt_mat::T) where T<:Elt_mat
+
+Returns the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
+"""
+@inline get_cem(elt_mat::T) where T<:Elt_mat = elt_mat.counter
+
+"""
+    index = get_index(elt_mat::T) where T<:Elt_mat
+
+Return index: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
+If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.
+"""
+@inline get_index(elt_mat::T) where T<:Elt_mat = get_current_untouched(elt_mat.counter)
+
+
 Counter_elt_mat() = Counter_elt_mat(0,0,0,0,0,0)
 copy(cem::Counter_elt_mat) = Counter_elt_mat(cem.total_update, cem.current_update, cem.total_untouched, cem.current_untouched, cem.total_reset, cem.current_reset)
 similar(cem::Counter_elt_mat) = Counter_elt_mat()
 
+"""
+    index = get_current_untouched(cem::Counter_elt_mat)
+
+Return index: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
+If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.
+"""
 get_current_untouched(cem::Counter_elt_mat) = cem.current_untouched
 
 """
-    iter_info(cem)
+    (current_update, current_untouched, current_reset) = iter_info(cem::Counter_elt_mat)
 
-Returns the information about the last quasi-Newton update applied onto the element associated to the counter `cem`.
+Return the information about the last partitioned quasi-Newton update applied onto the element counter `cem` (associated to an element-matrix).
 """
 iter_info(cem::Counter_elt_mat) = (cem.current_update, cem.current_untouched, cem.current_reset)
 
 """
-    iter_info(cem)
+    (total_update, total_untouched, current_reset) = iter_info(cem::Counter_elt_mat)
 
-Returns the informations about all the quasi-Newton updates applied onto the element associated to the counter `cem`.
+Return the informations about all the quasi-Newton updates applied onto the element associated to the counter `cem`.
 """
 total_info(cem::Counter_elt_mat) = (cem.total_update, cem.total_untouched, cem.current_reset)
 
 """
-    update_counter_elt_mat!(cem, qn)
+    update_counter_elt_mat!(cem::Counter_elt_mat, qn::Int)
 
-Updates the `cem` counter given the index `qn` from the quasi-Newton update.
+Update the `cem` counter given the index `qn` from the quasi-Newton update BFGS!, SR1!, SE!.
 """
 function update_counter_elt_mat!(cem::Counter_elt_mat, qn::Int)
   if qn==1
@@ -97,6 +110,7 @@ function update_counter_elt_mat!(cem::Counter_elt_mat, qn::Int)
     cem.current_untouched = 0
     cem.current_update = 0
   end
+  return cem
 end
 
 end

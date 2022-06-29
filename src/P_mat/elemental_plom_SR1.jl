@@ -27,14 +27,14 @@ mutable struct Elemental_plom_sr1{T}<:Part_LO_mat{T}
 end
 
 """
-    eelom_set = get_ee_struct(eplom)
+    eelom_set = get_ee_struct(eplom::Elemental_plom_sr1{T}) where T
 
 Return the vector of every elemental element linear operator `eplom.eelom_set`.
 """
 @inline get_ee_struct(eplom::Elemental_plom_sr1{T}) where T = get_eelom_set(eplom)
 
 """
-    eelom = get_ee_struct(eplom, i)
+    eelom = get_ee_struct(eplom::Elemental_plom_sr1{T}, i::Int) where T
 
 Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 """
@@ -45,8 +45,8 @@ Return the `i`-th elemental element linear operator `eplom.eelom_set[i]`.
 @inline similar(eplom::Elemental_plom_sr1{T}) where T = Elemental_plom_sr1{T}(copy(get_N(eplom)), copy(get_n(eplom)), similar.(get_eelom_set(eplom)), similar(get_spm(eplom)), similar(get_L(eplom)), copy(get_component_list(eplom)), copy(get_permutation(eplom)))
 
 """
-    eplom = identity_eplom_LSR1(element_variables; N, n, T=T)
-    eplom = identity_eplom_LSR1(element_variables, N, n; T=T)
+    eplom = identity_eplom_LSR1(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64)
+    eplom = identity_eplom_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
 
 Return an elemental partitionned limited-memory operator PLSR1 of `N` elemental element linear operators.
 The positions are given by the vector of the element variables `element_variables`.
@@ -66,7 +66,7 @@ function identity_eplom_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::
 end
 
 """
-    eplom = PLSR1_eplom(;n, type, nie, overlapping)
+    eplom = PLSR1_eplom(; n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)
 
 Return an elemental partitionned limited-memory operator PLSR1 of `N` (deduced from `n` and `nie`) elemental element linear operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
@@ -88,7 +88,7 @@ function PLSR1_eplom(; n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)
 end
 
 """
-    eplom = PLSR1_eplom_rand(N, n; type, nie)
+    eplom = PLSR1_eplom_rand(N::Int, n::Int; T=Float64, nie::Int=5)
 
 Return an elemental partitionned limited-memory operator PLSR1 of `N` elemental element linear operators.
 The size of each element is `nie`, whose positions are random in the range `1:n`.
