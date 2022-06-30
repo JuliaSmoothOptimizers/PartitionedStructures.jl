@@ -1,5 +1,6 @@
 module ModElemental_elo_sr1
 
+using ..Acronyms
 using LinearOperators
 using ..M_elt_mat, ..M_abstract_element_struct
 
@@ -12,7 +13,11 @@ export reset_eelo_sr1!
 """
     Elemental_elo_sr1{T}<:LOEltMat{T}
 
-Type that represents an elemental element linear operator LSR1.
+Represent an elemental element `LSR1Operator`.
+`indices` retains the indices of the elemental variables.
+`nie` is the elemental size (`=length(indices)`).
+`Bie` a `LSR1Operator`.
+`counter` counts how many update the elemental limited-memory operator goes through from its allocation.
 """
 mutable struct Elemental_elo_sr1{T}<:LOEltMat{T}
   nie::Int # nᵢᴱ
@@ -67,7 +72,7 @@ end
 """
     reset_eelo_sr1!(eelo::Elemental_elo_sr1{T}) where T<:Number
 
-Reset the LSR1 linear operator of the elemental element linear operator matrix `eelo`.
+Reset the LSR1 linear-operator of the elemental element linear-operator matrix `eelo`.
 """
 function reset_eelo_sr1!(eelo::Elemental_elo_sr1{T}) where T<:Number
   eelo.Bie = LinearOperators.LSR1Operator(T, eelo.nie)

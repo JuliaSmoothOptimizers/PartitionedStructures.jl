@@ -1,5 +1,6 @@
 module ModElemental_ev
 
+using ..Acronyms
 using SparseArrays, StatsBase
 using ..M_abstract_element_struct, ..M_elt_vec, ..Utils
 
@@ -13,7 +14,10 @@ export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
 """
     Elemental_elt_vec{T}<:Elt_vec{T}
 
-Type that represents an elemental element-vector.
+Represent an elemental element-vector.
+`indices` retains the indices of the elemental variables.
+`nie` is the elemental size (`=length(indices)`).
+`vec` is the current value of the elemental element vector.
 """
 mutable struct Elemental_elt_vec{T}<:Elt_vec{T}
   vec::Vector{T} # length(vec)==nᵢᴱ

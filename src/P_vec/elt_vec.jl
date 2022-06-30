@@ -1,12 +1,13 @@
 module M_elt_vec
 
+using ..Acronyms
 using ..M_abstract_element_struct
 
 export Elt_vec
 export get_vec, set_vec!
 export set_add_vec!, set_minus_vec!
 
-"""Abstract type representing element-vectors."""
+"""Supertype of element-vectors."""
 abstract type Elt_vec{T}<:Element_struct{T} end
 
 #generic getter/setter

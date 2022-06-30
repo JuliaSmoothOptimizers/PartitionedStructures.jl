@@ -1,5 +1,6 @@
 module M_okoubi_koko
 
+using ..Acronyms
 using LinearAlgebra, Statistics
 
 using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_part_v, ..ModElemental_pm, ..ModElemental_pv

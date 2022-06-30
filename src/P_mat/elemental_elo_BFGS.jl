@@ -1,5 +1,6 @@
 module ModElemental_elo_bfgs
 
+using ..Acronyms
 using LinearOperators
 using ..M_abstract_element_struct, ..M_elt_mat
 
@@ -12,7 +13,11 @@ export reset_eelo_bfgs!
 """
     Elemental_elo_bfgs{T}<:LOEltMat{T}
 
-Type that represents an elemental element linear operator LBFGS.
+Represent an elemental element `LBFGSOperator`.
+`indices` retains the indices of the elemental variables.
+`nie` is the elemental size (`=length(indices)`).
+`Bie` a `LBFGSOperator`.
+`counter` counts how many update the elemental limited-memory operator goes through from its allocation.
 """
 mutable struct Elemental_elo_bfgs{T}<:LOEltMat{T}
   nie::Int # nᵢᴱ
@@ -67,7 +72,7 @@ end
 """
     reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where T<:Number
 
-Reset the LBFGS linear operator of the elemental element linear operator `eelo`.
+Reset the LBFGS linear-operator of the elemental element linear-operator `eelo`.
 """
 function reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where T<:Number
   eelo.Bie = LinearOperators.LBFGSOperator(T, eelo.nie)

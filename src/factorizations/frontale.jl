@@ -1,5 +1,6 @@
 module M_frontale
 
+using ..Acronyms
 using ..M_part_mat, ..ModElemental_pm
 
 export frontale!
@@ -7,7 +8,7 @@ export frontale!
 """
     frontale!(epm)
 
-Produce the Cholesky factorization of the elemental partitioned-matrix `epm` using a frontal method.
+Produce the Cholesky factorization of the $_epm using a frontal method.
 The sparse factor `L` is stored in `epm.L`.
 """
 function frontale!(epm::Elemental_pm{T}; perm::Vector{Int}=[1:get_n(epm);]) where T

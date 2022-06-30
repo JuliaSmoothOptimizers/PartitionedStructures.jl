@@ -2,6 +2,8 @@ module PartitionedStructures
 
 using LinearAlgebra
 
+include("acronyms.jl")
+
 include("utils.jl")
 
 # include files related to abstract partitioned/element structures.
@@ -33,7 +35,7 @@ using .Link, .Instances, .PartMatInterface
 
 # export the main methods of every submodule
 
-# structures and functions related to element structures
+# structures and functions related to element-structures
 export Elemental_elt_vec, Elemental_em, Elemental_elo_bfgs, Elemental_elo_sr1
 export create_eev, create_id_eem
 export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv!, epv_from_epv! # ModElemental_pv

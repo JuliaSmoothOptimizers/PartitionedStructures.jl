@@ -8,7 +8,7 @@ Uᵢ may be based from the *elemental* variables or the *internal* variables of 
 - the elemental variables represent the subset of variables that parametrizes fᵢ, i.e. the lines of Uᵢ are vectors from the euclidean basis;
 - the internal variables are the linear combination of the variables that parametrizes fᵢ, i.e. Uᵢ may be a dense matrix.
 
-In consequence, the implementation of the linear operator Uᵢ, which support entirely the partial separability, change depending on internal or elemental variables.
+In consequence, the implementation of the linear-operator Uᵢ, which support entirely the partial separability, change depending on internal or elemental variables.
 At the moment, we mainly developed the elemental partitioned structures, but we left the door open to the development of internal partitioned structures in the future.
 
 ## Abbreviations in the code
@@ -25,4 +25,6 @@ Acronyms  | Description
 `iem`     | internal element-matrix
 `epm`     | elemental partitioned-matrix
 `ipm`     | internal partitioned-matrix
-`eplo`   | limited-memory elemental partitioned-matrix
+`eplo`    | limited-memory elemental partitioned-matrix
+`eps`     | elemental partitioned-structure
+`ees`     | elemental element-structure

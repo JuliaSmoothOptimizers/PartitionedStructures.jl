@@ -1,4 +1,6 @@
 module PartitionedLOQuasiNewton
+
+using ..Acronyms
 using LinearOperators, LinearAlgebra
 
 using ..M_abstract_part_struct, ..M_elt_vec, ..M_part_mat, ..M_elt_mat
@@ -120,8 +122,8 @@ end
     copy_eplo_B = Part_update(eplo_B, epv_y, s)
 
 Perform a quasi-Newton partitionned update onto a copy of the limited-memory partitioned operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
-Each elemental element linear operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
-The update performs on each element the quasi-Newton update associated to the linear operator.
+Each elemental element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
+The update performs on each element the quasi-Newton update associated to the linear-operator.
 Return the updated copy of `eplo_B`.
 """
 function Part_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where Y<:Part_LO_mat{T} where T
@@ -135,8 +137,8 @@ end
     Part_update!(eplo_B, epv_y, epv_s)
 
 Perform a partitioned quasi-Newton update onto the limited-memory partitioned operator `eplo_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
-Each elemental element linear operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
-The update performs on each element the quasi-Newton update associated to the linear operator.
+Each elemental element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
+The update performs on each element the quasi-Newton update associated to the linear-operator.
 """
 function Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where Y<:Part_LO_mat{T} where T
   epv_s = epv_from_v(s, epv_y)
@@ -161,7 +163,7 @@ end
     copy_eplo_B = PLSE_update(eplo_B, epv_y, s)
 
 Perform the partitionned update PLSE onto a copy of the limited-memory partitioned operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
-Each element linear operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
+Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
 The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
 If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ is update.
 Return the updated copy of `eplo_B`.
@@ -177,7 +179,7 @@ end
     PLSE_update!(eplo_B, epv_y, epv_s)
 
 Perform the partitionned update PLSE onto the limited-memory partitioned operator `eplo_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
-Each element linear operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
+Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
 The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
 If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ is update.
 """

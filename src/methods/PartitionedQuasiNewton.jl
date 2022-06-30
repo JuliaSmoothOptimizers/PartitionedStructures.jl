@@ -1,5 +1,6 @@
 module PartitionedQuasiNewton
 
+using ..Acronyms
 using LinearAlgebra
 using ..M_abstract_part_struct, ..M_elt_vec, ..M_elt_mat
 using ..Utils, ..Link

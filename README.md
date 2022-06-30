@@ -61,7 +61,7 @@ Method                 | Description
 `epv_from_eplo`       | Creates an `Elemental_pv` from the partitioned structure of: an `Elemental_plo`, an `Elemental_plo_bfgs` or an `Elemental_plo_sr1`
 `mul_epm_epv`          | Return a partitioned-vector from an elementwise product between a partitioned-matrix and a partitioned-vector
 `mul_epm_vector`       | Return the vector resulting of a product partitioned-matrix vector
-`build_v!`             | Builds the vector associated to a partitioned-vector
+`build_v!`             | Build the vector associated to a partitioned-vector
 `get_v`                | Return the vector associated to a partitioned-vector  **Warning: it doesn't build the vector**
 `set_epv!`             | Set the value of every element-vectors
 `minus_epv!`           | Applies a unary minus on every element-vector of a partitioned-vector
@@ -72,5 +72,5 @@ These structures are applied in the module
 [PartiallySeparableSolvers.jl](https://github.com/paraynaud/PartiallySeparableSolvers.jl) inside a trust-region using partitioned quasi-Newton operators and in [PartitionedKnetNLPModel.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a neural network of classification with a limited-memory partitioned quasi-Newton stochastic method.
 
 ## Features
-For now, PartitionedStructures.jl supports only the elemental Uᵢ, i.e. a linear operator where the lines of Uᵢ are vectors from the euclidean basis.
+For now, PartitionedStructures.jl supports only the elemental Uᵢ, i.e. a linear-operator where the lines of Uᵢ are vectors from the euclidean basis.
 Concretely, each Uᵢ is a vector of size nᵢ who's indicates the indices of the variables used by the i-th element function.

@@ -1,6 +1,7 @@
 # unsupported for now
 module M_internal_elt_vec
 
+using ..Acronyms
 using LinearAlgebra, SparseArrays, StatsBase
 using ..M_elt_vec, ..ModElemental_ev, ..M_abstract_element_struct
 
@@ -17,7 +18,7 @@ export build_tmp!
 """
     Internal_elt_vec{T}<:Elt_vec{T}
 
-Type that represents an internal element-vector.
+Represent an internal element-vector.
 """
 mutable struct Internal_elt_vec{T}<:Elt_vec{T}
   vec::Vector{T} # size nᵢᴵ
@@ -40,7 +41,7 @@ Return `linear_combination`, as a `SparseMatrixCSC` informing the internal varia
     nii = get_nii(iev::Internal_elt_vec{T}) where T
 
 Warning: unsupported and not tested.
-Return `nii`, the internal dimension of the internal element-vector `iev`.
+Return `nii`, the internal dimension of the $_iev.
 It may differ from the elemental dimension `iev.nie`.
 """
 @inline get_nii(iev::Internal_elt_vec{T}) where T = iev.nii
@@ -52,7 +53,7 @@ It may differ from the elemental dimension `iev.nie`.
 Warning: unsupported and not tested.
 Return the vector associated to the internal element-vector of `tmp`, or its `i`-th component.
 The size of `tmp` is `iev.nie`.
-`tmp` is the contribution of the internal element-vector `iev` as a part of a partitioned-vector.
+`tmp` is the contribution of the $_iev as a part of a partitioned-vector.
 """
 @inline get_tmp(iev::Internal_elt_vec{T}) where T = iev._tmp
 @inline get_tmp(iev::Internal_elt_vec{T}, i::Int) where T = iev._tmp[i]
@@ -61,7 +62,7 @@ The size of `tmp` is `iev.nie`.
     set_lin_comb!(iev::Internal_elt_vec{T}, lin_comb::SparseMatrixCSC{T,Int}) where T
 
 Warning: unsupported and not tested.
-Set the internal variables `iev.lin_comb` of the internal element-vector `iev` to the `lin_comb::SparseMatrixCSC`.
+Set the internal variables `iev.lin_comb` of the $_iev to the `lin_comb::SparseMatrixCSC`.
 """
 @inline set_lin_comb!(iev::Internal_elt_vec{T}, lin_comb::SparseMatrixCSC{T,Int}) where T = iev.lin_comb = lin_comb
 
@@ -79,7 +80,7 @@ Set the internal dimension `iev.nii` of the internal element-vector to `nii`.
     iev = new_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5)
 
 Warning: unsupported and not tested.
-Return a internal element-vector `iev` with random vectors of suitable size and a random `SparseMatrixCSC` informing the internal variables.
+Return a $_iev with random vectors of suitable size and a random `SparseMatrixCSC` informing the internal variables.
 """
 @inline new_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5) = Internal_elt_vec(rand(T,nᵢᴵ), sample(1:n,nᵢᴱ,replace = false), sprand(T,nᵢᴵ, nᵢᴱ, prop), nᵢᴱ, nᵢᴵ, rand(T,nᵢᴱ))
 
@@ -87,7 +88,7 @@ Return a internal element-vector `iev` with random vectors of suitable size and 
     iev = ones_iev(nᵢᴱ:: Int, nᵢᴵ:: Int; T=Float64, n=nᵢᴱ^2, prop=0.5)
 
 Warning: unsupported and not tested.
-Return a internal element-vector `iev`.
+Return a $_iev.
 `iev.vec` is set to `ones(T, nᵢᴵ)`, the other vectors are randomly choose of suitable size.
 In addition a random `SparseMatrixCSC` informing the internal variables.
 """
@@ -106,7 +107,7 @@ Return an internal element-vector from `sv::SparseVector`.
     iev = iev_from_eev(eev::Elemental_elt_vec{T}) where T
 
 Warning: unsupported and not tested.
-Return an internal element-vector `iev` from an elemental element-vector `eev`.
+Return an $_iev from an $_eev.
 The internal variables are the same than the element variables.
 """
 function iev_from_eev(eev::Elemental_elt_vec{T}) where T
@@ -124,7 +125,7 @@ end
     build_tmp!(iev::Internal_elt_vec{T}) where T
 
 Warning: unsupported and not tested.
-Build in place `iev.tmp`, the contribution of the internal element-vector `iev` as a part of a partitioned-vector.
+Build in place `iev.tmp`, the contribution of the $_iev as a part of a partitioned-vector.
 """
 function build_tmp!(iev::Internal_elt_vec{T}) where T
   mul!(iev._tmp, transpose(iev.lin_comb), iev.vec)

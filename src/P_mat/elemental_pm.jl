@@ -1,5 +1,6 @@
 module ModElemental_pm
 
+using ..Acronyms
 using SparseArrays
 using ..Utils
 using ..M_abstract_part_struct, ..M_part_mat
@@ -18,7 +19,14 @@ export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 """
     Elemental_pm{T}<:Part_mat{T}
 
-Type that represents an elemental partitioned quasi-Newton linear operator, each Bᵢ may apply a BFGS or a SR1 update.
+Represent an elemental partitioned quasi-Newton linear-operator.
+Each element is an elemental element-matrix which may apply a BFGS or a SR1 update.
+`N` is the number of elements.
+`n` is the size of the $(_eplmo).
+`eelo_set` is the set of elemental element linear-operators.
+`spm` and `L` are sparse matrices either to form the sparse matrix gathering the elements or the Cholesky factor of `spm`.
+`component_list` summarizes for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
+`permutation` is the current permutation of the $(_eplmo) (`[1:n;]` initially).
 """
 mutable struct Elemental_pm{T}<:Part_mat{T}
   N::Int
@@ -157,7 +165,7 @@ end
 """
     epm = n_i_sep(n::Int; T=Float64, nie::Int=5, mul=5.)
 
-Define a elemental partitioned-matrix `epm` composed of `nie` separable blocs.
+Define an $_epm composed of `nie` separable blocs.
 Each elemental element-matrix is composed of `1` except the diagonal terms which are of value `mul`.
 """
 function n_i_sep(n::Int; T=Float64, nie::Int=5, mul=5.)
@@ -176,7 +184,7 @@ end
 """
     epm = n_i_SPS(n::Int; T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
 
-Define an elemental partitioned-matrix `epm` of size `n`.
+Define an $_epm of size `n`.
 The partitioned-matrix is composed by `N ≈ (n/nie)*2` elemental element-matrices, of size `nie`, they overlap onto the next element by `overlapping`.
 The diagonal terms of each elemental element-matrix are of value `mul`, whereas the other terms are set to 1.
 """
@@ -199,7 +207,7 @@ end
 """
     epm = part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
 
-Define a elemental partitioned-matrix `epm` composed of `N` (deduced from `n` and `nie`) elemental element-matrices of size `nie`.
+Define an $_epm composed of `N` (deduced from `n` and `nie`) elemental element-matrices of size `nie`.
 Each elemental element-matrix overlaps the previous and the next element by `overlapping`.
 """
 function part_mat(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul=5.)
@@ -256,7 +264,7 @@ end
     permute!(epm::Elemental_pm{T}, p::Vector{Int}) where T
 
 Apply the permutation `p` to the elemental partitionned matrix `epm`.
-The permutation is applied to every elemental element-matrix `eem` via `indices`.
+The permutation is applied to every $_eem via `indices`.
 The current `epm` permutation is stored in `epm.permutation`.
 """
 function permute!(epm::Elemental_pm{T}, p::Vector{Int}) where T

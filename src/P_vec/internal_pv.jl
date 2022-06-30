@@ -1,6 +1,7 @@
 # unsupported for now
 module M_internal_pv
 
+using ..Acronyms
 using LinearAlgebra
 using ..M_abstract_element_struct, ..M_abstract_part_struct
 using ..M_elt_vec, ..M_internal_elt_vec # element modules
@@ -13,7 +14,7 @@ export create_ipv, ipv_from_epv, rand_ipv
 """
     Internal_elt_vec{T}<:Elt_vec{T}
 
-Type that represents an internal partitioned-vector.
+Represent an internal partitioned-vector.
 """
 mutable struct Internal_pv{T}<:Part_v{T}
   N::Int
@@ -26,7 +27,7 @@ end
     iev_set = get_iev_set(ipv::Internal_pv{T}) where T
 
 Warning: unsupported and not tested.
-Return the set of internal element-vectors `iev_set`, which are contribuating to the internal partitioned-vector `ipv`.
+Return the set of internal element-vectors `iev_set`, which are contribuating to the $(_ipv).
 """
 @inline get_iev_set(ipv::Internal_pv{T}) where T = ipv.iev_set
 
@@ -34,7 +35,7 @@ Return the set of internal element-vectors `iev_set`, which are contribuating to
     iev = get_iev(ipv::Internal_pv{T}, i::Int) where T
 
 Warning: unsupported and not tested.
-Return the `i`-th internal element-vector of the internal partitioned-vector `ipv`.
+Return the `i`-th internal element-vector of the $(_ipv).
 """
 @inline get_iev(ipv::Internal_pv{T}, i::Int) where T = ipv.iev_set[i] # i <= N
 
@@ -42,7 +43,7 @@ Return the `i`-th internal element-vector of the internal partitioned-vector `ip
     ipv = ipv_from_epv(epv::Elemental_pv{T}) where T
 
 Warning: unsupported and not tested.
-Return an internal partitioned-vector `ipv` from the elemental partitioned vector `epv`.
+Return an $(_ipv) from the elemental partitioned vector `epv`.
 The internal variables of every internal element-vectors are the same as the elemental variables of the elemental element-vectors.
 """
 function ipv_from_epv(epv::Elemental_pv{T}) where T
@@ -58,7 +59,7 @@ end
     ipv = create_ipv(iev_set::Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
 
 Warning: unsupported and not tested.
-Return an internal partitioned-vector `ipv` from the set of internal element-vectors `iev_set`.
+Return an $(_ipv) from the set of internal element-vectors `iev_set`.
 """
 function create_ipv(iev_set::Vector{Internal_elt_vec{T}}; n=max_indices(iev_set)) where T
   N = length(iev_set)

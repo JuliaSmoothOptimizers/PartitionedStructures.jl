@@ -1,6 +1,7 @@
 module ModElemental_pv
 using SparseArrays
 
+using ..Acronyms
 using ..Utils
 using ..M_abstract_element_struct, ..M_elt_vec, ..ModElemental_ev # element modules
 using ..M_abstract_part_struct, ..M_part_v  # partitoned modules
@@ -20,7 +21,7 @@ export prod_part_vectors
 """
     Elemental_pv{T}<:Part_v{T}
 
-Type that represents an elemental partitioned-vector.
+Represent an elemental partitioned-vector.
 """
 mutable struct Elemental_pv{T}<:Part_v{T}
   N::Int
@@ -41,7 +42,7 @@ end
 """
     eev_set = get_eev_set(epv::Elemental_pv{T}) where T
 
-Return either the vector of every elemental element-vector of the elemental partitioned-vector `epv` or the `i`-th elemental element-vector.
+Return either the vector of every elemental element-vector of the $(_epv) or the `i`-th elemental element-vector.
 """
 @inline get_eev_set(epv::Elemental_pv{T}) where T = epv.eev_set
 @inline get_eev_set(epv::Elemental_pv{T}, i::Int) where T = epv.eev_set[i]
@@ -53,7 +54,7 @@ Return either the vector of every elemental element-vector of the elemental part
 """
     eev_subset = get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T
 
-Return a subset of the elemental element vector composing the elemental partitioned-vector `epv`.
+Return a subset of the elemental element vector composing the $(_epv).
 `indices` selects the differents elemental element-vector needed.
 """
 @inline get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T = epv.eev_set[indices]
@@ -62,7 +63,7 @@ Return a subset of the elemental element vector composing the elemental partitio
     eev_i_value = get_eev_value(epv::Elemental_pv{T}, i::Int) where T
     eev_ij_value = get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T
 
-Return either the value of the `i`-th elemental element-vector of the elemental partitioned-vector `epv` or only the `j`-th component of the `i`-th elemental element-vector.
+Return either the value of the `i`-th elemental element-vector of the $(_epv) or only the `j`-th component of the `i`-th elemental element-vector.
 """
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int) where T = get_vec(get_eev_set(epv,i))
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T = get_vec(get_eev_set(epv,i))[j]
@@ -213,7 +214,7 @@ end
 """
     epv = part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
 
-Define a elemental partitioned-vector formed by `N` (deduced from `n` and `nie`) elemental element-vectors of size `nie`.
+Define an elemental partitioned-vector formed by `N` (deduced from `n` and `nie`) elemental element-vectors of size `nie`.
 Each elemental element-vector overlaps the previous and the next element by `overlapping`.
 """
 function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Float64=1.)
@@ -228,8 +229,8 @@ function part_vec(;n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1, mul::Flo
 end
 
 function Base.Vector(epv::Elemental_pv{T}) where T
-	build_v!(epv)
-	return get_v(epv)
+  build_v!(epv)
+  return get_v(epv)
 end
 
 """

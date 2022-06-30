@@ -1,5 +1,6 @@
 module ModElemental_em
 
+using ..Acronyms
 using LinearAlgebra
 using ..M_abstract_element_struct, ..M_elt_mat
 
@@ -11,7 +12,11 @@ export identity_eem, create_id_eem, fixed_ones_eem, ones_eem, one_size_bloc
 """
     Elemental_em{T}<:DenseEltMat{T}
 
-Type that represents an elemental element-matrix.
+Represent an elemental element-matrix.
+`indices` retains the indices of the elemental variables.
+`nie` is the elemental size (`=length(indices)`).
+`Bie` a `Symmetric{T, Matrix{T}}`.
+`counter` counts how many update the elemental matrix goes through from its allocation.
 """
 mutable struct Elemental_em{T}<:DenseEltMat{T}
   nie::Int # nᵢᴱ

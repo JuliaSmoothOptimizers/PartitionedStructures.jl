@@ -10,7 +10,7 @@ using PartitionedStructures.Instances
     mat_PSR1 = update(epm_sr1, epv_y, s; name=:psr1)
   end
 
-  @testset "partitioned linear operators update" begin
+  @testset "partitioned linear-operators update" begin
     n=10
     nie=4
     over=2
@@ -23,7 +23,7 @@ using PartitionedStructures.Instances
     mat_PLBFGS_SR1 = update(eplo_bfgs_sr1, epv_y, s)
   end
 
-  @testset "partitioned linear operators update!" begin
+  @testset "partitioned linear-operators update!" begin
     n=10
     nie=4
     over=2

@@ -5,7 +5,7 @@ using PartitionedStructures.ModElemental_elo_bfgs, PartitionedStructures.ModElem
 using PartitionedStructures.ModElemental_plo, PartitionedStructures.ModElemental_plo_bfgs
 using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
 
-@testset "test elemental element linear operator matrix" begin
+@testset "test elemental element linear-operator matrix" begin
   for index in 3:3:15
     for T in [Float16,Float32,Float64]
       nie=5
@@ -27,7 +27,7 @@ using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedSt
   @test A==transpose(A)
 end
 
-@testset "test elemental partitioned linear operator matrix (PBFGS operator)" begin
+@testset "test elemental partitioned linear-operator matrix (PBFGS operator)" begin
   n=10
   nie=4
   over=2
@@ -38,7 +38,7 @@ end
   @test mapreduce((x -> x>0), my_and, eigvals(B)) # test definite positiveness
 end
 
-@testset "test elemental partitioned linear operator matrix (PLSR1 operator)" begin
+@testset "test elemental partitioned linear-operator matrix (PLSR1 operator)" begin
   n=10
   nie=4
   over=2

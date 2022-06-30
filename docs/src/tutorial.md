@@ -83,7 +83,7 @@ vector_gradient_element(x, U) = [∇f1(x[U[1]]), ∇f2(x[U[2]])] :: Vector{Vecto
 
 set_epv!(partitioned_gradient_x0, vector_gradient_element(x0, U)) # sets each element-vector to its corresponding element gradient
 
-build_v!(partitioned_gradient_x0) # builds the gradient vector
+build_v!(partitioned_gradient_x0) # Build the gradient vector
 @test get_v(partitioned_gradient_x0) == ∇f(x0) # with the same value as the gradient
 ```
 ## Approximate the Hessian ∇f²
@@ -162,7 +162,7 @@ Bs = mul_epm_vector(partitioned_matrix, s) # compute the product partitioned-mat
 ## Others partitioned quasi-Newton approximations
 There exist two categories of partitioned quasi-Newton updates.
 In the first category, each element Hessian ∇²fᵢ is approximate with a dense matrix, for example: PBFGS.
-In the second category, each element Hessian ∇²fᵢ is approximate with a quasi-Newton linear operator.
+In the second category, each element Hessian ∇²fᵢ is approximate with a quasi-Newton linear-operator.
 
 ### Partitioned quasi-Newton operators
 Once the partitioned-matrix is allocated,

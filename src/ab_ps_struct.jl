@@ -1,5 +1,9 @@
 module M_abstract_part_struct
+
 using ..M_abstract_element_struct
+using ..Acronyms
+
+
 import Base.==
 
 export Part_struct
@@ -58,7 +62,7 @@ Check if each element-structure of both partitioned-structures depend of the sam
 """
     initialize_component_list!(ps::T) where T<:Part_struct)
 
-Build for each index i (∈ {1,..., n}) a list of the elements (⊆ {1,...,N}) using the i-th variable.
+Build for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
 """
 initialize_component_list!(ps::T) where T<:Part_struct = @error("should not be called")
 
@@ -66,7 +70,7 @@ initialize_component_list!(ps::T) where T<:Part_struct = @error("should not be c
     ee_vector = get_ee_struct(eps::Part_struct{T}) where T
     ee = get_ee_struct(eps::Part_struct{T}, i::Int) where T
 
-Return the vector composed of every elemental element `ee_vector` from the elemental partitioned-structure `eps` or the `i`-th elemental element of `eps`.
+Return the vector composed of every elemental element `ee_vector` from the $(_eev) or the `i`-th elemental element of `eps`.
 """
 get_ee_struct(ps::T) where T<:Part_struct = @error("should not be called")
 

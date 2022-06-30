@@ -1,5 +1,6 @@
 module M_elt_mat
 
+using ..Acronyms
 using ..M_abstract_element_struct
 
 export Elt_mat, DenseEltMat, LOEltMat
@@ -10,11 +11,11 @@ export update_counter_elt_mat!, iter_info, total_info
 
 import Base.copy, Base.similar
 
-"Abstract type representing an element-matrix"
+"Supertype of every element-matrix, ex: Elemental_em, Elemental_elo_sr1, Elemental_elo_bfgs"
 abstract type Elt_mat{T}<:Element_struct{T} end
-"Abstract type representing a dense element-matrix"
+"Supertype of every dense element-matrix, ex: Elemental_em"
 abstract type DenseEltMat{T}<:Elt_mat{T} end
-"Abstract type representing a element linear operator"
+"Supertype of every element linear-operator, ex: Elemental_elo_sr1, Elemental_elo_bfgs"
 abstract type LOEltMat{T}<:Elt_mat{T} end
 
 """
@@ -24,8 +25,8 @@ Count for an element-matrix the updates performed on it, from its allocation.
 `total_update + total_reset + total_untouched==iter `.
 """
 mutable struct Counter_elt_mat
-  total_update::Int # count the total of update perform by the element linear operator
-  current_update::Int # count how many time by the element linear operator
+  total_update::Int # count the total of update perform by the element linear-operator
+  current_update::Int # count how many time by the element linear-operator
   total_untouched::Int
   current_untouched::Int # must be ≤ reset defined in the update
   total_reset::Int

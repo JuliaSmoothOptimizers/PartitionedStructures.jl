@@ -1,13 +1,15 @@
 module M_part_v
 
+using ..Acronyms
 using ..M_abstract_part_struct
+
 
 export Part_v
 export get_v
 export set_N!, set_n!, set_v!
 export add_v!, build_v!, build_v, reset_v!
 
-"""Abstract type representing the partitioned-vectors."""
+"""Supertype of every partitioned-vectors, ex : Elemental_elt_vec, Internal_elt_vec."""
 abstract type Part_v{T}<:Part_struct{T} end
 
 """

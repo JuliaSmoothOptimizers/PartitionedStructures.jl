@@ -1,5 +1,6 @@
 module PartMatInterface
 
+using ..Acronyms
 using ..M_part_mat, ..M_part_v
 using ..ModElemental_em, ..ModElemental_ev
 using ..ModElemental_pv, ..ModElemental_plo_bfgs, ..ModElemental_plo_sr1, ..ModElemental_plo, ..ModElemental_pm

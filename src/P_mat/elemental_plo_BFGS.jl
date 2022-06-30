@@ -1,5 +1,6 @@
 module ModElemental_plo_bfgs
 
+using ..Acronyms
 using SparseArrays, LinearOperators
 using ..M_abstract_part_struct, ..M_part_mat
 using ..M_abstract_element_struct, ..M_elt_mat, ..ModElemental_elo_bfgs
@@ -13,7 +14,14 @@ export identity_eplo_LBFGS, PLBFGS_eplo, PLBFGS_eplo_rand
 """
     Elemental_plo_bfgs{T}<:Part_LO_mat{T}
 
-Type that represents an elemental limited-memory partitioned quasi-Newton operator PLBFGS.
+Represent an elemental partitioned quasi-Newton limited-memory operator PLBFGS.
+Each element is an elemental element `LBFGSOperator`.
+`N` is the number of elements.
+`n` is the size of the $(_eplmo).
+`eelo_set` is the set of elemental element linear-operators.
+`spm` and `L` are sparse matrices either to form the sparse matrix gathering the elements or the Cholesky factor of `spm`.
+`component_list` summarizes for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
+`permutation` is the current permutation of the $(_eplmo) (`[1:n;]` initially).
 """
 mutable struct Elemental_plo_bfgs{T}<:Part_LO_mat{T}
   N::Int
@@ -37,7 +45,7 @@ end
     eplo = identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64)
     eplo = identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
 
-Return an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
+Return an $(_eplmo) PLBFGS of `N` elemental element linear-operators.
 The positions are given by the vector of the element variables `element_variables`.
 """
 identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64) = identity_eplo_LBFGS(element_variables, N, n; T)
@@ -56,7 +64,7 @@ end
 """
     eplo = PLBFGS_eplo(; n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)
 
-Return an elemental partitioned limited-memory operator PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear operators.
+Return an $(_eplmo) PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear-operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
 """
 function PLBFGS_eplo(; n::Int=9, T=Float64, nie::Int=5, overlapping::Int=1)
@@ -78,7 +86,7 @@ end
 """
     eplo = PLBFGS_eplo_rand(N::Int, n::Int; T=Float64, nie::Int=5)
 
-Return an elemental partitioned limited-memory operator PLBFGS of `N` elemental element linear operators.
+Return an $(_eplmo) PLBFGS of `N` elemental element linear-operators.
 The size of each element is `nie`, whose positions are random in the range `1:n`.
 """
 function PLBFGS_eplo_rand(N::Int, n::Int; T=Float64, nie::Int=5)

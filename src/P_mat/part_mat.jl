@@ -1,4 +1,6 @@
 module M_part_mat
+
+using ..Acronyms
 using SparseArrays
 using ..M_abstract_element_struct
 using ..M_abstract_part_struct, ..M_elt_mat
@@ -17,16 +19,16 @@ export get_eelo_set, get_eelo_set, set_spm!, get_eelo_sub_set, get_eelo_set_Bie
 export get_spm, get_L
 export set_L!, set_L_to_spm!
 
-"Abstract type representing partitioned-matrix"
+"Supertype of every partitioned-matrix, ex: Elemental_pm, Elemental_plo_bfgs, Elemental_plo_sr1, Elemental_plo"
 abstract type Part_mat{T}<:Part_struct{T} end
-"Abstract type representing partitioned-matrix using linear operators"
+"Supertype of every partitioned limited-memory operator, ex: Elemental_plo_bfgs, Elemental_plo_sr1, Elemental_plo "
 abstract type Part_LO_mat{T}<:Part_mat{T} end
 
 """
     set_spm!(pm::P) where {T<:Number, P<:Part_mat{T}}
 
-Builds the sparse matrix of the partitioned matrix `pm` in `pm.spm` by gathering the contribution of every element-matrix.
-The sparse matrix is built with respect to the indices of each elemental element linear operator.
+Build the sparse matrix of the partitioned matrix `pm` in `pm.spm` by gathering the contribution of every element-matrix.
+The sparse matrix is built with respect to the indices of each elemental element linear-operator.
 """
 @inline set_spm!(pm::T) where T<:Part_mat = @error("should not be called")
 
@@ -139,15 +141,15 @@ Return either the vector of every elemental element linear-operator `plm.eelo_se
 """
     eelo_subset = get_eelo_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
 
-Return a subset of the elemental element linear operators composing the elemental partitioned linear-operator `plm`.
-`indices` selects the differents elemental element linear operators needed.
+Return a subset of the elemental element linear-operators composing the elemental partitioned linear-operator `plm`.
+`indices` selects the differents elemental element linear-operators needed.
 """
 @inline get_eelo_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat = plm.eelo_set[indices]
 
 """
     Bie = get_eelo_set_Bie(plm::T, i::Int) where T<:Part_LO_mat
 
-Return the linear operator of the `i`-th elemental element linear operator of `plm`.
+Return the linear-operator of the `i`-th elemental element linear-operator of `plm`.
 """
 @inline get_eelo_set_Bie(plm::T, i::Int) where T<:Part_LO_mat = get_Bie(get_eelo_set(plm, i))
 
