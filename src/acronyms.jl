@@ -16,4 +16,4 @@ _ees = """elemental element-structure `ees`"""
 _eps = """elemental partitioned-structure `eps`"""
 _eplmo = """elemental partitioned limited-memory operator"""
 _elmpqno = """elemental limited-memory partitioned quasi-Newton operator"""
-end 
+end

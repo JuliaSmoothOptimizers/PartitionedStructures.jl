@@ -8,11 +8,11 @@ using PartitionedStructures.M_frontale
 
 @testset "Frontal method" begin
   @testset "random matrices" begin
-    for n in 10:30, N in Int(floor(n/4)):Int(floor(3*n/4)), nie in 2:Int(floor(sqrt(n)))
-      pm = ones_epm_and_id(N,n; nie=nie) # create bloc matrix without null diagonal term
+    for n = 10:30, N = Int(floor(n / 4)):Int(floor(3 * n / 4)), nie = 2:Int(floor(sqrt(n)))
+      pm = ones_epm_and_id(N, n; nie = nie) # create bloc matrix without null diagonal term
       sp_pm = SparseMatrixCSC(pm)
       m = Matrix(pm)
-      @test Matrix(sp_pm)==m
+      @test Matrix(sp_pm) == m
 
       LLT = cholesky(m)
       L_chol = LLT.L
@@ -29,7 +29,7 @@ using PartitionedStructures.M_frontale
   @testset "one shot" begin
     n = 100
     nie = 5
-    pm = n_i_SPS(n; nie=nie) # create a tridiag dominant matrix
+    pm = n_i_SPS(n; nie = nie) # create a tridiag dominant matrix
     sp_pm = SparseMatrixCSC(pm) # the sparse matrix from the bloc matrix
     m = Matrix(sp_pm) # Matrix format for nice print
 

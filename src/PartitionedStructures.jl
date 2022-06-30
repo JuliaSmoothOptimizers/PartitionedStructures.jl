@@ -29,7 +29,8 @@ using .M_abstract_part_struct, .M_abstract_element_struct
 using .M_elt_vec, .M_elt_mat
 using .M_part_v, .M_part_mat
 using .ModElemental_ev, .ModElemental_em, .ModElemental_elo_bfgs, .ModElemental_elo_sr1
-using .ModElemental_pv, .ModElemental_pm, .ModElemental_plo_bfgs, .ModElemental_plo_sr1, .ModElemental_plo
+using .ModElemental_pv,
+  .ModElemental_pm, .ModElemental_plo_bfgs, .ModElemental_plo_sr1, .ModElemental_plo
 using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
 using .Link, .Instances, .PartMatInterface
 
