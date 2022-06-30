@@ -12,7 +12,7 @@ export Elemental_plo_bfgs
 export identity_eplo_LBFGS, PLBFGS_eplo, PLBFGS_eplo_rand
 
 """
-    Elemental_plo_bfgs{T}<:Part_LO_mat{T}
+    Elemental_plo_bfgs{T} <: Part_LO_mat{T}
 
 Represent an elemental partitioned quasi-Newton limited-memory operator PLBFGS.
 Each element is an elemental element `LBFGSOperator`.

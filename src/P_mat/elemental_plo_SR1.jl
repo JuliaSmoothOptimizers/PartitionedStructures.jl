@@ -13,7 +13,7 @@ export Elemental_plo_sr1
 export identity_eplo_LSR1, PLSR1_eplo, PLSR1_eplo_rand
 
 """
-    Elemental_plo_sr1{T}<:Part_LO_mat{T}
+    Elemental_plo_sr1{T} <: Part_LO_mat{T}
 
 Represent an elemental partitioned quasi-Newton limited-memory operator PLSR1.
 Each element is an elemental element `LSR1Operator`.

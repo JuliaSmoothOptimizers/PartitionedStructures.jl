@@ -17,7 +17,7 @@ export correlated_var
 export identity_epm, ones_epm, ones_epm_and_id, n_i_sep, n_i_SPS, part_mat
 
 """
-    Elemental_pm{T}<:Part_mat{T}
+    Elemental_pm{T} <: Part_mat{T}
 
 Represent an elemental partitioned quasi-Newton linear-operator.
 Each element is an elemental element-matrix which may apply a BFGS or a SR1 update.

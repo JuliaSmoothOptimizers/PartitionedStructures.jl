@@ -11,7 +11,7 @@ export init_eelo_LSR1, LSR1_eelo_rand, LSR1_eelo
 export reset_eelo_sr1!
 
 """
-    Elemental_elo_sr1{T}<:LOEltMat{T}
+    Elemental_elo_sr1{T} <: LOEltMat{T}
 
 Represent an elemental element `LSR1Operator`.
 `indices` retains the indices of the elemental variables.
@@ -86,7 +86,7 @@ function LSR1_eelo(nie::Int; T = Float64, index = 1)
 end
 
 """
-    reset_eelo_sr1!(eelo::Elemental_elo_sr1{T}) where T<:Number
+    reset_eelo_sr1!(eelo::Elemental_elo_sr1{T}) where T <: Number
 
 Reset the LSR1 linear-operator of the elemental element linear-operator matrix `eelo`.
 """

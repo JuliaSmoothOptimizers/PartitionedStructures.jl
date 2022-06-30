@@ -16,7 +16,7 @@ export identity_eplo_LOSE, PLBFGSR1_eplo, PLBFGSR1_eplo_rand
 elom_type{T} = Union{Elemental_elo_sr1{T}, Elemental_elo_bfgs{T}}
 
 """
-    Elemental_plo{T}<:Part_LO_mat{T}
+    Elemental_plo{T} <: Part_LO_mat{T}
 
 Represent an elemental partitioned quasi-Newton limited-memory operator PLSE.
 Each element may either be a `LBFGSOperator` or a `LSR1Operator`.

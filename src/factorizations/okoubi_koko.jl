@@ -12,7 +12,7 @@ export okoubi, okoubi!
 """
     okoubi(epm, epv)
 
-Solve the partitioned linear problem from `epm` and `epv` using the [Okoubi and Koko method](https://doi.org/10.1007/s11590-016-1020-x).
+Solve the partitioned linear problem from the $(_epm) and the $(_epv) using the [Okoubi and Koko method](https://doi.org/10.1007/s11590-016-1020-x).
 """
 function okoubi(epm_A::Elemental_pm{T}, epv_b::Elemental_pv{T}) where {T}
   epv_x = similar(epv_b)

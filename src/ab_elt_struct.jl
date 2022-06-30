@@ -11,8 +11,8 @@ export max_indices, min_indices
 abstract type Element_struct{T} end
 
 """
-    indices = get_indices(elt::T) where T<:Element_struct
-    indice = get_indices(elt::T, i::Int) where T<:Element_struct
+    indices = get_indices(elt::T) where T <: Element_struct
+    indice = get_indices(elt::T, i::Int) where T <: Element_struct
 
 Every element-structure is based on a variable subset of a partitioned-structure.
 `get_indices(elt)` retrieves the variable set of an element `elt`.
@@ -22,14 +22,14 @@ Every element-structure is based on a variable subset of a partitioned-structure
 @inline get_indices(elt::T, i::Int) where {T <: Element_struct} = elt.indices[i]
 
 """
-    nie = get_nie(elt::T) where T<:Element_struct
+    nie = get_nie(elt::T) where T <: Element_struct
 
 Return the elemental size of the element `elt.nie`.
 """
 @inline get_nie(elt::T) where {T <: Element_struct} = elt.nie
 
 """
-    set_indices!(elt::T, indices::Vector{Int}) where T<:Element_struct
+    set_indices!(elt::T, indices::Vector{Int}) where T <: Element_struct
 
 Set the indices of the element `elt.indices` to `indices`.
 """
@@ -37,7 +37,7 @@ Set the indices of the element `elt.indices` to `indices`.
   elt.indices = indices
 
 """
-    set_nie!(elt::T, nie::Int) where T<:Element_struct
+    set_nie!(elt::T, nie::Int) where T <: Element_struct
 
 Set the element size of `elt` to `nie`.
 """
