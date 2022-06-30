@@ -197,9 +197,9 @@ It defines three approximations:
 
 Contrary to the partitioned quasi-Newton operators, each limited-memory version is typed differently
 ```@example PartitionedStructures
-partitioned_linear_operator_PLBFGS = eplom_lbfgs_from_epv(partitioned_gradient_x0)
-partitioned_linear_operator_PLSR1 = eplom_lsr1_from_epv(partitioned_gradient_x0)
-partitioned_linear_operator_PLSE = eplom_lose_from_epv(partitioned_gradient_x0)
+partitioned_linear_operator_PLBFGS = eplo_lbfgs_from_epv(partitioned_gradient_x0)
+partitioned_linear_operator_PLSR1 = eplo_lsr1_from_epv(partitioned_gradient_x0)
+partitioned_linear_operator_PLSE = eplo_lose_from_epv(partitioned_gradient_x0)
 ```
 The different types simplify the `update` method, since no argument `name` is required to determine the update that will be applied
 ```@example PartitionedStructures

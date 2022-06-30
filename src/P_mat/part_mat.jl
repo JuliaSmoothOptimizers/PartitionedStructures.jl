@@ -10,10 +10,10 @@ export get_N, get_n, get_permutation, get_spm
 export hard_reset_spm!, reset_spm!, set_spm!
 export hard_reset_L!, reset_L!
 export set_N!, set_n!, set_permutation!
-export get_eelom_set, get_ee_struct_Bie
-export set_eelom_set!
+export get_eelo_set, get_ee_struct_Bie
+export set_eelo_set!
 
-export get_eelom_set, get_eelom_set, set_spm!, get_eelom_sub_set, get_eelom_set_Bie
+export get_eelo_set, get_eelo_set, set_spm!, get_eelo_sub_set, get_eelo_set_Bie
 export get_spm, get_L
 export set_L!, set_L_to_spm!
 
@@ -36,7 +36,7 @@ function set_spm!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
   n = get_n(plm)
   spm = get_spm(plm)
   for i in 1:N
-    plmᵢ = get_eelom_set(plm,i)
+    plmᵢ = get_eelo_set(plm,i)
     nie = get_nie(plmᵢ)
     Bie = get_Bie(plmᵢ)
     indicesᵢ = get_indices(plmᵢ)
@@ -128,35 +128,35 @@ Set the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
 @inline set_L_to_spm!(pm::T) where T<:Part_mat = pm.L .= pm.spm
 
 """
-    eelom_set = get_eelom_set(plm::T) where T<:Part_LO_mat
-    eelom = get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat
+    eelo_set = get_eelo_set(plm::T) where T<:Part_LO_mat
+    eelo = get_eelo_set(plm::T, i::Int) where T<:Part_LO_mat
 
-Return either the vector of every elemental element linear-operator `plm.eelom_set` or the `i`-th elemental element linear-operator `plm.eelom_set[i]`..
+Return either the vector of every elemental element linear-operator `plm.eelo_set` or the `i`-th elemental element linear-operator `plm.eelo_set[i]`..
 """
-@inline get_eelom_set(plm::T) where T<:Part_LO_mat = plm.eelom_set
-@inline get_eelom_set(plm::T, i::Int) where T<:Part_LO_mat = @inbounds plm.eelom_set[i]
+@inline get_eelo_set(plm::T) where T<:Part_LO_mat = plm.eelo_set
+@inline get_eelo_set(plm::T, i::Int) where T<:Part_LO_mat = @inbounds plm.eelo_set[i]
 
 """
-    eelom_subset = get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
+    eelo_subset = get_eelo_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
 
 Return a subset of the elemental element linear operators composing the elemental partitioned linear-operator `plm`.
 `indices` selects the differents elemental element linear operators needed.
 """
-@inline get_eelom_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat = plm.eelom_set[indices]
+@inline get_eelo_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat = plm.eelo_set[indices]
 
 """
-    Bie = get_eelom_set_Bie(plm::T, i::Int) where T<:Part_LO_mat
+    Bie = get_eelo_set_Bie(plm::T, i::Int) where T<:Part_LO_mat
 
 Return the linear operator of the `i`-th elemental element linear operator of `plm`.
 """
-@inline get_eelom_set_Bie(plm::T, i::Int) where T<:Part_LO_mat = get_Bie(get_eelom_set(plm, i))
+@inline get_eelo_set_Bie(plm::T, i::Int) where T<:Part_LO_mat = get_Bie(get_eelo_set(plm, i))
 
 """
-    set_eelom_set!(eplo::P, i::Int, eelo::Y) where {T, P<:Part_LO_mat{T}, Y<:LOEltMat{T}}
+    set_eelo_set!(eplo::P, i::Int, eelo::Y) where {T, P<:Part_LO_mat{T}, Y<:LOEltMat{T}}
 
 Set the `i`-th elemental element linear-operator `eplo.eelo` to `eelo`.
 """
-@inline set_eelom_set!(eplo::T) where T<:Part_LO_mat = @error("should not be called")
+@inline set_eelo_set!(eplo::T) where T<:Part_LO_mat = @error("should not be called")
 
 """
     get_ee_struct_Bie(pm::T, i::Int) where T<:Part_mat
@@ -169,7 +169,7 @@ Return the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
 function initialize_component_list!(plm::P) where {T<:Number, P<:Part_LO_mat{T}}
   N = get_N(plm)
   for i in 1:N
-    plmᵢ = get_eelom_set(plm, i)
+    plmᵢ = get_eelo_set(plm, i)
     _indices = get_indices(plmᵢ)
     for j in _indices
       push!(get_component_list(plm, j), i)

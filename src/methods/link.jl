@@ -4,21 +4,21 @@ using LinearAlgebra, SparseArrays
 using ..M_elt_mat
 using ..M_part_mat, ..M_part_v
 using ..ModElemental_em, ..ModElemental_ev
-using ..ModElemental_pv, ..ModElemental_plom_bfgs, ..ModElemental_plom_sr1, ..ModElemental_plom, ..ModElemental_pm
+using ..ModElemental_pv, ..ModElemental_plo_bfgs, ..ModElemental_plo_sr1, ..ModElemental_plo, ..ModElemental_pm
 using ..M_abstract_element_struct, ..M_abstract_part_struct
 
-export eplom_lbfgs_from_epv, eplom_lsr1_from_epv, eplom_lose_from_epv, epm_from_epv
-export epv_from_eplom, epv_from_epm
+export eplo_lbfgs_from_epv, eplo_lsr1_from_epv, eplo_lose_from_epv, epm_from_epv
+export epv_from_eplo, epv_from_epm
 export mul_epm_epv, mul_epm_epv!, mul_epm_vector, mul_epm_vector!
 export string_counters_iter, string_counters_total
 
 """
-    epv = epv_from_eplom(epm)
+    epv = epv_from_eplo(epm)
 
-Create an elemental partitioned-vector `epv` with the same partitioned structure than `eplom`.
+Create an elemental partitioned-vector `epv` with the same partitioned structure than `eplo`.
 Each element-vector of `epv` is set to a random vector of suitable size.
 """
-@inline epv_from_eplom(eplom) = epv_from_epm(eplom)
+@inline epv_from_eplo(eplo) = epv_from_epm(eplo)
 
 """
     epv = epv_from_epm(epm)
@@ -52,71 +52,71 @@ Each element-matrix of `epm` is set with an identity matrix of suitable size.
 function epm_from_epv(epv::T) where T<:Elemental_pv{Y} where Y<:Number
   N = get_N(epv)
   n = get_n(epv)
-  eelom_indices_set = Vector{Vector{Int}}(undef, N)
+  eelo_indices_set = Vector{Vector{Int}}(undef, N)
   for i in 1:N
     eesi = get_ee_struct(epv, i)
     indices = get_indices(eesi)
-    eelom_indices_set[i] = indices
+    eelo_indices_set[i] = indices
   end
-  epm = identity_epm(eelom_indices_set, N, n; T=Y)
+  epm = identity_epm(eelo_indices_set, N, n; T=Y)
   return epm
 end
 
 """
-    eplom = eplom_lbfgs_from_epv(epv)
+    eplo = eplo_lbfgs_from_epv(epv)
 
-Create an elemental limited-memory partitioned quasi-Newton operator PLBFGS `eplom` with the same partitioned structure than `epv`.
-Each element linear operator of `eplom` is set to a `LBFGSOperator` of suitable size.
+Create an elemental limited-memory partitioned quasi-Newton operator PLBFGS `eplo` with the same partitioned structure than `epv`.
+Each element linear operator of `eplo` is set to a `LBFGSOperator` of suitable size.
 """
-function eplom_lbfgs_from_epv(epv::T) where T<:Elemental_pv{Y} where Y<:Number
+function eplo_lbfgs_from_epv(epv::T) where T<:Elemental_pv{Y} where Y<:Number
   N = get_N(epv)
   n = get_n(epv)
-  eelom_indices_set = Vector{Vector{Int}}(undef, N)
+  eelo_indices_set = Vector{Vector{Int}}(undef, N)
   for i in 1:N
     eesi = get_ee_struct(epv, i)
     indices = get_indices(eesi)
-    eelom_indices_set[i] = indices
+    eelo_indices_set[i] = indices
   end
-  eplom = identity_eplom_LBFGS(eelom_indices_set, N, n; T=Y)
-  return eplom
+  eplo = identity_eplo_LBFGS(eelo_indices_set, N, n; T=Y)
+  return eplo
 end
 
 """
-    eplom = eplom_lsr1_from_epv(epv)
+    eplo = eplo_lsr1_from_epv(epv)
 
-Create an elemental limited-memory partitioned quasi-Newton operator PLSR1 `eplom` with the same partitioned structure than `epv`.
-Each element linear operator of `eplom` is set to a `LSR1Operator` of suitable size.
+Create an elemental limited-memory partitioned quasi-Newton operator PLSR1 `eplo` with the same partitioned structure than `epv`.
+Each element linear operator of `eplo` is set to a `LSR1Operator` of suitable size.
 """
-function eplom_lsr1_from_epv(epv::T) where T<:Elemental_pv{Y} where Y<:Number
+function eplo_lsr1_from_epv(epv::T) where T<:Elemental_pv{Y} where Y<:Number
   N = get_N(epv)
   n = get_n(epv)
-  eelom_indices_set = Vector{Vector{Int}}(undef, N)
+  eelo_indices_set = Vector{Vector{Int}}(undef, N)
   for i in 1:N
     eesi = get_ee_struct(epv, i)
     indices = get_indices(eesi)
-    eelom_indices_set[i] = indices
+    eelo_indices_set[i] = indices
   end
-  eplom = identity_eplom_LSR1(eelom_indices_set, N, n; T=Y)
-  return eplom
+  eplo = identity_eplo_LSR1(eelo_indices_set, N, n; T=Y)
+  return eplo
 end
 
 """
-    eplom = eplom_lose_from_epv(epv)
+    eplo = eplo_lose_from_epv(epv)
 
-Create an elemental limited-memory partitioned quasi-Newton operator PLSE `eplom` with the same partitioned structure than `epv`.
-Each element linear operator of `eplom` is set to a `LBFGSOperator` of suitable size, but it may change to a `LSR1Operator` later on.
+Create an elemental limited-memory partitioned quasi-Newton operator PLSE `eplo` with the same partitioned structure than `epv`.
+Each element linear operator of `eplo` is set to a `LBFGSOperator` of suitable size, but it may change to a `LSR1Operator` later on.
 """
-function eplom_lose_from_epv(epv::Elemental_pv{T}) where T<:Number
+function eplo_lose_from_epv(epv::Elemental_pv{T}) where T<:Number
   N = get_N(epv)
   n = get_n(epv)
-  eelom_indices_set = Vector{Vector{Int}}(undef, N)
+  eelo_indices_set = Vector{Vector{Int}}(undef, N)
   for i in 1:N
     eesi = get_ee_struct(epv, i)
     indices = get_indices(eesi)
-    eelom_indices_set[i] = indices
+    eelo_indices_set[i] = indices
   end
-  eplom = identity_eplom_LOSE(eelom_indices_set, N, n; T=T)
-  return eplom
+  eplo = identity_eplo_LOSE(eelo_indices_set, N, n; T=T)
+  return eplo
 end
 
 """

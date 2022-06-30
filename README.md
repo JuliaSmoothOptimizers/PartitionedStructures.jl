@@ -40,25 +40,25 @@ Structure              | Description
 -----------------------|------------
 `Part_struct`          | The (abstract) supertype of all partitioned structures
 `Elemental_pm`         | An elemental partitioned-matrix, each element-matrix is dense
-`Elemental_plom_bfgs`  | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LBFGSOperator`
-`Elemental_plom_sr1`   | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LSR1Operator`
-`Elemental_plom`       | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LBFGSOperator` or a `LSR1Operator`
+`Elemental_plo_bfgs`  | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LBFGSOperator`
+`Elemental_plo_sr1`   | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LSR1Operator`
+`Elemental_plo`       | A limited-memory elemental partitioned-matrix, each elemental element-matrix is a `LBFGSOperator` or a `LSR1Operator`
 `Elemental_pv`         | An elemental partitioned-vector
 
 ## Methods available
 Method                 | Description
 -----------------------|------------
 `identity_epm`         | Creates a partitioned-matrix with identity element-matrix
-`identity_eplom_LBFGS` | Creates a limited-memory (LBFGS) partitioned-matrix
-`identity_eplom_LSR1`  | Creates a limited-memory (LSR1) partitioned-matrix
-`identity_eplom_LOSE`  | Creates a limited-memory (with both LBFGS and LSR1) partitioned-matrix
+`identity_eplo_LBFGS` | Creates a limited-memory (LBFGS) partitioned-matrix
+`identity_eplo_LSR1`  | Creates a limited-memory (LSR1) partitioned-matrix
+`identity_eplo_LOSE`  | Creates a limited-memory (with both LBFGS and LSR1) partitioned-matrix
 `update`               | Performs a partitioned quasi-Newton update onto a partitioned-matrix
-`eplom_lbfgs_from_epv` | Creates an `Elemental_plom_bfgs` from the partitioned structure of an `Elemental_pv`
-`eplom_lsr1_from_epv`  | Creates an `Elemental_plom_sr1` from the partitioned structure of an `Elemental_pv`
-`eplom_lose_from_epv`  | Creates an `Elemental_plom` from the partitioned structure of an `Elemental_pv`
+`eplo_lbfgs_from_epv` | Creates an `Elemental_plo_bfgs` from the partitioned structure of an `Elemental_pv`
+`eplo_lsr1_from_epv`  | Creates an `Elemental_plo_sr1` from the partitioned structure of an `Elemental_pv`
+`eplo_lose_from_epv`  | Creates an `Elemental_plo` from the partitioned structure of an `Elemental_pv`
 `epm_from_epv`         | Creates an `Elemental_pm` from the partitioned structure of an `Elemental_pv`
 `epv_from_epm`         | Creates an `Elemental_pv` from the partitioned structure of an `Elemental_pm`
-`epv_from_eplom`       | Creates an `Elemental_pv` from the partitioned structure of: an `Elemental_plom`, an `Elemental_plom_bfgs` or an `Elemental_plom_sr1`
+`epv_from_eplo`       | Creates an `Elemental_pv` from the partitioned structure of: an `Elemental_plo`, an `Elemental_plo_bfgs` or an `Elemental_plo_sr1`
 `mul_epm_epv`          | Return a partitioned-vector from an elementwise product between a partitioned-matrix and a partitioned-vector
 `mul_epm_vector`       | Return the vector resulting of a product partitioned-matrix vector
 `build_v!`             | Builds the vector associated to a partitioned-vector

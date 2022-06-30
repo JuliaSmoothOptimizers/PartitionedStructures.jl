@@ -26,15 +26,15 @@ using .Utils
 using .M_abstract_part_struct, .M_abstract_element_struct
 using .M_elt_vec, .M_elt_mat
 using .M_part_v, .M_part_mat
-using .ModElemental_ev, .ModElemental_em, .ModElemental_elom_bfgs, .ModElemental_elom_sr1
-using .ModElemental_pv, .ModElemental_pm, .ModElemental_plom_bfgs, .ModElemental_plom_sr1, .ModElemental_plom
+using .ModElemental_ev, .ModElemental_em, .ModElemental_elo_bfgs, .ModElemental_elo_sr1
+using .ModElemental_pv, .ModElemental_pm, .ModElemental_plo_bfgs, .ModElemental_plo_sr1, .ModElemental_plo
 using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
 using .Link, .Instances, .PartMatInterface
 
 # export the main methods of every submodule
 
 # structures and functions related to element structures
-export Elemental_elt_vec, Elemental_em, Elemental_elom_bfgs, Elemental_elom_sr1
+export Elemental_elt_vec, Elemental_em, Elemental_elo_bfgs, Elemental_elo_sr1
 export create_eev, create_id_eem
 export create_epv, get_eev, epv_from_v!, minus_epv!, add_epv!, epv_from_epv! # ModElemental_pv
 export set_epv!
@@ -43,14 +43,14 @@ export get_eev_value
 
 # structures and functions related to partitioned structures
 export Part_mat
-export Elemental_pv, Elemental_pm, Elemental_plom_bfgs
-export identity_epm, identity_eplom_LBFGS, identity_eplom_LSR1, identity_eplom_LOSE
+export Elemental_pv, Elemental_pm, Elemental_plo_bfgs
+export identity_epm, identity_eplo_LBFGS, identity_eplo_LSR1, identity_eplo_LOSE
 export initialize_component_list!
 
 # Method linking the partitioned structures
 export full_check_epv_epm
-export epm_from_epv, eplom_lbfgs_from_epv, eplom_lose_from_epv, eplom_lsr1_from_epv
-export create_epv_eplom, epv_from_eplom, epv_from_epm
+export epm_from_epv, eplo_lbfgs_from_epv, eplo_lose_from_epv, eplo_lsr1_from_epv
+export create_epv_eplo, epv_from_eplo, epv_from_epm
 export mul_epm_vector, mul_epm_vector!, mul_epm_epv
 export Counter_elt_mat, string_counters_iter, string_counters_total
 export prod_part_vectors

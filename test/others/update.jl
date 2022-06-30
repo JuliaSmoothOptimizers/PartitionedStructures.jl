@@ -15,12 +15,12 @@ using PartitionedStructures.Instances
     nie=4
     over=2
     s = ones(n)
-    eplom_bfgs,epv_y = create_epv_eplom_bfgs(; n=n, nie=nie, overlapping=over)
-    mat_PLBFGS = update(eplom_bfgs, epv_y, s)
-    eplom_sr1,epv_y = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
-    mat_PSR1 = update(eplom_sr1, epv_y, s)
-    eplom_bfgs_sr1,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)
-    mat_PLBFGS_SR1 = update(eplom_bfgs_sr1, epv_y, s)
+    eplo_bfgs,epv_y = create_epv_eplo_bfgs(; n=n, nie=nie, overlapping=over)
+    mat_PLBFGS = update(eplo_bfgs, epv_y, s)
+    eplo_sr1,epv_y = create_epv_eplo_sr1(; n=n, nie=nie, overlapping=over)
+    mat_PSR1 = update(eplo_sr1, epv_y, s)
+    eplo_bfgs_sr1,epv_y = create_epv_eplo(;n=n,nie=nie,overlapping=over)
+    mat_PLBFGS_SR1 = update(eplo_bfgs_sr1, epv_y, s)
   end
 
   @testset "partitioned linear operators update!" begin
@@ -28,12 +28,12 @@ using PartitionedStructures.Instances
     nie=4
     over=2
     s = ones(n)
-    eplom_bfgs,epv_y = create_epv_eplom_bfgs(; n=n, nie=nie, overlapping=over)
-    mat_PLBFGS = update!(eplom_bfgs, epv_y, s)
-    eplom_sr1,epv_y = create_epv_eplom_sr1(; n=n, nie=nie, overlapping=over)
-    mat_PSR1 = update!(eplom_sr1, epv_y, s)
-    eplom_bfgs_sr1,epv_y = create_epv_eplom(;n=n,nie=nie,overlapping=over)
-    mat_PLBFGS_SR1 = update!(eplom_bfgs_sr1, epv_y, s)
+    eplo_bfgs,epv_y = create_epv_eplo_bfgs(; n=n, nie=nie, overlapping=over)
+    mat_PLBFGS = update!(eplo_bfgs, epv_y, s)
+    eplo_sr1,epv_y = create_epv_eplo_sr1(; n=n, nie=nie, overlapping=over)
+    mat_PSR1 = update!(eplo_sr1, epv_y, s)
+    eplo_bfgs_sr1,epv_y = create_epv_eplo(;n=n,nie=nie,overlapping=over)
+    mat_PLBFGS_SR1 = update!(eplo_bfgs_sr1, epv_y, s)
   end
 end
 
@@ -48,18 +48,18 @@ end
   build_v!(epv)
   y = get_v(epv)
   epm = epm_from_epv(epv)
-  eplom_lbfgs = eplom_lbfgs_from_epv(epv)
-  eplom_sr1 = eplom_lsr1_from_epv(epv)
-  eplom_lose = eplom_lose_from_epv(epv)
+  eplo_lbfgs = eplo_lbfgs_from_epv(epv)
+  eplo_sr1 = eplo_lsr1_from_epv(epv)
+  eplo_lose = eplo_lose_from_epv(epv)
 
   s = ones(n)
 
   epm_bfgs = PBFGS_update(epm, epv, s)
   epm_sr1 = PSR1_update(epm, epv, s)
   epm_se = PSE_update(epm, epv, s)
-  epm_plbfgs = PLBFGS_update(eplom_lbfgs, epv, s)
-  epm_plsr1 = PLSR1_update(eplom_sr1, epv, s)
-  epm_plse = PLSE_update(eplom_lose, epv, s)
+  epm_plbfgs = PLBFGS_update(eplo_lbfgs, epv, s)
+  epm_plsr1 = PLSR1_update(eplo_sr1, epv, s)
+  epm_plse = PLSE_update(eplo_lose, epv, s)
 end
 
 @testset "Concrete example of the partitioned updates (verify the secant equation)" begin
@@ -177,8 +177,8 @@ end
 
   partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
   partitioned_matrix_PSE = copy(partitioned_matrix_PSR1)
-  partitioned_linear_operator_PLBFGS = eplom_lbfgs_from_epv(partitioned_gradient_x0)
-  partitioned_linear_operator_PLSE = eplom_lose_from_epv(partitioned_gradient_x0)
+  partitioned_linear_operator_PLBFGS = eplo_lbfgs_from_epv(partitioned_gradient_x0)
+  partitioned_linear_operator_PLSE = eplo_lose_from_epv(partitioned_gradient_x0)
 
   B_PSR1 = update(partitioned_matrix_PSR1, partitioned_gradient_difference, s1; name=:psr1)
   B_PSE = update(partitioned_matrix_PSE, partitioned_gradient_difference, s1; name=:pse) # the default update
@@ -193,7 +193,7 @@ end
   @test norm(B_PLSE * s1 - y1)==0.
 
   # There is also a PLSR1 approximation, but is not fullt working since there is some issues with LSR1Operator
-  partitioned_linear_operator_PLSR1 = eplom_lsr1_from_epv(partitioned_gradient_x0)
+  partitioned_linear_operator_PLSR1 = eplo_lsr1_from_epv(partitioned_gradient_x0)
   B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s1)
   # @test norm(B_PLSR1 * s1 - y1)==0. # the second element hessian approximation is not update,
   # the partitioned quasi-Newton approximation doesn't satisfiy the secan equation.

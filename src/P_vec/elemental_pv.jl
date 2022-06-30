@@ -11,7 +11,7 @@ import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 export Elemental_pv
 export get_eev_set, get_eev, get_eev_value, get_eev_subset
-export set_eev!, minus_epv!, add_epv!
+export set_eev!, minus_epv!, add_epv!, set_epv!
 export create_epv, ones_kchained_epv, part_vec, rand_epv
 export scale_epv, scale_epv!
 export epv_from_epv!, epv_from_v, epv_from_v!
@@ -264,7 +264,7 @@ end
 Set the elemental partitioned-vector `epv1` to `epv2`.
 """
 function epv_from_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
-  full_check_epv_epm(epv1,epv2) || @error("different partitioned structures between eplom_B and epv_y")
+  full_check_epv_epm(epv1,epv2) || @error("different partitioned structures between eplo_B and epv_y")
   for idx in 1:get_N(epv1)
     set_eev!(epv1, idx, get_eev_value(epv2, idx))
   end
@@ -292,7 +292,7 @@ Perform an elementwise scalar product between the two elemental partitioned-vect
 `res` contrains the details of every element-vector scalar product.
 """
 function prod_part_vectors(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
-  full_check_epv_epm(epv1,epv2) || @error("different partitioned structures between eplom_B and epv_y")
+  full_check_epv_epm(epv1,epv2) || @error("different partitioned structures between eplo_B and epv_y")
   N = get_N(epv1)
   acc = (T)(0)
   res = Vector{T}(undef, N)
