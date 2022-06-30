@@ -1,6 +1,7 @@
 module Acronyms
 
-export _eev, _eem, _epv, _epm, _eelo, _eplo, _iev, _iem, _ipv, _ipm, _ees, _eps, _eplmo, _elmpqno, _ps, _epmB
+export _eev,
+  _eem, _epv, _epm, _eelo, _eplo, _iev, _iem, _ipv, _ipm, _ees, _eps, _eplmo, _elmpqno, _ps, _epmB
 
 _eev = """elemental element-vector `eev`"""
 _eem = """elemental element-matrix `eem`"""
