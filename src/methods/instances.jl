@@ -16,6 +16,7 @@ Both have the same partitioned structure defined by the size of the problem `n::
 Each elemental element-matrix is fill with ones, except the terms of the diagonal which are of value `mul_v::Real`.
 The value of each elemental element-vector is made `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+The default values are corrects.
 """
 function create_epv_epm(;n=9,nie=5,overlapping=1,mul_m=5., mul_v=100.)
   epm = part_mat(;n=n,nie=nie,overlapping=overlapping,mul=mul_m)
@@ -31,6 +32,7 @@ Both have the same partitioned structure defined by the size of the problem `n::
 Each elemental element-matrix is fill with ones, except the terms of the diagonal of `rand(range_mul_v)`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+The default values are corrects.
 """
 function create_epv_epm_rand(;n=9,nie=5,overlapping=1,range_mul_m=nie:2*nie, mul_v=100.)
   epm = part_mat(;n=n,nie=nie,overlapping=overlapping,mul=rand(range_mul_m))
@@ -46,6 +48,7 @@ Both have the same partitioned structure defined by the size of the problem `n::
 Each elemental element-matrix is a `LBFGSOperator`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+The default values are corrects.
 """
 function create_epv_eplo_bfgs(;n=9,nie=5,overlapping=1, mul_v=100.)
   eplo = PLBFGS_eplo(;n=n,nie=nie,overlapping=overlapping)
@@ -61,6 +64,7 @@ Both have the same partitioned structure defined by the size of the problem `n::
 Each elemental element-matrix is a `LSR1Operator`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+The default values are corrects.
 """
 function create_epv_eplo_sr1(;n=9,nie=5,overlapping=1, mul_v=100.)
   eplo = PLSR1_eplo(;n=n,nie=nie,overlapping=overlapping)
@@ -76,6 +80,7 @@ Both have the same partitioned structure defined by the size of the problem `n::
 Each elemental element-matrix is instantiated as a `LBFGSOperator`, but it may change to a `LSR1Operator` later on.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+The default values are corrects.
 """
 function create_epv_eplo(;n=9,nie=5,overlapping=1, mul_v=100.)
   eplo = PLBFGSR1_eplo(;n=n,nie=nie,overlapping=overlapping)

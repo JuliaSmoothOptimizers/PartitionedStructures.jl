@@ -16,7 +16,7 @@ export PLSE_update, PLSE_update!
 export Part_update, Part_update!
 
 """
-    copy_eplo_B = PLBFGS_update(eplo_B, epv_y, s)
+    copy_eplo_B = PLBFGS_update(eplo_B::Elemental_plo_bfgs{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
 Perform the PLBFGS update onto a copy of the limited-memory partitioned operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `eplo_B`.
@@ -28,8 +28,8 @@ function PLBFGS_update(eplo_B::Elemental_plo_bfgs{T}, epv_y::Elemental_pv{T}, s:
 end
 
 """
-    PLBFGS_update!(eplo_B, epv_y, s)
-    PLBFGS_update!(eplo_B, epv_y, epv_s)
+    PLBFGS_update!(eplo_B::Elemental_plo_bfgs{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
+    PLBFGS_update!(eplo_B::Elemental_plo_bfgs{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, reset=true, kwargs...) where T
 
 Perform the PLBFGS update onto the limited-memory partitioned operator `eplo_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
@@ -67,7 +67,7 @@ function PLBFGS_update!(eplo_B::Elemental_plo_bfgs{T}, epv_y::Elemental_pv{T}, e
 end
 
 """
-    copy_eplo_B = PLSR1_update(eplo_B, epv_y, s)
+    copy_eplo_B = PLSR1_update(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
 Perform the PSR1 update onto a copy of the limited-memory partitioned operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `eplo_B`.
@@ -79,8 +79,8 @@ function PLSR1_update(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, s::V
 end
 
 """
-    PLSR1_update!(eplo_B, epv_y, s)
-    PLSR1_update!(eplo_B, epv_y, epv_s)
+    PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
+    PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
 Perform the PLSR1 update onto the limited-memory partitioned operator `eplo_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
@@ -90,7 +90,7 @@ function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, s::
   return eplo_B
 end
 
-function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where T
+function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; kwargs...) where T
   full_check_epv_epm(eplo_B,epv_y) || @error("different partitioned structures between eplo_B and epv_y")
   full_check_epv_epm(eplo_B,epv_s) || @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
@@ -119,34 +119,34 @@ function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, epv
 end
 
 """
-    copy_eplo_B = Part_update(eplo_B, epv_y, s)
+    copy_eplo_B = Part_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where {T, Y<:Part_LO_mat{T}}
 
 Perform a quasi-Newton partitionned update onto a copy of the limited-memory partitioned operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Each elemental element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
 The update performs on each element the quasi-Newton update associated to the linear-operator.
 Return the updated copy of `eplo_B`.
 """
-function Part_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where Y<:Part_LO_mat{T} where T
+function Part_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where {T, Y<:Part_LO_mat{T}}
   epm_copy = copy(eplo_B)
   Part_update!(epm_copy,epv_y,s)
   return epm_copy
 end
 
 """
-    Part_update!(eplo_B, epv_y, s)
-    Part_update!(eplo_B, epv_y, epv_s)
+    Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where {T, Y<:Part_LO_mat{T}}
+    Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; kwargs...) where {T, Y<:Part_LO_mat{T}}
 
 Perform a partitioned quasi-Newton update onto the limited-memory partitioned operator `eplo_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 Each elemental element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
 The update performs on each element the quasi-Newton update associated to the linear-operator.
 """
-function Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where Y<:Part_LO_mat{T} where T
+function Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}) where {T, Y<:Part_LO_mat{T}}
   epv_s = epv_from_v(s, epv_y)
   Part_update!(eplo_B, epv_y, epv_s)
   return eplo_B
 end
 
-function Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; kwargs...) where Y<:Part_LO_mat{T} where T
+function Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; kwargs...) where {T, Y<:Part_LO_mat{T}}
   full_check_epv_epm(eplo_B,epv_y) || @error("different partitioned structures between eplo_B and epv_y")
   full_check_epv_epm(eplo_B,epv_s) || @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
@@ -160,7 +160,7 @@ function Part_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T};
 end
 
 """
-    copy_eplo_B = PLSE_update(eplo_B, epv_y, s)
+    copy_eplo_B = PLSE_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where {T, Y<:Part_LO_mat{T}}
 
 Perform the partitionned update PLSE onto a copy of the limited-memory partitioned operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
@@ -168,28 +168,28 @@ The update tries to apply a LBFGS update to every Bᵢ, but if the curvature con
 If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ is update.
 Return the updated copy of `eplo_B`.
 """
-function PLSE_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where Y<:Part_LO_mat{T} where T
+function PLSE_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where {T, Y<:Part_LO_mat{T}}
   epm_copy = copy(eplo_B)
   PLSE_update!(epm_copy,epv_y,s; kwargs...)
   return epm_copy
 end
 
 """
-    PLSE_update!(eplo_B, epv_y, s)
-    PLSE_update!(eplo_B, epv_y, epv_s)
+    PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where {T, Y<:Part_LO_mat{T}}
+    PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where {T, Y<:Part_LO_mat{T}}
 
 Perform the partitionned update PLSE onto the limited-memory partitioned operator `eplo_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
 The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
 If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ is update.
 """
-function PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where Y<:Part_LO_mat{T} where T
+function PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where {T, Y<:Part_LO_mat{T}}
   epv_s = epv_from_v(s, epv_y)
   PLSE_update!(eplo_B, epv_y, epv_s; kwargs...)
   return eplo_B
 end
 
-function PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where Y<:Part_LO_mat{T} where T
+function PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where {T, Y<:Part_LO_mat{T}}
   full_check_epv_epm(eplo_B,epv_y) || @error("different partitioned structures between eplo_B and epv_y")
   full_check_epv_epm(eplo_B,epv_s) || @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
@@ -205,7 +205,7 @@ function PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T};
     ri = yi .- Bi*si
     index = get_index(eelo)
     if isa(Bi, LBFGSOperator{T})
-      if dot(si, yi) > eps(T)  # curvature condition
+      if dot(si, yi) > eps(T) # curvature condition
         push!(Bi, si, yi)
         acc_lbfgs += 1
       elseif abs(dot(si,ri)) > ω * norm(si,2) * norm(ri,2) # numerical condition of LSR1
