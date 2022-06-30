@@ -7,7 +7,7 @@ include("part_mat.jl")
 # Define the partitionned matrices using the elemental element-matrices
 include("elemental_pm.jl")
 
-include("Elemental_elo_bfgs.jl")
+include("elemental_elo_bfgs.jl")
 include("elemental_elo_SR1.jl")
 
 include("elemental_plo_BFGS.jl")
