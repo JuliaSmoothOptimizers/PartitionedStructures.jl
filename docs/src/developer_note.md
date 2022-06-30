@@ -21,10 +21,10 @@ Acronyms  | Description
 `epv`     | elemental partitioned-vector
 `ipv`     | internal partitioned-vector
 `eem`     | elemental element-matrix
-`eelo`    | limited-memory elemental element-matrix
+`eelo`    | elemental partitioned limited-memory operator
 `iem`     | internal element-matrix
 `epm`     | elemental partitioned-matrix
 `ipm`     | internal partitioned-matrix
-`eplo`    | limited-memory elemental partitioned-matrix
-`eps`     | elemental partitioned-structure
+`eplo`    | elemental partitioned limited-memory operator
 `ees`     | elemental element-structure
+`eps`     | elemental partitioned-structure
