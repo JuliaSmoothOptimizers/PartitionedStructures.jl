@@ -67,7 +67,7 @@ function epm_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
 end
 
 """
-    eplo =  where Y<:Number
+    eplo = eplo_lbfgs_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
 
 Create an $(_elmpqno) PLBFGS `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable size.
@@ -86,7 +86,7 @@ function eplo_lbfgs_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
 end
 
 """
-    eplo = eplo_lsr1_from_epv(epv)
+    eplo = eplo_lsr1_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
 
 Create an $(_elmpqno) PLSR1 `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LSR1Operator` of suitable size.
@@ -105,7 +105,7 @@ function eplo_lsr1_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
 end
 
 """
-    eplo = eplo_lose_from_epv(epv)
+    eplo = eplo_lose_from_epv(epv::Elemental_pv{T}) where {T <: Number}
 
 Create an $(_elmpqno) PLSE `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable size, but it may change to a `LSR1Operator` later on.
@@ -207,7 +207,7 @@ function mul_epm_epv!(
 end
 
 """
-    s = string_counters_iter(pm)
+    s = string_counters_iter(pm::T; name = :PQN) where {T <: Part_mat}
 
 Produce a `s::String` that summarizes the partitioned update applied onto `pm` at the last iterate.
 The method accumulates the informations gathered by each element-counter during the last iterate.
@@ -230,7 +230,7 @@ function string_counters_iter(pm::T; name = :PQN) where {T <: Part_mat}
 end
 
 """
-    s = string_counters_total(pm)
+    s = string_counters_total(pm::T; name = :PQN) where {T <: Part_mat}
 
 Produce a `s::String` that summarizes the partitioned update applied onto `pm` since its allocations.
 The method accumulates the informations gathered by each element-counter since their allocations.
