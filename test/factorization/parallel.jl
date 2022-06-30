@@ -6,7 +6,6 @@ using PartitionedStructures.M_1_parallel, PartitionedStructures.M_2_parallel, Pa
 using PartitionedStructures.Instances, PartitionedStructures.Link
 using PartitionedStructures.M_part_v
 
-
 (epm,epv) = create_epv_epm(;n=17, nie =7, overlapping=2)
 m = Matrix(epm)
 v = Vector(epv)

@@ -1,48 +1,64 @@
 module M_part_v
 
+using ..Acronyms
 using ..M_abstract_part_struct
+
 
 export Part_v
 export get_v
-export set_N!, set_n!, set_v!	
+export set_N!, set_n!, set_v!
 export add_v!, build_v!, build_v, reset_v!
 
-"""Abstract type representing partitioned vectors."""
-abstract type Part_v{T} <: Part_struct{T} end 
-  
-@inline get_v(pv :: T ) where T <: Part_v = pv.v
+"""Supertype of every partitioned-vectors, ex : Elemental_elt_vec, Internal_elt_vec."""
+abstract type Part_v{T}<:Part_struct{T} end
 
 """
-    set_v!(pv, vec)
-    
-    set_v!(pv, index, value)
+    v = get_v(pv::T) where T<:Part_v
 
-Set to `value` the vector associated to the partitioned vector `pv.v` at the indice `index`.
-Set to `vec` the vector associated to the partitioned vector `pv.v`.
+Return the vector `pv.v` of the partitioned-vector `pv`.
 """
-@inline set_v!(pv :: T, v :: Vector{Y} ) where T <: Part_v{Y} where Y = pv.v = v
-@inline set_v!(pv :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = pv.v[i] = value
+@inline get_v(pv::T) where T<:Part_v = pv.v
 
 """
-    add_v!(pv, i, value)
-    
-    add_v!(pv, indices, values)
+    set_v!(pv::T, v::Vector{Y}) where {Y, T<:Part_v{Y}}
+    set_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}}
 
-Add `value` (resp `values`) to the vector associated to the partitioned vector `pv.v` at the indice `i` (resp `indices`).
+Set the components of the vector `pv.v` (resp. `pv.v[i]`) from the partitioned-vector `pv` to the vector `v` (resp. `value`).
 """
-@inline add_v!(pv :: T, i :: Int, value :: Y ) where T <: Part_v{Y} where Y = pv.v[i] += value
-@inline add_v!(pv :: T, indices :: Vector{Int}, values :: Vector{Y}) where T <: Part_v{Y} where Y = get_v(pv)[indices] .+= values
-
-@inline reset_v!(pv :: T ) where T <: Part_v{Y} where Y = pv.v .= (Y)(0)
+@inline set_v!(pv::T, v::Vector{Y}) where {Y, T<:Part_v{Y}} = pv.v = v
+@inline set_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}} = pv.v[i] = value
 
 """
-    build_v(pv)
-    
-Build the vector v from the partitionned vector pv.
-Call specialised method depending the type of the element vector inside pv
-For now if there is mix of elemental and internal element vectors it must be previously transform as internal partitioned vector.
+    add_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}}
+    add_v!(pv::T, indices::Vector{Int}, values::Vector{Y}) where {Y, T<:Part_v{Y}}
+
+Add `value` (resp `values`) to the vector of the partitioned-vector `pv.v` at the indice `i` (resp `indices`).
 """
-@inline build_v(pv :: T) where T <: Part_v = begin build_v!(pv); return get_v(pv) end
-@inline build_v!(pv :: T) where T <: Part_v = error("M_part_v.build_v!() should not be call")
+@inline add_v!(pv::T, i::Int, value::Y) where {Y, T<:Part_v{Y}} = pv.v[i] += value
+@inline add_v!(pv::T, indices::Vector{Int}, values::Vector{Y}) where {Y, T<:Part_v{Y}} = get_v(pv)[indices] .+= values
+
+"""
+    reset_v!(pv::T) where {Y, T<:Part_v{Y}}
+
+Reset the vector embedded in the partitioned-vector `pv`, i.e. `pv.v .= (Y)(0)`.
+"""
+@inline reset_v!(pv::T) where {Y, T<:Part_v{Y}} = pv.v .= (Y)(0)
+
+"""
+    vec = build_v(pv::T) where T<:Part_v
+
+Build the vector `v = pv.v` by accumulating inside `pv.v` the contributions of the element-vectors of the partitioned-vector `pv`.
+"""
+function build_v(pv::T) where T<:Part_v
+  build_v!(pv)
+  return get_v(pv)
+end
+
+"""
+    build_v!(pv::T) where T<:Part_v
+
+Accumulate in `pv.v` the contributions of the element-vectors of the partitioned-vector `pv`.
+"""
+@inline build_v!(pv::T) where T<:Part_v = error("M_part_v.build_v!() should not be call")
 
 end
