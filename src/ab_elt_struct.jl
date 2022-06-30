@@ -18,32 +18,35 @@ Every element-structure is based on a variable subset of a partitioned-structure
 `get_indices(elt)` retrieves the variable set of an element `elt`.
 `get_indices(elt, i)` retrieves the `i`-th variable associated to `elt`.
 """
-@inline get_indices(elt::T) where T<:Element_struct = elt.indices
-@inline get_indices(elt::T, i::Int) where T<:Element_struct = elt.indices[i]
+@inline get_indices(elt::T) where {T <: Element_struct} = elt.indices
+@inline get_indices(elt::T, i::Int) where {T <: Element_struct} = elt.indices[i]
 
 """
     nie = get_nie(elt::T) where T<:Element_struct
 
 Return the elemental size of the element `elt.nie`.
 """
-@inline get_nie(elt::T) where T<:Element_struct = elt.nie
+@inline get_nie(elt::T) where {T <: Element_struct} = elt.nie
 
 """
     set_indices!(elt::T, indices::Vector{Int}) where T<:Element_struct
 
 Set the indices of the element `elt.indices` to `indices`.
 """
-@inline set_indices!(elt::T, indices::Vector{Int}) where T<:Element_struct = elt.indices = indices
+@inline set_indices!(elt::T, indices::Vector{Int}) where {T <: Element_struct} =
+  elt.indices = indices
 
 """
     set_nie!(elt::T, nie::Int) where T<:Element_struct
 
 Set the element size of `elt` to `nie`.
 """
-@inline set_nie!(elt::T, nie::Int) where T<:Element_struct = elt.nie = nie
+@inline set_nie!(elt::T, nie::Int) where {T <: Element_struct} = elt.nie = nie
 
 # get the max/min index of variable from the {indiceᵢ}ᵢ
-Utils.max_indices(elt_set::Vector{T}) where T<:Element_struct = isempty(elt_set) ? 0 : maximum(maximum.(get_indices.(elt_set)))
-Utils.min_indices(elt_set::Vector{T}) where T<:Element_struct = isempty(elt_set) ? 0 : minimum(minimum.(get_indices.(elt_set)))
+Utils.max_indices(elt_set::Vector{T}) where {T <: Element_struct} =
+  isempty(elt_set) ? 0 : maximum(maximum.(get_indices.(elt_set)))
+Utils.min_indices(elt_set::Vector{T}) where {T <: Element_struct} =
+  isempty(elt_set) ? 0 : minimum(minimum.(get_indices.(elt_set)))
 
 end

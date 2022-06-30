@@ -19,23 +19,39 @@ Represent an elemental element `LBFGSOperator`.
 `Bie` a `LBFGSOperator`.
 `counter` counts how many update the elemental limited-memory operator goes through from its allocation.
 """
-mutable struct Elemental_elo_bfgs{T}<:LOEltMat{T}
+mutable struct Elemental_elo_bfgs{T} <: LOEltMat{T}
   nie::Int # nᵢᴱ
   indices::Vector{Int} # size nᵢᴱ
   Bie::LinearOperators.LBFGSOperator{T}
   counter::Counter_elt_mat
 end
 
-@inline (==)(eelo1::Elemental_elo_bfgs{T}, eelo2::Elemental_elo_bfgs{T}) where T = (get_nie(eelo1)==get_nie(eelo2)) && (get_indices(eelo1)==get_indices(eelo2)) && begin v=rand(get_nie(eelo1)); (get_Bie(eelo1)*v==get_Bie(eelo2)*v) end
-@inline copy(eelo::Elemental_elo_bfgs{T}) where T = Elemental_elo_bfgs{T}(copy(get_nie(eelo)), copy(get_indices(eelo)), deepcopy(get_Bie(eelo)), copy(get_cem(eelo)))
-@inline similar(eelo::Elemental_elo_bfgs{T}) where T = Elemental_elo_bfgs{T}(copy(get_nie(eelo)), copy(get_indices(eelo)), similar(get_Bie(eelo)), copy(get_cem(eelo)))
+@inline (==)(eelo1::Elemental_elo_bfgs{T}, eelo2::Elemental_elo_bfgs{T}) where {T} =
+  (get_nie(eelo1) == get_nie(eelo2)) &&
+  (get_indices(eelo1) == get_indices(eelo2)) &&
+  begin
+    v = rand(get_nie(eelo1))
+    (get_Bie(eelo1) * v == get_Bie(eelo2) * v)
+  end
+@inline copy(eelo::Elemental_elo_bfgs{T}) where {T} = Elemental_elo_bfgs{T}(
+  copy(get_nie(eelo)),
+  copy(get_indices(eelo)),
+  deepcopy(get_Bie(eelo)),
+  copy(get_cem(eelo)),
+)
+@inline similar(eelo::Elemental_elo_bfgs{T}) where {T} = Elemental_elo_bfgs{T}(
+  copy(get_nie(eelo)),
+  copy(get_indices(eelo)),
+  similar(get_Bie(eelo)),
+  copy(get_cem(eelo)),
+)
 
 """
     eelo = init_eelo_LBFGS(elt_var::Vector{Int}; T=Float64)
 
 Return an `Elemental_elo_bfgs` of type `T` based on the vector of the elemental variables`elt_var`.
 """
-function init_eelo_LBFGS(elt_var::Vector{Int}; T=Float64)
+function init_eelo_LBFGS(elt_var::Vector{Int}; T = Float64)
   nie = length(elt_var)
   Bie = LinearOperators.LBFGSOperator(T, nie)
   counter = Counter_elt_mat()
@@ -48,7 +64,7 @@ end
 
 Return an `Elemental_elo_bfgs` of type `T` with `nie` random indices within the range `1:n`.
 """
-function LBFGS_eelo_rand(nie::Int; T=Float64, n=nie^2)
+function LBFGS_eelo_rand(nie::Int; T = Float64, n = nie^2)
   indices = rand(1:n, nie)
   Bie = LinearOperators.LBFGSOperator(T, nie)
   counter = Counter_elt_mat()
@@ -61,8 +77,8 @@ end
 
 Return an `Elemental_elo_bfgs` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
-function LBFGS_eelo(nie::Int; T=Float64, index=1)
-  indices = [index:1:index+nie-1;]
+function LBFGS_eelo(nie::Int; T = Float64, index = 1)
+  indices = [index:1:(index + nie - 1);]
   Bie = LinearOperators.LBFGSOperator(T, nie)
   counter = Counter_elt_mat()
   eelo = Elemental_elo_bfgs{T}(nie, indices, Bie, counter)
@@ -74,7 +90,7 @@ end
 
 Reset the LBFGS linear-operator of the elemental element linear-operator `eelo`.
 """
-function reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where T<:Number
+function reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where {T <: Number}
   eelo.Bie = LinearOperators.LBFGSOperator(T, eelo.nie)
   return eelo
 end

@@ -6,9 +6,9 @@ using PartitionedStructures.M_part_mat, PartitionedStructures.M_part_v
 using PartitionedStructures.Instances, PartitionedStructures.Link
 using PartitionedStructures.M_okoubi_koko
 
-(epm,epv) = create_epv_epm()
+(epm, epv) = create_epv_epm()
 build_v!(epv)
-x = okoubi(epm,epv)
+x = okoubi(epm, epv)
 
 A = Matrix(epm)
 b = get_v(epv)

@@ -2,11 +2,13 @@ module Instances
 
 using ..Acronyms
 using ..M_part_mat, ..M_part_v
-using ..ModElemental_pv, ..ModElemental_plo_bfgs, ..ModElemental_plo_sr1, ..ModElemental_plo, ..ModElemental_pm
+using ..ModElemental_pv,
+  ..ModElemental_plo_bfgs, ..ModElemental_plo_sr1, ..ModElemental_plo, ..ModElemental_pm
 using ..ModElemental_ev
 using ..M_abstract_element_struct, ..M_abstract_part_struct
 
-export create_epv_eplo, create_epv_eplo_bfgs, create_epv_eplo_sr1, create_epv_epm, create_epv_epm_rand
+export create_epv_eplo,
+  create_epv_eplo_bfgs, create_epv_eplo_sr1, create_epv_epm, create_epv_epm_rand
 
 """
     (epm,epv) = create_epv_epm(;n=9,nie=5,overlapping=1,mul_m=5., mul_v=100.)
@@ -18,10 +20,10 @@ The value of each elemental element-vector is made `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are corrects.
 """
-function create_epv_epm(;n=9,nie=5,overlapping=1,mul_m=5., mul_v=100.)
-  epm = part_mat(;n=n,nie=nie,overlapping=overlapping,mul=mul_m)
-  epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
-  return (epm,epv)
+function create_epv_epm(; n = 9, nie = 5, overlapping = 1, mul_m = 5.0, mul_v = 100.0)
+  epm = part_mat(; n = n, nie = nie, overlapping = overlapping, mul = mul_m)
+  epv = part_vec(; n = n, nie = nie, overlapping = overlapping, mul = mul_v)
+  return (epm, epv)
 end
 
 """
@@ -34,10 +36,16 @@ The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are corrects.
 """
-function create_epv_epm_rand(;n=9,nie=5,overlapping=1,range_mul_m=nie:2*nie, mul_v=100.)
-  epm = part_mat(;n=n,nie=nie,overlapping=overlapping,mul=rand(range_mul_m))
-  epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
-  return (epm,epv)
+function create_epv_epm_rand(;
+  n = 9,
+  nie = 5,
+  overlapping = 1,
+  range_mul_m = nie:(2 * nie),
+  mul_v = 100.0,
+)
+  epm = part_mat(; n = n, nie = nie, overlapping = overlapping, mul = rand(range_mul_m))
+  epv = part_vec(; n = n, nie = nie, overlapping = overlapping, mul = mul_v)
+  return (epm, epv)
 end
 
 """
@@ -50,10 +58,10 @@ The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are corrects.
 """
-function create_epv_eplo_bfgs(;n=9,nie=5,overlapping=1, mul_v=100.)
-  eplo = PLBFGS_eplo(;n=n,nie=nie,overlapping=overlapping)
-  epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
-  return (eplo,epv)
+function create_epv_eplo_bfgs(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)
+  eplo = PLBFGS_eplo(; n = n, nie = nie, overlapping = overlapping)
+  epv = part_vec(; n = n, nie = nie, overlapping = overlapping, mul = mul_v)
+  return (eplo, epv)
 end
 
 """
@@ -66,10 +74,10 @@ The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are corrects.
 """
-function create_epv_eplo_sr1(;n=9,nie=5,overlapping=1, mul_v=100.)
-  eplo = PLSR1_eplo(;n=n,nie=nie,overlapping=overlapping)
-  epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
-  return (eplo,epv)
+function create_epv_eplo_sr1(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)
+  eplo = PLSR1_eplo(; n = n, nie = nie, overlapping = overlapping)
+  epv = part_vec(; n = n, nie = nie, overlapping = overlapping, mul = mul_v)
+  return (eplo, epv)
 end
 
 """
@@ -82,10 +90,10 @@ The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
 Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are corrects.
 """
-function create_epv_eplo(;n=9,nie=5,overlapping=1, mul_v=100.)
-  eplo = PLBFGSR1_eplo(;n=n,nie=nie,overlapping=overlapping)
-  epv = part_vec(;n=n,nie=nie,overlapping=overlapping,mul=mul_v)
-  return (eplo,epv)
+function create_epv_eplo(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)
+  eplo = PLBFGSR1_eplo(; n = n, nie = nie, overlapping = overlapping)
+  epv = part_vec(; n = n, nie = nie, overlapping = overlapping, mul = mul_v)
+  return (eplo, epv)
 end
 
 end
