@@ -90,7 +90,7 @@ function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, s::
   return eplo_B
 end
 
-function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; kwargs...) where T
+function PLSR1_update!(eplo_B::Elemental_plo_sr1{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where T
   full_check_epv_epm(eplo_B,epv_y) || @error("different partitioned structures between eplo_B and epv_y")
   full_check_epv_epm(eplo_B,epv_s) || @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
