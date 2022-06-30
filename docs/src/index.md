@@ -36,14 +36,14 @@ Method                 | Description
 `identity_eplo_LSR1`   | Creates a limited-memory partitioned-matrix PLSR1
 `identity_eplo_LOSE`   | Creates a limited-memory partitioned-matrix PLSE
 `update`               | Performs a partitioned quasi-Newton update onto a partitioned-matrix
-`eplo_lbfgs_from_epv`  | Creates an `Elemental_plo_bfgs` from the partitioned structure of an `Elemental_pv`
-`eplo_lsr1_from_epv`   | Creates an `Elemental_plo_sr1` from the partitioned structure of an `Elemental_pv`
-`eplo_lose_from_epv`   | Creates an `Elemental_plo` from the partitioned structure of an `Elemental_pv`
-`epm_from_epv`         | Creates an `Elemental_pm` from the partitioned structure of an `Elemental_pv`
-`epv_from_epm`         | Creates an `Elemental_pv` from the partitioned structure of an `Elemental_pm`
-`epv_from_eplo`        | Creates an `Elemental_pv` from the partitioned structure of: an `Elemental_plo`, an `Elemental_plo_bfgs` or an `Elemental_plo_sr1`
+`eplo_lbfgs_from_epv`  | Creates an `Elemental_plo_bfgs` from the partitioned-structure of an `Elemental_pv`
+`eplo_lsr1_from_epv`   | Creates an `Elemental_plo_sr1` from the partitioned-structure of an `Elemental_pv`
+`eplo_lose_from_epv`   | Creates an `Elemental_plo` from the partitioned-structure of an `Elemental_pv`
+`epm_from_epv`         | Creates an `Elemental_pm` from the partitioned-structure of an `Elemental_pv`
+`epv_from_epm`         | Creates an `Elemental_pv` from the partitioned-structure of an `Elemental_pm`
+`epv_from_eplo`        | Creates an `Elemental_pv` from the partitioned-structure of: an `Elemental_plo`, an `Elemental_plo_bfgs` or an `Elemental_plo_sr1`
 `mul_epm_epv`          | Return a partitioned-vector from an elementwise product between a partitioned-matrix and a partitioned-vector
-`mul_epm_vector`       | Return the vector resulting of a product partitioned-matrix vector
+`mul_epm_vector`       | Return the vector resulting of a partitioned-matrix vector product
 `build_v!`             | Build the vector associated to a partitioned-vector
 `get_v`                | Return the vector associated to a partitioned-vector  **Warning: it doesn't build the vector**
 `set_epv!`             | Set the value of every element-vectors
