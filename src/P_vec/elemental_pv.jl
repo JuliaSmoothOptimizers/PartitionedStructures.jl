@@ -19,7 +19,7 @@ export epv_from_epv!, epv_from_v, epv_from_v!
 export prod_part_vectors
 
 """
-    Elemental_pv{T}<:Part_v{T}
+    Elemental_pv{T} <: Part_v{T}
 
 Represent an elemental partitioned-vector.
 """
@@ -112,7 +112,7 @@ function M_part_v.build_v!(epv::Elemental_pv{T}) where {T}
 end
 
 """
-    minus_epv!(epv::Elemental_pv{T}) where T<:Number
+    minus_epv!(epv::Elemental_pv{T}) where T <: Number
 
 Build in place the `-epv`, by inversing the value of each elemental element-vector.
 """
@@ -161,7 +161,7 @@ function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type = Float64)
 end
 
 """
-    set_epv!(epv::Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T<:Number
+    set_epv!(epv::Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T <: Number
 
 Set the values of the elemental element-vectors of `epv` with the components of `vec_value_eev`.
 """
@@ -174,7 +174,7 @@ function set_epv!(epv::Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where 
 end
 
 """
-    v = scale_epv(epv::Elemental_pv{T}, scalars::Vector{T}) where T<:Number
+    v = scale_epv(epv::Elemental_pv{T}, scalars::Vector{T}) where T <: Number
 
 Return a vector `v` from `epv` where the contribution of each element-vector is multiply by the corresponding value from `scalars`.
 """
@@ -259,7 +259,7 @@ end
 """
     epv = epv_from_v(x::Vector{T}, shape_epv::Elemental_pv{T}) where T
 
-Define a new elemental partitioned-vector from `x` that have the same structure than epv.
+Define a new elemental partitioned-vector from `x` that have the same structure than `shape_epv`.
 The value of each elemental element-vector comes from the corresponding indices of `x`.
 Usefull to define Uᵢ x, ∀ x.
 """
@@ -273,7 +273,7 @@ end
     epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where T
 
 Set the values of the element partitioned-vector `epv` to `x`.
-Usefull to define Uᵢ x, ∀ x.
+Usefull to define Uᵢ x, ∀ i ∈ {1,...,N}.
 """
 function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where {T}
   for idx = 1:get_N(epv_x)

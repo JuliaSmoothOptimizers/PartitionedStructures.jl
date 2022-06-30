@@ -14,25 +14,25 @@ my_and = (a::Bool, b::Bool) -> (a && b)
 
 """
     indice_max = max_indices(list_of_element_variables::Vector{Vector{T}}) where T
-    indice_max = max_indices(elt_set::Vector{T}) where T<:Element_struct
+    indice_max = max_indices(elt_set::Vector{T}) where T <: Element_struct
 
-Return the maximum index of the element variables in `list_of_element_variables`.
+Return the maximum index of the element variables in `list_of_element_variables` or in `elt_set`.
 """
 max_indices(elt_vars::Vector{Vector{T}}) where {T <: Number} =
   isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars))
 
 """
     indice_min = min_indices(list_of_element_variables::Vector{Vector{T}}) where T
-    indice_min = min_indices(elt_set::Vector{T}) where T<:Element_struct
+    indice_min = min_indices(elt_set::Vector{T}) where T <: Element_struct
 
-Return the minimum index of the element variables in `list_of_element_variables`.
+Return the minimum index of the element variables in `list_of_element_variables` or in `elt_set`.
 """
 min_indices(elt_vars::Vector{Vector{T}}) where {T <: Number} =
   isempty(elt_vars) ? 0 : minimum(minimum.(elt_vars))
 
 """
-    BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
-    BFGS(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+    BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
+    BFGS(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
 
 Perform the BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
@@ -56,8 +56,8 @@ function BFGS(
 end
 
 """
-    BFGS!(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B0::Array{Y,2}, B1::Array{Y,2}; kwargs...) where Y<:Number
-    BFGS!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y,Matrix{Y}}, B1::Symmetric{Y,Matrix{Y}}; kwargs...) where Y<:Number
+    BFGS!(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B0::Array{Y,2}, B1::Array{Y,2}; kwargs...) where Y <: Number
+    BFGS!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y,Matrix{Y}}, B1::Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number
     BFGS!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}, B1::Array{Y,2}; index=0, reset=4, kwargs...)
 
 Perform the BFGS update in place of the matrix `B1` by using the vectors `s = x1 - x0` and `y = g1 - g0` and the current matrix `B0`.
@@ -104,8 +104,8 @@ function BFGS!(
 end
 
 """
-    SR1(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
-    SR1(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+    SR1(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
+    SR1(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
 
 Perform the SR1 update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
@@ -129,8 +129,8 @@ function SR1(
 end
 
 """
-    SR1!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
-    SR1!(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+    SR1!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
+    SR1!(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
     SR1!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}, B1::Array{Y,2}; index=0, reset=4, ω = 1e-6, kwargs...)
 
 Perform the SR1 update in place of the matrix `B1` by using the vectors `s = x1 - x0` and `y = g1 - g0` and the current matrix `B`.
@@ -175,8 +175,8 @@ function SR1!(
 end
 
 """
-    SE(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
-    SE(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+    SE(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
+    SE(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
 
 Perform a BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0` if the curvature condition `dot(s,y) > eps(eltype(s))` holds.
 Otherwise, it performs a SR1 update with `B, s, y`.
@@ -201,8 +201,8 @@ function SE(
 end
 
 """
-    SE!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
-    SE!(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y<:Number
+    SE!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
+    SE!(x::Vector{Y}, x1::Vector{Y}, g::Vector{Y}, g1::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number
     SE!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}, B1::Array{Y,2}; index=0, reset=4, ω = 1e-6, kwargs...)
 
 Perform a BFGS update in place of `B1` by using the matrix `B`, the vectors `s = x1 - x0` and `y = g1 - g0` if the curvature condition `dot(s,y) > eps(eltype(s))` holds.

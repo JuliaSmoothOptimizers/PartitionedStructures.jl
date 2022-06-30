@@ -16,7 +16,7 @@ export build_tmp!
 # distinguish from internal_elt_vec
 # Be careful with the order of the indices
 """
-    Internal_elt_vec{T}<:Elt_vec{T}
+    Internal_elt_vec{T} <: Elt_vec{T}
 
 Represent an internal element-vector.
 """

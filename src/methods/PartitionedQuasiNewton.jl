@@ -14,7 +14,7 @@ export PSE_update, PSE_update!
 """
     copy_epm_B = PBFGS_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
-Perform the PBFGS update onto a copy of the elemental partitioned-matrix `epm_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
+Perform the PBFGS update onto a copy of the $(_epmB), given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `epm_B`.
 """
 function PBFGS_update(
@@ -32,7 +32,7 @@ end
     PBFGS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
     PBFGS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
 
-Perform the PBFGS update onto the elemental partitioned-matrix `epm_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
+Perform the PBFGS update onto the $(_epmB), given the step `s` (or the element-steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
 function PBFGS_update!(
   epm_B::Elemental_pm{T},
@@ -75,7 +75,7 @@ end
 """
     copy_epm_B = PSR1_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
-Perform the PSR1 update onto a copy of the elemental partitioned-matrix `epm_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
+Perform the PSR1 update onto a copy of the $(_epmB), given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `epm_B`.
 """
 function PSR1_update(
@@ -93,7 +93,7 @@ end
     PSR1_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
     PSR1_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
 
-Performs the PSR1 update onto the elemental partitioned-matrix `epm_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
+Performs the PSR1 update onto the $(_epmB), given the step `s` (or the element-steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
 function PSR1_update!(
   epm_B::Elemental_pm{T},
@@ -136,7 +136,7 @@ end
 """
     copy_epm_B = PSE_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
-Perform the PSE update onto a copy of the elemental partitioned-matrix `epm_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
+Perform the PSE update onto a copy of the $(_epmB), given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
 Return the updated copy of `epm_B`.
 """
 function PSE_update(
@@ -154,7 +154,7 @@ end
     PSE_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
     PSE_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
 
-Perform the PSE update onto the elemental partitioned-matrix `epm_B`, given the step `s` (or the element steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
+Perform the PSE update onto the $(_epmB), given the step `s` (or the element-steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
 """
 function PSE_update!(
   epm_B::Elemental_pm{T},

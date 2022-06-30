@@ -25,9 +25,9 @@ abstract type Part_mat{T} <: Part_struct{T} end
 abstract type Part_LO_mat{T} <: Part_mat{T} end
 
 """
-    set_spm!(pm::P) where {T<:Number, P<:Part_mat{T}}
+    set_spm!(pm::P) where {T <: Number, P <: Part_mat{T}}
 
-Build the sparse matrix of the partitioned matrix `pm` in `pm.spm` by gathering the contribution of every element-matrix.
+Build the sparse matrix of the partitioned-matrix `pm` in `pm.spm` by gathering the contribution of every element-matrix.
 The sparse matrix is built with respect to the indices of each elemental element linear-operator.
 """
 @inline set_spm!(pm::T) where {T <: Part_mat} = @error("should not be called")
@@ -50,8 +50,8 @@ function set_spm!(plm::P) where {T <: Number, P <: Part_LO_mat{T}}
 end
 
 """
-    spm = get_spm(pm::T) where T<:Part_mat
-    spm_ij = get_spm(pm::T, i::Int, j::Int) where T<:Part_mat
+    spm = get_spm(pm::T) where T <: Part_mat
+    spm_ij = get_spm(pm::T, i::Int, j::Int) where T <: Part_mat
 
 Get either the sparse matrix associated to the partitioned-matrix `pm` or `pm[i,j]`.
 """
@@ -59,28 +59,28 @@ Get either the sparse matrix associated to the partitioned-matrix `pm` or `pm[i,
 @inline get_spm(pm::T, i::Int, j::Int) where {T <: Part_mat} = @inbounds get_spm(pm)[i, j]
 
 """
-    perm = get_permutation(pm::T) where T<:Part_mat
+    perm = get_permutation(pm::T) where T <: Part_mat
 
 Get the current permutation of the partitioned-matrix `pm`.
 """
 @inline get_permutation(pm::T) where {T <: Part_mat} = pm.permutation
 
 """
-    set_permutation!(pm::T, perm::Vector{Int}) where T<:Part_mat
+    set_permutation!(pm::T, perm::Vector{Int}) where T <: Part_mat
 
 Set the permutation of the partitioned-matrix `pm` to `perm`.
 """
 @inline set_permutation!(pm::T, perm::Vector{Int}) where {T <: Part_mat} = pm.permutation .= perm
 
 """
-    reset_spm!(pm::T) where {Y<:Number, T<:Part_mat{Y}}
+    reset_spm!(pm::T) where {Y <: Number, T <: Part_mat{Y}}
 
 Set the elements of sparse matrix `pm.spm` to `0`.
 """
 @inline reset_spm!(pm::T) where {Y <: Number, T <: Part_mat{Y}} = pm.spm.nzval .= (Y)(0)
 
 """
-    hard_reset_spm!(pm::T) where T<:Part_mat
+    hard_reset_spm!(pm::T) where T <: Part_mat
 
 Reset the sparse matrix `pm.spm`.
 """
@@ -94,14 +94,14 @@ Set the elements of sparse matrix `pm.L` to `0`.
 @inline reset_L!(pm::T) where {T <: Part_mat{Y}} where {Y <: Number} = pm.L.nzval .= (Y)(0)
 
 """
-    hard_reset_L!(pm::T) where T<:Part_mat
+    hard_reset_L!(pm::T) where T <: Part_mat
 
 Reset the sparse matrix `pm.L`.
 """
 @inline hard_reset_L!(pm::T) where {T <: Part_mat} = pm.L = spzeros(T, get_n(pm), get_n(pm))
 
 """
-    L = get_L(pm::T) where T<:Part_mat
+    L = get_L(pm::T) where T <: Part_mat
 
 Return the sparse matrix `pm.L`, who aims to store a Cholesky factor.
 By default `pm.L` is not instantiate.
@@ -109,14 +109,14 @@ By default `pm.L` is not instantiate.
 @inline get_L(pm::T) where {T <: Part_mat} = pm.L
 
 """
-    L_ij = get_L(pm::T, i::Int, j::Int) where T<:Part_mat
+    L_ij = get_L(pm::T, i::Int, j::Int) where T <: Part_mat
 
 Return the value `pm.L[i,j]`, from the sparse matrix `pm.L`.
 """
 @inline get_L(pm::T, i::Int, j::Int) where {T <: Part_mat} = @inbounds pm.L[i, j]
 
 """
-    set_L!(pm::P, i::Int, j::Int, value::T) where {T<:Number, P<:Part_mat{T}}
+    set_L!(pm::P, i::Int, j::Int, value::T) where {T <: Number, P <: Part_mat{T}}
 
 Set the value of `pm.L[i,j] = value`.
 """
@@ -124,46 +124,46 @@ Set the value of `pm.L[i,j] = value`.
   @inbounds pm.L[i, j] = value
 
 """
-    set_L_to_spm!(pm::T) where T<:Part_mat
+    set_L_to_spm!(pm::T) where T <: Part_mat
 
 Set the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
 """
 @inline set_L_to_spm!(pm::T) where {T <: Part_mat} = pm.L .= pm.spm
 
 """
-    eelo_set = get_eelo_set(plm::T) where T<:Part_LO_mat
-    eelo = get_eelo_set(plm::T, i::Int) where T<:Part_LO_mat
+    eelo_set = get_eelo_set(plm::T) where T <: Part_LO_mat
+    eelo = get_eelo_set(plm::T, i::Int) where T <: Part_LO_mat
 
-Return either the vector of every elemental element linear-operator `plm.eelo_set` or the `i`-th elemental element linear-operator `plm.eelo_set[i]`..
+Return either the vector of every elemental element linear-operator `plm.eelo_set` or the `i`-th elemental element linear-operator `plm.eelo_set[i]`.
 """
 @inline get_eelo_set(plm::T) where {T <: Part_LO_mat} = plm.eelo_set
 @inline get_eelo_set(plm::T, i::Int) where {T <: Part_LO_mat} = @inbounds plm.eelo_set[i]
 
 """
-    eelo_subset = get_eelo_sub_set(plm::T, indices::Vector{Int}) where T<:Part_LO_mat
+    eelo_subset = get_eelo_sub_set(plm::T, indices::Vector{Int}) where T <: Part_LO_mat
 
-Return a subset of the elemental element linear-operators composing the elemental partitioned linear-operator `plm`.
+Return a subset of the elemental element linear-operators composing the elemental partitioned limited-memory operator `plm`.
 `indices` selects the differents elemental element linear-operators needed.
 """
 @inline get_eelo_sub_set(plm::T, indices::Vector{Int}) where {T <: Part_LO_mat} =
   plm.eelo_set[indices]
 
 """
-    Bie = get_eelo_set_Bie(plm::T, i::Int) where T<:Part_LO_mat
+    Bie = get_eelo_set_Bie(plm::T, i::Int) where T <: Part_LO_mat
 
 Return the linear-operator of the `i`-th elemental element linear-operator of `plm`.
 """
 @inline get_eelo_set_Bie(plm::T, i::Int) where {T <: Part_LO_mat} = get_Bie(get_eelo_set(plm, i))
 
 """
-    set_eelo_set!(eplo::P, i::Int, eelo::Y) where {T, P<:Part_LO_mat{T}, Y<:LOEltMat{T}}
+    set_eelo_set!(eplo::P, i::Int, eelo::Y) where {T, P <: Part_LO_mat{T}, Y <: LOEltMat{T}}
 
 Set the `i`-th elemental element linear-operator `eplo.eelo` to `eelo`.
 """
 @inline set_eelo_set!(eplo::T) where {T <: Part_LO_mat} = @error("should not be called")
 
 """
-    get_ee_struct_Bie(pm::T, i::Int) where T<:Part_mat
+    get_ee_struct_Bie(pm::T, i::Int) where T <: Part_mat
 
 Return the `i`-th elemental element-matrix of the partitioned-matrix `pm`.
 """

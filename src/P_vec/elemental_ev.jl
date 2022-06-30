@@ -12,7 +12,7 @@ export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
 
 # we assume that the values of vec are associate to indices.
 """
-    Elemental_elt_vec{T}<:Elt_vec{T}
+    Elemental_elt_vec{T} <: Elt_vec{T}
 
 Represent an elemental element-vector.
 `indices` retains the indices of the elemental variables.
@@ -61,7 +61,7 @@ Create an elemental element-vector of size `nie`, of random values multiplied by
 """
     eem = eev_from_sparse_vec(sparsevec::SparseVector{T,Y})
 
-Define an elemental element-vector from a `SparseVector` `sparsevec`.
+Define an elemental element-vector from a `sparsevec::SparseVector`.
 The indices and the values are define with `findnz(sparse_vec)`.
 """
 function eev_from_sparse_vec(v::SparseVector{T, Y}) where {T, Y}
@@ -80,10 +80,10 @@ sparse_vec_from_eev(eev::Elemental_elt_vec{T}; n::Int = maximum(get_indices(eev)
   sparsevec(get_indices(eev), get_vec(eev), n)
 
 """
-    eem = create_eev(elt_var::Vector{Int}; type=Float64)
+    eev = create_eev(elt_var::Vector{Int}; type=Float64)
 
-Create a random elemental element-vector `eem` from the elemental variables `elt_var`.
-`eem` is set to random values.
+Create a random $(_eev) from the elemental variables `elt_var`.
+`eev` is set to random values.
 """
 function create_eev(elt_var::Vector{Int}; type = Float64)
   nie = length(elt_var)

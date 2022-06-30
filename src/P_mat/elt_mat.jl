@@ -22,7 +22,7 @@ abstract type LOEltMat{T} <: Elt_mat{T} end
     Counter_elt_mat
 
 Count for an element-matrix the updates performed on it, from its allocation.
-`total_update + total_reset + total_untouched==iter `.
+`total_update + total_reset + total_untouched == attempt`, .
 """
 mutable struct Counter_elt_mat
   total_update::Int # count the total of update perform by the element linear-operator
@@ -34,28 +34,28 @@ mutable struct Counter_elt_mat
 end
 
 """
-    get_Bie(elt_mat::T) where T<:Elt_mat
+    get_Bie(elt_mat::T) where T <: Elt_mat
 
 Return the element-matrix `elt_mat.Bie`.
 """
 @inline get_Bie(elt_mat::T) where {T <: Elt_mat} = elt_mat.Bie
 
 """
-    cem = get_counter_elt_mat(elt_mat::T) where T<:Elt_mat
+    cem = get_counter_elt_mat(elt_mat::T) where T <: Elt_mat
 
 Return the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
 @inline get_counter_elt_mat(elt_mat::T) where {T <: Elt_mat} = elt_mat.counter
 
 """
-    cem = get_cem(elt_mat::T) where T<:Elt_mat
+    cem = get_cem(elt_mat::T) where T <: Elt_mat
 
 Return the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
 @inline get_cem(elt_mat::T) where {T <: Elt_mat} = elt_mat.counter
 
 """
-    index = get_index(elt_mat::T) where T<:Elt_mat
+    index = get_index(elt_mat::T) where T <: Elt_mat
 
 Return index: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
 If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.

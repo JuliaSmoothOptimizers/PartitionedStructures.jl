@@ -10,7 +10,7 @@ export Elemental_em
 export identity_eem, create_id_eem, fixed_ones_eem, ones_eem, one_size_bloc
 
 """
-    Elemental_em{T}<:DenseEltMat{T}
+    Elemental_em{T} <: DenseEltMat{T}
 
 Represent an elemental element-matrix.
 `indices` retains the indices of the elemental variables.

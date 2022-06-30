@@ -11,7 +11,7 @@ export init_eelo_LBFGS, LBFGS_eelo, LBFGS_eelo_rand
 export reset_eelo_bfgs!
 
 """
-    Elemental_elo_bfgs{T}<:LOEltMat{T}
+    Elemental_elo_bfgs{T} <: LOEltMat{T}
 
 Represent an elemental element `LBFGSOperator`.
 `indices` retains the indices of the elemental variables.
@@ -86,7 +86,7 @@ function LBFGS_eelo(nie::Int; T = Float64, index = 1)
 end
 
 """
-    reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where T<:Number
+    reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where T <: Number
 
 Reset the LBFGS linear-operator of the elemental element linear-operator `eelo`.
 """

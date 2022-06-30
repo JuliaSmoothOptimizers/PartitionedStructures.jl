@@ -11,12 +11,12 @@ using ..PartitionedLOQuasiNewton, ..PartitionedQuasiNewton
 export update, update!
 
 """
-    B = update(epm::T, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where {Y<:Number, T<:Part_mat{Y}}
+    B = update(epm::T, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where {Y <: Number, T <: Part_mat{Y}}
 
-Update the elemental partitioned operator `epm<:Part_mat` with a partitioned quasi-Newton update considering the difference of elemental partitioned-gradients `epv_y` and the step `s`.
+Update the elemental partitioned operator `epm <: Part_mat` with a partitioned quasi-Newton update considering the difference of elemental partitioned-gradients `epv_y` and the step `s`.
 If `epm` is an elemental partitioned-matrix, the PSE update is run by default.
 You can apply a PBFGS or a PSR1 update with the optionnal argument `name`, respectively `name=:pbfgs` or `name=:psr1`.
-It returns a matrix formed from the updated `epm`.
+It returns a matrix accumulating every element-contribtion of the updated `epm`.
 Warning: this method should be use to test your algorithm, if you don't intend to form the matrix use `update!(epm, epv_y, s)`.
 """
 function update(
@@ -30,10 +30,10 @@ function update(
 end
 
 """
-    update!(epm::T, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; name=:pse, kwargs...) where {Y<:Number, T<:Part_mat{Y}}
-    update!(epm::T, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where {Y<:Number, T<:Part_mat{Y}}
+    update!(epm::T, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; name=:pse, kwargs...) where {Y <: Number, T <: Part_mat{Y}}
+    update!(epm::T, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where {Y <: Number, T <: Part_mat{Y}}
 
-Update the elemental partitioned operator `epm` with a partitioned quasi-Newton update considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
+Update the elemental partitioned-matrix `epm` with a partitioned quasi-Newton update considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
 The PSE update is run by default, you can apply a PBFGS or a PSR1 update with the optionnal argument `name`, respectively `name=:pbfgs` or `name=:psr1`.
 """
 @inline update!(
@@ -56,10 +56,10 @@ The PSE update is run by default, you can apply a PBFGS or a PSR1 update with th
 end
 
 """
-    update!(eplo::Elemental_plo{Y}, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where Y<:Number
-    update!(eplo::Elemental_plo{Y}, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; kwargs...) where Y<:Number
+    update!(eplo::Elemental_plo{Y}, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where Y <: Number
+    update!(eplo::Elemental_plo{Y}, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; kwargs...) where Y <: Number
 
-Updates the limited-memory elemental partitioned operator `eplo` with the partitioned quasi-Newton update PLSE considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
+Updates the elemental partitioned limited-memory operator `eplo` with the partitioned quasi-Newton update PLSE considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
 """
 @inline update!(
   eplo::Elemental_plo{Y},
@@ -75,10 +75,10 @@ Updates the limited-memory elemental partitioned operator `eplo` with the partit
 ) where {Y <: Number} = PLSE_update!(eplo, epv_y, epv_s; kwargs...)
 
 """
-    update!(eplo::Elemental_plo_sr1{Y}, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where Y<:Number
-    update!(eplo::Elemental_plo_sr1{Y}, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; kwargs...) where Y<:Number
+    update!(eplo::Elemental_plo_sr1{Y}, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where Y <: Number
+    update!(eplo::Elemental_plo_sr1{Y}, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; kwargs...) where Y <: Number
 
-Updates the limited-memory elemental partitioned operator `eplo` with the partitioned quasi-Newton update PLSR1 considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
+Updates the elemental partitioned limited-memory operator `eplo` with the partitioned quasi-Newton update PLSR1 considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
 """
 @inline update!(
   eplo::Elemental_plo_sr1{Y},
@@ -94,10 +94,10 @@ Updates the limited-memory elemental partitioned operator `eplo` with the partit
 ) where {Y <: Number} = PLSR1_update!(eplo, epv_y, epv_s; kwargs...)
 
 """
-    update!(eplo::Elemental_plo_bfgs{Y}, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where Y<:Number
-    update!(eplo::Elemental_plo_bfgs{Y}, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; kwargs...) where Y<:Number
+    update!(eplo::Elemental_plo_bfgs{Y}, epv_y::Elemental_pv{Y}, s::Vector{Y}; kwargs...) where Y <: Number
+    update!(eplo::Elemental_plo_bfgs{Y}, epv_y::Elemental_pv{Y}, epv_s::Elemental_pv{Y}; kwargs...) where Y <: Number
 
-Updates the limited-memory elemental partitioned operator `eplo` with the partitioned quasi-Newton update PLBFGS considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
+Updates the elemental partitioned limited-memory operator `eplo` with the partitioned quasi-Newton update PLBFGS considering the difference of elemental partitioned-gradients `epv_y` and the step `s` (or elemental steps `epv_s`).
 """
 @inline update!(
   eplo::Elemental_plo_bfgs{Y},

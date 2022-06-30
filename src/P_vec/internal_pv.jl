@@ -12,7 +12,7 @@ export get_iev, get_iev_set
 export create_ipv, ipv_from_epv, rand_ipv
 
 """
-    Internal_elt_vec{T}<:Elt_vec{T}
+    Internal_elt_vec{T} <: Elt_vec{T}
 
 Represent an internal partitioned-vector.
 """
