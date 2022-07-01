@@ -5,9 +5,7 @@ using PartitionedStructures.M_abstract_part_struct,
   PartitionedStructures.M_abstract_element_struct,
   PartitionedStructures.M_part_mat,
   PartitionedStructures.M_part_v
-using PartitionedStructures.M_internal_elt_vec,
-  PartitionedStructures.M_internal_pv,
-  PartitionedStructures.M_elt_vec,
+using PartitionedStructures.M_elt_vec,
   PartitionedStructures.ModElemental_ev,
   PartitionedStructures.ModElemental_pv
 using PartitionedStructures.M_elt_mat,
@@ -22,11 +20,6 @@ using PartitionedStructures.Utils,
   PartitionedStructures.Instances,
   PartitionedStructures.PartitionedQuasiNewton,
   PartitionedStructures.PartitionedLOQuasiNewton
-using PartitionedStructures.M_okoubi_koko,
-  PartitionedStructures.M_frontale,
-  PartitionedStructures.M_1_parallel,
-  PartitionedStructures.M_2_parallel,
-  PartitionedStructures.M_3_parallel
 using PartitionedStructures.PartMatInterface
 
 makedocs(
