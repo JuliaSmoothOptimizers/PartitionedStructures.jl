@@ -31,4 +31,5 @@ dvpt/
 results/
 
 src/factorization*
+test/factorization*
 src/P_vec/internal*
