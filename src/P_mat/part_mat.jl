@@ -19,9 +19,9 @@ export get_eelo_set, get_eelo_set, set_spm!, get_eelo_sub_set, get_eelo_set_Bie
 export get_spm, get_L
 export set_L!, set_L_to_spm!
 
-"Supertype of every partitioned-matrix, ex: Elemental_pm, Elemental_plo_bfgs, Elemental_plo_sr1, Elemental_plo"
+"Supertype of every partitioned-matrix, ex: `Elemental_pm`, `Elemental_plo_bfgs`, `Elemental_plo_sr1`, `Elemental_plo`."
 abstract type Part_mat{T} <: Part_struct{T} end
-"Supertype of every partitioned limited-memory operator, ex: Elemental_plo_bfgs, Elemental_plo_sr1, Elemental_plo "
+"Supertype of every partitioned limited-memory operator, ex: `Elemental_plo_bfgs`, `Elemental_plo_sr1`, `Elemental_plo`."
 abstract type Part_LO_mat{T} <: Part_mat{T} end
 
 """

@@ -10,7 +10,7 @@ export get_n, get_N, get_component_list
 export check_epv_epm, full_check_epv_epm
 export initialize_component_list!, get_ee_struct
 
-"""Supertype of every partitioned-structure, ex: Elemental_pv, Elemental_pm, Elemental_plo_bfgs, Internal_pv, ..."""
+"""Supertype of every partitioned-structure, ex: `Elemental_pv`, `Elemental_pm`, `Elemental_plo_bfgs`, `Internal_pv`..."""
 abstract type Part_struct{T} end
 
 """

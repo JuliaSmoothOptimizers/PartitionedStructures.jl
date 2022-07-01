@@ -11,11 +11,11 @@ export update_counter_elt_mat!, iter_info, total_info
 
 import Base.copy, Base.similar
 
-"Supertype of every element-matrix, ex: Elemental_em, Elemental_elo_sr1, Elemental_elo_bfgs"
+"Supertype of every element-matrix, ex: `Elemental_em`, `Elemental_elo_sr1`, `Elemental_elo_bfgs`"
 abstract type Elt_mat{T} <: Element_struct{T} end
-"Supertype of every dense element-matrix, ex: Elemental_em"
+"Supertype of every dense element-matrix, ex: `Elemental_em`"
 abstract type DenseEltMat{T} <: Elt_mat{T} end
-"Supertype of every element linear-operator, ex: Elemental_elo_sr1, Elemental_elo_bfgs"
+"Supertype of every element linear-operator, ex: `Elemental_elo_sr1`, `Elemental_elo_bfgs`"
 abstract type LOEltMat{T} <: Elt_mat{T} end
 
 """
