@@ -1,4 +1,3 @@
-# unsupported for now
 module M_internal_elt_vec
 
 using ..Acronyms
