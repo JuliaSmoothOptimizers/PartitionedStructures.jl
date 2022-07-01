@@ -4,6 +4,7 @@ using PartitionedStructures.M_elt_mat
 using PartitionedStructures.ModElemental_elo_bfgs, PartitionedStructures.ModElemental_elo_sr1
 using PartitionedStructures.ModElemental_plo, PartitionedStructures.ModElemental_plo_bfgs
 using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
+using PartitionedStructures.M_abstract_part_struct
 
 @testset "test elemental element linear-operator matrix" begin
   for index = 3:3:15
@@ -33,22 +34,42 @@ end
   n = 10
   nie = 4
   over = 2
-  (eplo_B, epv_y) = create_epv_eplo_bfgs(; n = n, nie = nie, overlapping = over)
-  B = Matrix(eplo_B)
+  (eplo, epv_y) = create_epv_eplo_bfgs(; n = n, nie = nie, overlapping = over)
+  B = Matrix(eplo)
   @test B == transpose(B)
 
   @test mapreduce((x -> x > 0), my_and, eigvals(B)) # test definite positiveness
+
+  copy_eplo = copy(eplo)
+  similar_eplo = similar(eplo)
+  @test eplo == copy_eplo
+  @test eplo == similar_eplo
+  
+  @test check_epv_epm(eplo, copy_eplo)
+  @test check_epv_epm(eplo, similar_eplo)
+
+  @test full_check_epv_epm(eplo, copy_eplo)
+  @test full_check_epv_epm(eplo, similar_eplo)
 end
 
 @testset "test elemental partitioned linear-operator matrix (PLSR1 operator)" begin
   n = 10
   nie = 4
   over = 2
-  (eplo_B, epv_y) = create_epv_eplo_sr1(; n = n, nie = nie, overlapping = over)
-  B = Matrix(eplo_B)
+  (eplo, epv_y) = create_epv_eplo_sr1(; n = n, nie = nie, overlapping = over)
+  B = Matrix(eplo)
   @test B == transpose(B)
 
   @test mapreduce((x -> x > 0), my_and, eigvals(B)) # test definite positiveness
+
+  copy_eplo = copy(eplo)
+  similar_eplo = similar(eplo)
+  @test eplo == copy_eplo
+  @test check_epv_epm(eplo, copy_eplo)
+  @test check_epv_epm(eplo, similar_eplo)
+
+  @test full_check_epv_epm(eplo, copy_eplo)
+  @test full_check_epv_epm(eplo, similar_eplo)
 end
 
 @testset "PL-BFGS-SR1 matrices" begin
@@ -57,6 +78,15 @@ end
   over = 2
   eplo = PLBFGSR1_eplo(; n = n, nie = nie, overlapping = over)
   @test Matrix(eplo) == transpose(Matrix(eplo))
+
+  copy_eplo = copy(eplo)
+  similar_eplo = similar(eplo)
+  @test eplo == copy_eplo
+  @test check_epv_epm(eplo, copy_eplo)
+  @test check_epv_epm(eplo, similar_eplo)
+
+  @test full_check_epv_epm(eplo, copy_eplo)
+  @test full_check_epv_epm(eplo, similar_eplo)
 
   eplo_B, epv_y = create_epv_eplo(; n = n, nie = nie, overlapping = over)
   s = ones(n)
@@ -74,6 +104,15 @@ end
   @test eplo == identity_eplo_LBFGS(element_variables)
   epv = epv_from_epm(eplo)
   update(eplo, epv, s)
+
+  copy_eplo = copy(eplo)
+  similar_eplo = similar(eplo)
+  @test eplo == copy_eplo
+  @test check_epv_epm(eplo, copy_eplo)
+  @test check_epv_epm(eplo, similar_eplo)
+
+  @test full_check_epv_epm(eplo, copy_eplo)
+  @test full_check_epv_epm(eplo, similar_eplo)
 end
 
 @testset "eplo_sr1 PartiallySeparableNLPModels" begin
@@ -86,6 +125,15 @@ end
   @test eplo == identity_eplo_LSR1(element_variables)
   epv = epv_from_epm(eplo)
   update(eplo, epv, s)
+
+  copy_eplo = copy(eplo)
+  similar_eplo = similar(eplo)
+  @test eplo == copy_eplo
+  @test check_epv_epm(eplo, copy_eplo)
+  @test check_epv_epm(eplo, similar_eplo)
+
+  @test full_check_epv_epm(eplo, copy_eplo)
+  @test full_check_epv_epm(eplo, similar_eplo)
 end
 
 @testset "eplo_se PartiallySeparableNLPModels" begin
@@ -98,4 +146,13 @@ end
   s = rand(n)
   epv = epv_from_epm(eplo)
   update(eplo, epv, s)
+
+  copy_eplo = copy(eplo)
+  similar_eplo = similar(eplo)
+  @test eplo == copy_eplo
+  @test check_epv_epm(eplo, copy_eplo)
+  @test check_epv_epm(eplo, similar_eplo)
+
+  @test full_check_epv_epm(eplo, copy_eplo)
+  @test full_check_epv_epm(eplo, similar_eplo)
 end

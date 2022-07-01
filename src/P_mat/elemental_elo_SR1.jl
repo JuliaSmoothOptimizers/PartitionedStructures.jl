@@ -42,7 +42,7 @@ end
 @inline similar(eelo::Elemental_elo_sr1{T}) where {T} = Elemental_elo_sr1{T}(
   copy(get_nie(eelo)),
   copy(get_indices(eelo)),
-  similar(get_Bie(eelo)),
+  LSR1Operator(T, get_nie(eelo)),
   copy(get_cem(eelo)),
 )
 
