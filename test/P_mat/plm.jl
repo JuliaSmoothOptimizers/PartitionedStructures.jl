@@ -2,7 +2,7 @@ using LinearAlgebra, LinearOperators, SparseArrays
 using PartitionedStructures
 using PartitionedStructures.M_elt_mat
 using PartitionedStructures.ModElemental_elo_bfgs, PartitionedStructures.ModElemental_elo_sr1
-using PartitionedStructures.ModElemental_plo, PartitionedStructures.ModElemental_plo_bfgs
+using PartitionedStructures.ModElemental_plo, PartitionedStructures.ModElemental_plo_bfgs, PartitionedStructures.ModElemental_plo_sr1
 using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
 using PartitionedStructures.M_abstract_part_struct
 
@@ -156,3 +156,36 @@ end
   @test full_check_epv_epm(eplo, copy_eplo)
   @test full_check_epv_epm(eplo, similar_eplo)
 end
+
+@testset "plo_lbfgs" begin
+  N = 20
+  n = 50
+  eplo_lbfgs = PLBFGS_eplo()
+  eplo_lbfgs_rand = PLBFGS_eplo_rand(N, n)
+
+  @test check_epv_epm(eplo_lbfgs, eplo_lbfgs_rand) == false
+  @test full_check_epv_epm(eplo_lbfgs, eplo_lbfgs_rand) == false
+  @test eplo_lbfgs != eplo_lbfgs_rand
+end
+
+@testset "plo_lsr1" begin
+  N = 20
+  n = 50
+  eplo_lsr1 = PLSR1_eplo()
+  eplo_lsr1_rand = PLSR1_eplo_rand(N, n)
+  
+  @test check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
+  @test full_check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
+  @test eplo_lsr1 != eplo_lsr1_rand
+end
+
+@testset "plo_l_bfgs-sr1" begin
+  N = 20
+  n = 50
+  eplo_lsr1 = PLBFGSR1_eplo()
+  eplo_lsr1_rand = PLBFGSR1_eplo_rand(N, n)
+  
+  @test check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
+  @test full_check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
+  @test eplo_lsr1 != eplo_lsr1_rand
+end 
