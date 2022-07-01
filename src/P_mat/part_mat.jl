@@ -20,7 +20,7 @@ export get_spm, get_L
 export set_L!, set_L_to_spm!
 
 "Supertype of every partitioned-matrix, ex: `Elemental_pm`, `Elemental_plo_bfgs`, `Elemental_plo_sr1`, `Elemental_plo`."
-abstract type Part_mat{T} <: Part_struct{T} end
+abstract type Part_mat{T} <: AbstractPartitionedStructure{T} end
 "Supertype of every partitioned limited-memory operator, ex: `Elemental_plo_bfgs`, `Elemental_plo_sr1`, `Elemental_plo`."
 abstract type Part_LO_mat{T} <: Part_mat{T} end
 

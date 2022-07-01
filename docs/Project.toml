@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+PartitionedStructures = "a6683cb1-4e99-4d03-b5b5-b79ed0acabcf"
 
 [compat]
 Documenter = "~0.25"

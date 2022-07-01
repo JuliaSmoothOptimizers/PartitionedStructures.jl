@@ -188,4 +188,14 @@ end
   @test check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
   @test full_check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
   @test eplo_lsr1 != eplo_lsr1_rand
-end 
+end
+
+@testset "spm" begin
+  N = 15
+  n = 20
+  nie = 5
+  element_variables = vcat(map((i -> rand(1:n, nie)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
+  eplo = identity_eplo_LOSE(element_variables, N, n)
+  
+Test.get_testset_depth
+end

@@ -5,74 +5,74 @@ using ..Acronyms
 
 import Base.==
 
-export Part_struct
+export AbstractPartitionedStructure
 export get_n, get_N, get_component_list
 export check_epv_epm, full_check_epv_epm
 export initialize_component_list!, get_ee_struct
 
 """Supertype of every partitioned-structure, ex: `Elemental_pv`, `Elemental_pm`, `Elemental_plo_bfgs`, `Internal_pv`..."""
-abstract type Part_struct{T} end
+abstract type AbstractPartitionedStructure{T} end
 
 """
-    get_n(ps::T) where T <: Part_struct
+    get_n(ps::T) where T <: AbstractPartitionedStructure
 
 Return the total size of the $(_ps).
 """
-get_n(ps::T) where {T <: Part_struct} = ps.n
+get_n(ps::T) where {T <: AbstractPartitionedStructure} = ps.n
 
 """
-    get_N(ps::T) where T <: Part_struct
+    get_N(ps::T) where T <: AbstractPartitionedStructure
 
 Return the number of element composing the $(_ps).
 """
-get_N(ps::T) where {T <: Part_struct} = ps.N
+get_N(ps::T) where {T <: AbstractPartitionedStructure} = ps.N
 
 """
-    list = get_component_list(ps::T) where T <: Part_struct
-    ith_component = get_component_list(ps::T, i::Int) where T <: Part_struct
+    list = get_component_list(ps::T) where T <: AbstractPartitionedStructure
+    ith_component = get_component_list(ps::T, i::Int) where T <: AbstractPartitionedStructure
 
 Return either the list of every element-structure composing the $(_ps) or the `i`-th element-structure of `ps`.
 """
-get_component_list(ps::T) where {T <: Part_struct} = ps.component_list
-get_component_list(ps::T, i::Int) where {T <: Part_struct} = ps.component_list[i]
+get_component_list(ps::T) where {T <: AbstractPartitionedStructure} = ps.component_list
+get_component_list(ps::T, i::Int) where {T <: AbstractPartitionedStructure} = ps.component_list[i]
 
 """
-    (==)(ps1::T, ps2::T) where T <: Part_struct
+    (==)(ps1::T, ps2::T) where T <: AbstractPartitionedStructure
 
 Return true if both partitioned-structures are composed of the same amont of element-structures, and have the same size.
 """
-(==)(ps1::T, ps2::T) where {T <: Part_struct} = get_n(ps1) == get_n(ps2) && get_N(ps1) == get_N(ps2)
+(==)(ps1::T, ps2::T) where {T <: AbstractPartitionedStructure} = get_n(ps1) == get_n(ps2) && get_N(ps1) == get_N(ps2)
 
 """
-    bool = check_epv_epm(epm::Y, epv::Z) where {Y <: Part_struct, Z <: Part_struct}
+    bool = check_epv_epm(epm::Y, epv::Z) where {Y <: AbstractPartitionedStructure, Z <: AbstractPartitionedStructure}
 
 Similar to `==`, but it can compare different partitioned-structures, example: an `Elemental_pv` and an `Elemental_pm`.
 `check_epv_epm` is a superficial test, see `full_check_epv_epm(epm, epv)` for a complete check of the partitioned-structure (i.e. if each element depends of the same variable subset).
 """
-@inline check_epv_epm(epm::Y, epv::Z) where {Y <: Part_struct, Z <: Part_struct} =
+@inline check_epv_epm(epm::Y, epv::Z) where {Y <: AbstractPartitionedStructure, Z <: AbstractPartitionedStructure} =
   get_N(epm) == get_N(epv) && get_n(epm) == get_n(epv)
 
 """
-    full_check_epv_epm(ep1::Y, ep2::Z) where {Y <: Part_struct, Z <: Part_struct}
+    full_check_epv_epm(ep1::Y, ep2::Z) where {Y <: AbstractPartitionedStructure, Z <: AbstractPartitionedStructure}
 
 Check if each element-structure of both partitioned-structures depend of the same subset of variables.
 """
-@inline full_check_epv_epm(ep1::Y, ep2::Z) where {Y <: Part_struct, Z <: Part_struct} =
+@inline full_check_epv_epm(ep1::Y, ep2::Z) where {Y <: AbstractPartitionedStructure, Z <: AbstractPartitionedStructure} =
   check_epv_epm(ep1, ep2) && get_component_list(ep1) == get_component_list(ep2)
 
 """
-    initialize_component_list!(ps::T) where T <: Part_struct)
+    initialize_component_list!(ps::T) where T <: AbstractPartitionedStructure)
 
 Build for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
 """
-initialize_component_list!(ps::T) where {T <: Part_struct} = @error("should not be called")
+initialize_component_list!(ps::T) where {T <: AbstractPartitionedStructure} = @error("should not be called")
 
 """
-    ee_vector = get_ee_struct(eps::Part_struct{T}) where T
-    ee = get_ee_struct(eps::Part_struct{T}, i::Int) where T
+    ee_vector = get_ee_struct(eps::AbstractPartitionedStructure{T}) where T
+    ee = get_ee_struct(eps::AbstractPartitionedStructure{T}, i::Int) where T
 
 Return the vector composed of every elemental element `ee_vector` from the $(_eev) or the `i`-th elemental element of `eps`.
 """
-get_ee_struct(ps::T) where {T <: Part_struct} = @error("should not be called")
+get_ee_struct(ps::T) where {T <: AbstractPartitionedStructure} = @error("should not be called")
 
 end
