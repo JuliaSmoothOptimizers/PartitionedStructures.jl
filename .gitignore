@@ -29,3 +29,6 @@ todo.md
 
 dvpt/
 results/
+
+src/factorization*
+src/P_vec/internal*
