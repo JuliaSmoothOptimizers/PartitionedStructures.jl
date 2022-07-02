@@ -20,9 +20,6 @@ include("P_mat/_include.jl")
 # - how element/partitioned structures interact between themselves
 include("methods/_include.jl")
 
-# include files related to the factorization of partitionned matrices (mainly WIP)
-include("factorizations/_include.jl")
-
 # use the submodule of PartitionedStructures.jl
 using .Utils
 using .M_abstract_part_struct, .M_abstract_element_struct

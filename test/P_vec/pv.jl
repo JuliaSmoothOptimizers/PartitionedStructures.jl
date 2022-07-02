@@ -1,7 +1,6 @@
 using LinearAlgebra, SparseArrays
 using PartitionedStructures.M_part_v
 using PartitionedStructures.ModElemental_pv
-using PartitionedStructures.M_internal_pv
 using PartitionedStructures.ModElemental_ev
 using PartitionedStructures.M_abstract_element_struct
 
@@ -13,7 +12,6 @@ using PartitionedStructures.M_abstract_element_struct
   v2 = build_v!(pev)
   @test v1 == v2
 
-  piv = rand_ipv(N, nᵢ)
 end
 
 @testset "test k-chained et build_v!" begin
@@ -26,10 +24,6 @@ end
   epv_v = copy(get_v(epv))
   @test sum(epv_v) == N * k
 
-  # internal
-  ipv = ipv_from_epv(epv)
-  ipv_v = build_v(ipv)
-  @test sum(ipv_v) == N * k
 end
 
 @testset "test fonction création epv" begin
@@ -50,13 +44,6 @@ end
   build_v(epv)
   @test (@allocated build_v(epv)) == 0
 
-  # internal
-  ipv = ipv_from_epv(epv)
-  ipv_v = build_v(ipv)
-
-  @test (@allocated build_v(ipv)) == 0
-
-  @test epv_v == ipv_v
 end
 
 @testset "test similar et copy" begin

@@ -42,7 +42,7 @@ end
 @inline similar(eelo::Elemental_elo_bfgs{T}) where {T} = Elemental_elo_bfgs{T}(
   copy(get_nie(eelo)),
   copy(get_indices(eelo)),
-  similar(get_Bie(eelo)),
+  LBFGSOperator(T, get_nie(eelo)),
   copy(get_cem(eelo)),
 )
 

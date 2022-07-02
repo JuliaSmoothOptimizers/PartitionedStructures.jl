@@ -3,6 +3,8 @@ using PartitionedStructures.M_elt_vec
 using PartitionedStructures.ModElemental_em
 using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_part_mat
+using PartitionedStructures.M_abstract_part_struct
+
 
 @testset "first tests on epm" begin
   N = 4
@@ -44,6 +46,20 @@ end
   nie = 5
   element_variables = vcat(map((i -> rand(1:n, nie)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
   identity_epm(element_variables, N, n)
-  identity_epm(element_variables)
+  epm = identity_epm(element_variables)
   @test identity_epm(element_variables, N, n) == identity_epm(element_variables)
+
+  copy_epm = copy(epm)
+  similar_epm = similar(epm)
+
+  @test epm == copy_epm
+  @test check_epv_epm(epm, copy_epm)
+  @test check_epv_epm(epm, similar_epm)
+
+  @test full_check_epv_epm(epm, copy_epm)
+  @test full_check_epv_epm(epm, similar_epm)
+  @test epm == copy_epm
+  @test epm != similar_epm
 end
+
+
