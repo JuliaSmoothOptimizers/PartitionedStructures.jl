@@ -1,45 +1,51 @@
 # PartitionedStructures.jl: Tutorial
-This tutorial shows how [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl) can define partitioned quasi-Newton approximations, by using the partitioned vectors and the partitioned matrices.
+This tutorial shows how [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl) can define partitioned quasi-Newton approximations, by using partitioned vectors and partitioned matrices.
 Those partitioned structures are strongly related to partially-separable functions.
 
 ## What are the partially-separable structure and the partitioned quasi-Newton approximations
-The partitioned quasi-Newton methods exploit the partially-separable function
+The partitioned quasi-Newton methods exploit the partially-separable of $f:\R^n \to \R$
 ```math
- f(x) = \sum_{i=1}^N f_i (U_i x) : \R^n \to \R,\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i < n,
+ f(x) = \sum_{i=1}^N f_i (U_i x) : \R^n \to \R,\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i \ll n,
 ```
 the sum of element function $f_i$.
 The gradient $\nabla f$ and the Hessian $\nabla^2 f$
 ```math
 \nabla f(x) = \sum_{i=1}^N U_i^\top f_i (U_i x), \quad \nabla^2 f(x) = \sum_{i=1}^N U_i^\top f_i (U_i x) U_i,
 ```
-accumulate the element derivatives $\nabla f_i$ and $\nabla^2 f_i$ with respect to $U_i$.
+accumulate the element derivatives $\nabla f_i$ and $\nabla^2 f_i$.
 
-The partitioned structure of the Hessian permit the definition of partitioned quasi-Newton approximations $B \approx \nabla^2 f$, such that $B$ accumulates every element Hessian approximation $B_i \approx \nabla^2 f_i$
+The partitioned structure of the Hessian let us the definition of partitioned quasi-Newton approximations $B \approx \nabla^2 f$, such that $B$ accumulates every element Hessian approximation $B_i \approx \nabla^2 f_i$
 ```math
 B = \sum_{i=1}^N U_i^\top B_i U_i
 ```
-The partitioned quasi-Newton approximations structurally keep the sparsity structure of $\nabla^2 f$, which is not the case of classical quasi-Newton approximation (BFGS, SR1).
-Moreover, the rank of the partitioned updates may be proportional to the number of elements $N$, whereas classical quasi-Newton approximations are low rank updates.
-A partitioned quasi-Newton update must update every approximation of element Hessian $B_i$ at each step $s$.
-It requires $B_i$, $U_i s$ and $\nabla f_i (U_i (x+s)) - \nabla f_i (U_i x)$, and therefore we have to store such a matrix and vectors for every element.
+The partitioned quasi-Newton approximations structurally respect sparsity structure of $\nabla^2 f$, which is not the case of classical quasi-Newton approximation (e.g. BFGS, SR1).
+Moreover, the rank of the partitioned updates may be proportional to the number of elements $N$, whereas classical quasi-Newton approximations are low-rank updates.
+A partitioned quasi-Newton update may update every element-Hessian $B_i$ at each step $s$.
+It requires $B_i$, $U_i s$ and $\nabla f_i (U_i (x+s)) - \nabla f_i (U_i x)$, and therefore we have to store such an approximation and vectors for every element.
 
 #### Reference
 * A. Griewank and P. Toint, *On the unconstrained optimization of partially-separable functions*, Numerische Nonlinear Optimization 1981, 39, pp. 301--312, 1982.
 
-## Example: the partitioned structure of a quadratic function
-Let's take the quadratic function `f` as an example
+## Example: the partitioned structure of a quadratic
+Let's take the quadratic `f` as an example
 ```@example PartitionedStructuresQuadratic
-f(x) = x[1]^2 + x[2]^2 + x[3]^2 + x[1]*x[2] + 3x[2]*x[3]
+f(x) = x[1]^2 + x[1]*x[2] + x[2]^2 + x[3]^2 + 3x[2]*x[3]
 ```
 `f` can be considered as the sum of two element functions
 ```@example PartitionedStructuresQuadratic
 f1(x) = x[1]^2 + x[1]*x[2]
-f2(x) = x[1]^2 + x[2]^2 + 3x[1]*x[2]
+f2(y) = y[1]^2 + y[2]^2 + 3y[1]*y[2]
 ```
-considering $U_1$ and $U_2$ informing the variables required by each element function.
+Define $U_1$ and $U_2$ indicating which variables are required by each element function:
 ```@example PartitionedStructuresQuadratic
-U1 = [1, 2] # [1 0 0; 0 1 0] as a matrix
-U2 = [2, 3] # [0 1 0; 0 0 1] as a matrix
+U1 = [1 0 0; 0 1 0]
+U2 = [0 1 0; 0 0 1]
+```
+However, dense matrix produce memory issues for large problems.
+Instead, we use a linear operator only informing the indices of the variables
+```@example PartitionedStructuresQuadratic
+U1 = [1, 2]
+U2 = [2, 3]
 ```
 
 By gathering the different $U_i$ together
