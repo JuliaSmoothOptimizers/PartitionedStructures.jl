@@ -5,7 +5,6 @@ using PartitionedStructures.ModElemental_pm
 using PartitionedStructures.M_part_mat
 using PartitionedStructures.M_abstract_part_struct
 
-
 @testset "first tests on epm" begin
   N = 4
   n = 10
@@ -61,5 +60,3 @@ end
   @test epm == copy_epm
   @test epm != similar_epm
 end
-
-
