@@ -6,7 +6,12 @@ using PartitionedStructures.M_abstract_part_struct,
   PartitionedStructures.M_part_mat,
   PartitionedStructures.M_part_v
 using PartitionedStructures.M_elt_vec,
+<<<<<<< HEAD
   PartitionedStructures.ModElemental_ev, PartitionedStructures.ModElemental_pv
+=======
+  PartitionedStructures.ModElemental_ev,
+  PartitionedStructures.ModElemental_pv
+>>>>>>> 863578400ddae8ef8a8bed81eccd6962d2d0da53
 using PartitionedStructures.M_elt_mat,
   PartitionedStructures.ModElemental_pm, PartitionedStructures.ModElemental_em
 using PartitionedStructures.ModElemental_elo_bfgs,
