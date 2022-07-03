@@ -17,10 +17,6 @@ using PartitionedStructures.M_abstract_element_struct
 
   @test get_vec(ev1) == v1
   @test get_indices(ev1) == i1
-<<<<<<< HEAD
-=======
-
->>>>>>> 863578400ddae8ef8a8bed81eccd6962d2d0da53
 end
 
 @testset "Test ev min/max indices" begin
@@ -69,8 +65,4 @@ end
   [lin_com[i, i] = 1 for i = 1:nᵢᴱ]
   sv = sparsevec(i1, v1)
   _tmp = rand(Int, nᵢᴱ)
-<<<<<<< HEAD
-=======
-
->>>>>>> 863578400ddae8ef8a8bed81eccd6962d2d0da53
 end
