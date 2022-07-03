@@ -18,7 +18,6 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 [compat]
 julia = "^1.6.0"
 LDLFactorizations = "0.8"
-PrettyTables = "1"
 StatsBase = "0.33"
 BenchmarkTools = "1"
 LinearOperators = "2"
