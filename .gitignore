@@ -29,11 +29,6 @@ todo.md
 
 dvpt/
 results/
-<<<<<<< HEAD
 
 src/factorization*
 test/factorization*
-=======
-src/factorizations/*
-test/factorization/*
->>>>>>> add files related to internal partitioned vectors
