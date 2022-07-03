@@ -1,7 +1,6 @@
 using SparseArrays
 using PartitionedStructures
 using PartitionedStructures.ModElemental_ev
-using PartitionedStructures.M_internal_elt_vec
 using PartitionedStructures.M_elt_vec
 using PartitionedStructures.M_abstract_element_struct
 
@@ -19,19 +18,6 @@ using PartitionedStructures.M_abstract_element_struct
   @test get_vec(ev1) == v1
   @test get_indices(ev1) == i1
 
-  # internal
-  p = 0.3
-  ev2 = new_iev(nᵢᴱ, nᵢᴵ)
-  v2 = rand(nᵢᴵ)
-  i2 = [1:nᵢᴱ:(nᵢᴱ^2);]
-  lc2 = sprand(nᵢᴵ, nᵢᴱ, p)
-  set_vec!(ev2, v2)
-  set_indices!(ev2, i2)
-  set_lin_comb!(ev2, lc2)
-
-  @test get_vec(ev2) == v2
-  @test get_indices(ev2) == i2
-  @test get_lin_comb(ev2) == lc2
 end
 
 @testset "Test ev min/max indices" begin
@@ -81,11 +67,4 @@ end
   sv = sparsevec(i1, v1)
   _tmp = rand(Int, nᵢᴱ)
 
-  iev1 = iev_from_eev(eev1)
-  iev2 = Internal_elt_vec(v1, i1, lin_com, nᵢᴱ, nᵢᴱ, _tmp)
-  iev3 = iev_from_sparse_vec(sv)
-
-  @test iev1 == iev2
-  @test iev1 == iev3
-  @test iev2 == iev3
 end
