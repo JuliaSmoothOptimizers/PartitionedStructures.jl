@@ -6,8 +6,7 @@ using PartitionedStructures.M_abstract_part_struct,
   PartitionedStructures.M_part_mat,
   PartitionedStructures.M_part_v
 using PartitionedStructures.M_elt_vec,
-  PartitionedStructures.ModElemental_ev,
-  PartitionedStructures.ModElemental_pv
+  PartitionedStructures.ModElemental_ev, PartitionedStructures.ModElemental_pv
 using PartitionedStructures.M_elt_mat,
   PartitionedStructures.ModElemental_pm, PartitionedStructures.ModElemental_em
 using PartitionedStructures.ModElemental_elo_bfgs,

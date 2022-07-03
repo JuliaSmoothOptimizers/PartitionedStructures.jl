@@ -11,7 +11,6 @@ using PartitionedStructures.M_abstract_element_struct
   v1 = build_v!(pev)
   v2 = build_v!(pev)
   @test v1 == v2
-
 end
 
 @testset "test k-chained et build_v!" begin
@@ -23,7 +22,6 @@ end
   build_v!(epv)
   epv_v = copy(get_v(epv))
   @test sum(epv_v) == N * k
-
 end
 
 @testset "test fonction création epv" begin
@@ -43,7 +41,6 @@ end
   epv_v = build_v(epv)
   build_v(epv)
   @test (@allocated build_v(epv)) == 0
-
 end
 
 @testset "test similar et copy" begin

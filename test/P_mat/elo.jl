@@ -6,7 +6,7 @@ using PartitionedStructures.ModElemental_elo_sr1, PartitionedStructures.ModEleme
   n = 50
   nie = 10
   indices = sample(1:n, nie, replace = false)
-  
+
   eelo1 = init_eelo_LBFGS(indices)
   eelo2 = LBFGS_eelo_rand(nie)
   eelo3 = LBFGS_eelo(nie)
@@ -35,7 +35,7 @@ end
   n = 50
   nie = 10
   indices = sample(1:n, nie, replace = false)
-  
+
   eelo1 = init_eelo_LSR1(indices)
   eelo2 = LSR1_eelo_rand(nie)
   eelo3 = LSR1_eelo(nie)
@@ -57,5 +57,4 @@ end
   @test eelo1 == eelo1_similar
   @test eelo2 == eelo2_similar
   @test eelo3 == eelo3_similar
-
 end

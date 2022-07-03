@@ -2,7 +2,8 @@ using LinearAlgebra, LinearOperators, SparseArrays
 using PartitionedStructures
 using PartitionedStructures.M_elt_mat
 using PartitionedStructures.ModElemental_elo_bfgs, PartitionedStructures.ModElemental_elo_sr1
-using PartitionedStructures.ModElemental_plo, PartitionedStructures.ModElemental_plo_bfgs, PartitionedStructures.ModElemental_plo_sr1
+using PartitionedStructures.ModElemental_plo,
+  PartitionedStructures.ModElemental_plo_bfgs, PartitionedStructures.ModElemental_plo_sr1
 using PartitionedStructures.Instances, PartitionedStructures.Link, PartitionedStructures.Utils
 using PartitionedStructures.M_abstract_part_struct
 
@@ -44,7 +45,7 @@ end
   similar_eplo = similar(eplo)
   @test eplo == copy_eplo
   @test eplo == similar_eplo
-  
+
   @test check_epv_epm(eplo, copy_eplo)
   @test check_epv_epm(eplo, similar_eplo)
 
@@ -173,7 +174,7 @@ end
   n = 50
   eplo_lsr1 = PLSR1_eplo()
   eplo_lsr1_rand = PLSR1_eplo_rand(N, n)
-  
+
   @test check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
   @test full_check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
   @test eplo_lsr1 != eplo_lsr1_rand
@@ -184,7 +185,7 @@ end
   n = 50
   eplo_lsr1 = PLBFGSR1_eplo()
   eplo_lsr1_rand = PLBFGSR1_eplo_rand(N, n)
-  
+
   @test check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
   @test full_check_epv_epm(eplo_lsr1, eplo_lsr1_rand) == false
   @test eplo_lsr1 != eplo_lsr1_rand
@@ -196,6 +197,6 @@ end
   nie = 5
   element_variables = vcat(map((i -> rand(1:n, nie)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
   eplo = identity_eplo_LOSE(element_variables, N, n)
-  
-Test.get_testset_depth
+
+  Test.get_testset_depth
 end
