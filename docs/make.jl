@@ -61,4 +61,7 @@ makedocs(
   ],
 )
 
-deploydocs(repo = "github.com/JuliaSmoothOptimizers/PartitionedStructures.jl.git", devbranch = "main")
+deploydocs(
+  repo = "github.com/JuliaSmoothOptimizers/PartitionedStructures.jl.git",
+  devbranch = "main",
+)
