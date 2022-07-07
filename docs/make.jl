@@ -63,5 +63,6 @@ makedocs(
 
 deploydocs(
   repo = "github.com/JuliaSmoothOptimizers/PartitionedStructures.jl.git",
+  push_preview = true,
   devbranch = "main",
 )
