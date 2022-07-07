@@ -5,7 +5,7 @@ Julia ≥ 1.6.
 
 ## How to install
 ```julia
-pkg> add https://github.com/paraynaud/PartitionedStructures.jl
+pkg> add PartitionedStructures
 pkg> test PartitionedStructures
 ```
 
@@ -21,7 +21,7 @@ where:
 * $U_i$ the linear operator selecting the linear combinations of variables that parametrize $f_i$.
 
 In the case of partitioned quasi-Newton methods, they require storing partitioned gradients and the partitioned Hessian approximation.
-[PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl) facilitates the definition of those partitioned structures and defines methods to manipulate them.
+[PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl) facilitates the definition of those partitioned structures and defines methods to manipulate them.
 
 ## Features
 $U_i$ may be based on the *elemental* variables or the *internal* variables of $f_i$:
@@ -36,7 +36,7 @@ The implementation of the linear-operator $U_i$, which describe entirely the par
 At the moment, we only developed the elemental partitioned structures, but we left the door open to the development of internal partitioned structures in the future.
 
 ## How to use
-Check the [tutorial](https://paraynaud.github.io/PartitionedStructures.jl/dev/tutorial/).
+Check the [tutorial](https://JuliaSmoothOptimizers.github.io/PartitionedStructures.jl/dev/tutorial/).
 
 ## Partitioned structures available
 Structure              | Description
@@ -69,6 +69,6 @@ Method                 | Description
 `minus_epv!`           | Apply a unary minus on every element-vector of a partitioned vector
 `add_epv!`             | Perform elementwise addition between two partitioned vectors
 
-## Modules using [PartitionedStructures.jl](https://github.com/paraynaud/PartitionedStructures.jl)
+## Modules using [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl)
 The structures defined here are used in the module
 [PartiallySeparableSolvers.jl](https://github.com/paraynaud/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
