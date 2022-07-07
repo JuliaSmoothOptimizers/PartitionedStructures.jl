@@ -5,7 +5,7 @@ Julia ≥ 1.6.
 
 ## How to install
 ```julia
-pkg> add PartitionedStructures
+pkg> add https://github.com/paraynaud/PartitionedStructures.jl
 pkg> test PartitionedStructures
 ```
 
