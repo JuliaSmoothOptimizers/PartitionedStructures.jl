@@ -37,14 +37,14 @@ end
   copy(get_nie(eem)),
   copy(get_indices(eem)),
   copy(get_Bie(eem)),
-  copy(get_cem(eem)),
+  Counter_elt_mat(),
   copy(get_convex(eem))
 )
 @inline similar(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
   copy(get_indices(eem)),
   similar(get_Bie(eem)),
-  copy(get_cem(eem)),
+  Counter_elt_mat(),
   copy(get_convex(eem))
 )
 

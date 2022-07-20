@@ -96,11 +96,11 @@ end
 end
 
 @testset "eplo_bfgs PartiallySeparableNLPModels" begin
-  N = 15
-  n = 20
-  nie = 5
-  s = rand(n)
-  element_variables = vcat(map((i -> rand(1:n, nie)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
+  N = 4
+  n = 8
+  element_variables = [ [1,2,5,7], [3,6,7,8], [2,4,6,8], [1,3,5,6,7]]
+  s = rand(n)  
+  
   eplo = identity_eplo_LBFGS(element_variables, N, n)
   @test eplo == identity_eplo_LBFGS(element_variables)
   epv = epv_from_epm(eplo)
