@@ -20,7 +20,8 @@ using PartitionedStructures.M_abstract_part_struct
   @test sum(Matrix(pm2.spm)) == N * nie^2
   @test sum(Matrix(pm1.spm)) == N * nie
 
-  # @test (@allocated reset_spm!(pm1)) == 0
+  reset_spm!(pm1)
+  @test (@allocated reset_spm!(pm1)) == 0
 
   set_spm!(pm1)
   original_spm1 = copy(get_spm(pm1))
@@ -45,11 +46,10 @@ end
   N = 4
   n = 8
   element_variables = [ [1,2,5,7], [3,6,7,8], [2,4,6,8], [1,3,5,6,7]]
-  bools = [true, true, true, true]
-  identity_epm(element_variables, N, n)
-  epm_true = identity_epm(element_variables; convex_vector=bools)
-
+  bools = [true, true, true, true]  
+  
   epm = identity_epm(element_variables)
+  epm_true = identity_epm(element_variables; convex_vector=bools)
   
   @test identity_epm(element_variables, N, n) == identity_epm(element_variables)
   @test mapreduce(eem -> eem.convex==false, &, epm.eem_set)
@@ -60,9 +60,13 @@ end
   @test epm == copy_epm
   @test check_epv_epm(epm, copy_epm)
   @test check_epv_epm(epm, similar_epm)
+  @test check_epv_epm(epm, epm_true)
 
   @test full_check_epv_epm(epm, copy_epm)
   @test full_check_epv_epm(epm, similar_epm)
+  @test full_check_epv_epm(epm, epm_true)
+
   @test epm == copy_epm
   @test epm != similar_epm
+  @test epm != epm_true
 end
