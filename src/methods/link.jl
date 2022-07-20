@@ -53,7 +53,7 @@ end
 Create an elemental partitioned quasi-Newton operator `epm` with the same partitioned structure than `epv`.
 Each element-matrix of `epm` is set with an identity matrix of suitable size.
 """
-function epm_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
+function epm_from_epv(epv::T; convex_vector::Vector{Bool}=zeros(Bool, N)) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
   eelo_indices_set = Vector{Vector{Int}}(undef, N)
@@ -62,7 +62,7 @@ function epm_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  epm = identity_epm(eelo_indices_set, N, n; T = Y)
+  epm = identity_epm(eelo_indices_set, N, n; T = Y, convex_vector)
   return epm
 end
 
