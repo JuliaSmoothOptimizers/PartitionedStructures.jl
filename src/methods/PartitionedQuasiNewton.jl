@@ -10,6 +10,7 @@ using ..ModElemental_pm, ..ModElemental_pv
 export PBFGS_update, PBFGS_update!
 export PSR1_update, PSR1_update!
 export PSE_update, PSE_update!
+export PCS_update, PCS_update!
 
 """
     copy_epm_B = PBFGS_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
@@ -192,6 +193,72 @@ function PSE_update!(
   end
   verbose && (str = string_counters_iter(epm_B))
   verbose && (print("\n PSE" * str))
+  return epm_B
+end
+
+"""
+    B = PCS_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
+
+Perform the PCS update onto a copy of the $(_epmB), given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
+Each $(_eem) is update given its `convex` field, if `convex==true` the $(_eem) is update with BFGS otherwise it is SR1.
+"""
+function PCS_update(
+  epm_B::Elemental_pm{T},
+  epv_y::Elemental_pv{T},
+  s::Vector{T};
+  kwargs...,
+) where {T}
+  epm_copy = copy(epm_B)
+  PCS_update!(epm_copy, epv_y, s; kwargs...)
+  return epm_copy
+end
+
+"""
+    PCS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
+    PCS_update!(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; verbose=true, kwargs...) where T
+
+Perform the PCS update onto the $(_epmB), given the step `s` (or the element-steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
+"""
+function PCS_update!(
+  epm_B::Elemental_pm{T},
+  epv_y::Elemental_pv{T},
+  s::Vector{T};
+  kwargs...,
+) where {T}
+  epv_s = epv_from_v(s, epv_y)
+  PCS_update!(epm_B, epv_y, epv_s; kwargs...)
+  return epm_B
+end
+
+function PCS_update!(
+  epm_B::Elemental_pm{T},
+  epv_y::Elemental_pv{T},
+  epv_s::Elemental_pv{T};
+  verbose = true,
+  kwargs...,
+) where {T}
+  full_check_epv_epm(epm_B, epv_y) ||
+    @error("different partitioned structures between epm_B and epv_y")
+  full_check_epv_epm(epm_B, epv_s) ||
+    @error("different partitioned structures between epm_B and epv_s")
+  N = get_N(epm_B)
+  for i = 1:N
+    eemi = get_eem_set(epm_B, i)
+    Bi = get_Bie(eemi)
+    si = get_vec(get_eev_set(epv_s, i))
+    yi = get_vec(get_eev_set(epv_y, i))
+    index = get_index(eemi)
+    convex = get_convex(eemi)
+    if convex
+      update = BFGS!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+    else
+      update = SR1!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+    end 
+    cem = get_cem(eemi)
+    update_counter_elt_mat!(cem, update)
+  end
+  verbose && (str = string_counters_iter(epm_B))
+  verbose && (print("\n PCS" * str))
   return epm_B
 end
 

@@ -60,6 +60,7 @@ export update, update!
 export PBFGS_update!, PBFGS_update
 export PSR1_update!, PSR1_update
 export PSE_update, PSE_update!
+export PCS_update, PCS_update!
 export PLBFGS_update, PLBFGS_update!
 export PLSR1_update, PLSR1_update!
 export PLSE_update, PLSE_update!

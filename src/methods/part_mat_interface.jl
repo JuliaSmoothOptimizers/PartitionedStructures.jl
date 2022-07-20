@@ -52,6 +52,7 @@ The PSE update is run by default, you can apply a PBFGS or a PSR1 update with th
   (name == :pse) && PSE_update!(epm, epv_y, epv_s; kwargs...)
   (name == :pbfgs) && PBFGS_update!(epm, epv_y, epv_s; kwargs...)
   (name == :psr1) && PSR1_update!(epm, epv_y, epv_s; kwargs...)
+  (name == :pcs) && PCS_update!(epm, epv_y, epv_s; kwargs...)
   return epm
 end
 
