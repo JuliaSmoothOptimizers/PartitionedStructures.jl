@@ -4,7 +4,7 @@ using ..Acronyms
 using ..M_abstract_element_struct
 
 export Elt_mat, DenseEltMat, LOEltMat
-export get_Bie, get_counter_elt_mat, get_cem, get_current_untouched, get_index
+export get_Bie, get_counter_elt_mat, get_cem, get_current_untouched, get_index, get_convex
 
 export Counter_elt_mat
 export update_counter_elt_mat!, iter_info, total_info
@@ -61,6 +61,8 @@ Return index: the number of the last partitioned-updates that did not update the
 If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.
 """
 @inline get_index(elt_mat::T) where {T <: Elt_mat} = get_current_untouched(elt_mat.counter)
+
+@inline get_convex(elt_mat::Elt_mat) = elt_mat.convex
 
 Counter_elt_mat() = Counter_elt_mat(0, 0, 0, 0, 0, 0)
 copy(cem::Counter_elt_mat) = Counter_elt_mat(
