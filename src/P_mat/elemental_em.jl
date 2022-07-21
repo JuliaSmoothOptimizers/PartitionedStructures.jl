@@ -17,7 +17,7 @@ It has fields:
 
 * `indices`: indices of elemental variables;
 * `nie`: elemental size (`=length(indices)`);
-* `Bie`: the elemental matrix`::Symmetric{T, Matrix{T}}`;
+* `Bie::Symmetric{T, Matrix{T}}`: the elemental matrix;
 * `counter`: counts how many update the elemental matrix goes through from its allocation;
 * `convex`: if `Elemental_em` is by default update with BFGS or SR1.
 """
