@@ -123,7 +123,6 @@ identity_epm(
 ) = identity_epm(element_variables, N, n; T, convex_vector)
 
 function identity_epm(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T = Float64, convex_vector::Vector{Bool}=zeros(Bool, N))
-  # eem_set = map((elt_var -> create_id_eem(elt_var; T = T)), element_variables)
   eem_set = map((i -> create_id_eem(element_variables[i]; T = T, bool=convex_vector[i])), 1:length(element_variables))
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
@@ -256,7 +255,6 @@ function part_mat(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int = 1,
   N = length(eem_set)
   epm = Elemental_pm{T}(N, n, eem_set, spm, L, component_list, no_perm)
   initialize_component_list!(epm)
-  # set_spm!(epm)
   return epm
 end
 
