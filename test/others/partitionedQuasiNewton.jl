@@ -12,7 +12,6 @@ using PartitionedStructures.PartitionedQuasiNewton
   epm_B11 = PBFGS_update(epm_B1, epv_y1, s)
   epm_B12 = PSR1_update(epm_B1, epv_y1, s)
   epm_B13 = PSE_update(epm_B1, epv_y1, s)
-  
 
   @test Matrix(epm_B1) == transpose(Matrix(epm_B1))
   @test Matrix(epm_B11) != Matrix(epm_B1)
@@ -50,14 +49,14 @@ using PartitionedStructures.PartitionedQuasiNewton
   @testset "PSC update" begin
     N = 4
     n = 8
-    element_variables = [ [1,2,5,7], [3,6,7,8], [2,4,6,8], [1,3,5,6,7]]
-    bools = [true, false, false, true]  
-    
-    epm = identity_epm(element_variables; convex_vector=bools)
-    
+    element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+    bools = [true, false, false, true]
+
+    epm = identity_epm(element_variables; convex_vector = bools)
+
     epv_y = epv_from_epm(epm)
     s = ones(n)
-    
+
     epmBFGS = PBFGS_update(epm, epv_y, s)
     epmCS = PCS_update(epm, epv_y, s)
     @test Matrix(epmBFGS) != Matrix(epmCS)

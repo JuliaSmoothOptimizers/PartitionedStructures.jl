@@ -10,7 +10,7 @@ using PartitionedStructures.M_abstract_part_struct
   n = 10
   nie = 3
   pm1 = identity_epm(N, n; nie = nie)
-  @test mapreduce(eem -> eem.convex==false, &, pm1.eem_set)
+  @test mapreduce(eem -> eem.convex == false, &, pm1.eem_set)
 
   set_spm!(pm1)
   pm2 = ones_epm(N, n; nie = nie)
@@ -45,14 +45,14 @@ end
 @testset "pm PartiallySeparableNLPModels" begin
   N = 4
   n = 8
-  element_variables = [ [1,2,5,7], [3,6,7,8], [2,4,6,8], [1,3,5,6,7]]
-  bools = [true, true, true, true]  
-  
+  element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+  bools = [true, true, true, true]
+
   epm = identity_epm(element_variables)
-  epm_true = identity_epm(element_variables; convex_vector=bools)
-  
+  epm_true = identity_epm(element_variables; convex_vector = bools)
+
   @test identity_epm(element_variables, N, n) == identity_epm(element_variables)
-  @test mapreduce(eem -> eem.convex==false, &, epm.eem_set)
+  @test mapreduce(eem -> eem.convex == false, &, epm.eem_set)
 
   copy_epm = copy(epm)
   similar_epm = similar(epm)

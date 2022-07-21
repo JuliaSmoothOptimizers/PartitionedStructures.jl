@@ -119,11 +119,20 @@ identity_epm(
   N::Int = length(element_variables),
   n::Int = max_indices(element_variables),
   T = Float64,
-  convex_vector::Vector{Bool}=zeros(Bool, N)
+  convex_vector::Vector{Bool} = zeros(Bool, N),
 ) = identity_epm(element_variables, N, n; T, convex_vector)
 
-function identity_epm(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T = Float64, convex_vector::Vector{Bool}=zeros(Bool, N))
-  eem_set = map((i -> create_id_eem(element_variables[i]; T = T, bool=convex_vector[i])), 1:length(element_variables))
+function identity_epm(
+  element_variables::Vector{Vector{Int}},
+  N::Int,
+  n::Int;
+  T = Float64,
+  convex_vector::Vector{Bool} = zeros(Bool, N),
+)
+  eem_set = map(
+    (i -> create_id_eem(element_variables[i]; T = T, bool = convex_vector[i])),
+    1:length(element_variables),
+  )
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])
@@ -139,8 +148,14 @@ end
 Return a partitionned matrix of type `T` of `N` identity elemental element-matrices.
 Each elemental element-matrix is of size `nie` with randoms positions.
 """
-function identity_epm(N::Int, n::Int; T = Float64, nie::Int = 5, convex_vector::Vector{Bool}=zeros(Bool, N))
-  eem_set = map(i -> identity_eem(nie; T = T, n = n, bool=convex_vector[i]), [1:N;])
+function identity_epm(
+  N::Int,
+  n::Int;
+  T = Float64,
+  nie::Int = 5,
+  convex_vector::Vector{Bool} = zeros(Bool, N),
+)
+  eem_set = map(i -> identity_eem(nie; T = T, n = n, bool = convex_vector[i]), [1:N;])
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])

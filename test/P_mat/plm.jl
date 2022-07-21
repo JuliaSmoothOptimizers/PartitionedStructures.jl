@@ -98,9 +98,9 @@ end
 @testset "eplo_bfgs PartiallySeparableNLPModels" begin
   N = 4
   n = 8
-  element_variables = [ [1,2,5,7], [3,6,7,8], [2,4,6,8], [1,3,5,6,7]]
-  s = rand(n)  
-  
+  element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+  s = rand(n)
+
   eplo = identity_eplo_LBFGS(element_variables, N, n)
   @test eplo == identity_eplo_LBFGS(element_variables)
   epv = epv_from_epm(eplo)
