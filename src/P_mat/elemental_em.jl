@@ -39,14 +39,14 @@ end
   copy(get_indices(eem)),
   copy(get_Bie(eem)),
   Counter_elt_mat(),
-  copy(get_convex(eem))
+  copy(get_convex(eem)),
 )
 @inline similar(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
   copy(get_indices(eem)),
   similar(get_Bie(eem)),
   Counter_elt_mat(),
-  copy(get_convex(eem))
+  copy(get_convex(eem)),
 )
 
 """
@@ -54,7 +54,7 @@ end
 
 Create a `nie` identity elemental element-matrix of type `T` based on the vector of the elemental variables `elt_var`.
 """
-function create_id_eem(elt_var::Vector{Int}; T = Float64, bool=false)
+function create_id_eem(elt_var::Vector{Int}; T = Float64, bool = false)
   nie = length(elt_var)
   Bie = zeros(T, nie, nie)
   [Bie[i, i] = 1 for i = 1:nie]
@@ -68,7 +68,7 @@ end
 
 Return a `nie` identity elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function identity_eem(nie::Int; T = Float64, n = nie^2, bool=false)
+function identity_eem(nie::Int; T = Float64, n = nie^2, bool = false)
   indices = rand(1:n, nie)
   Bie = zeros(T, nie, nie)
   [Bie[i, i] = 1 for i = 1:nie]
@@ -82,7 +82,7 @@ end
 
 Return a `nie` ones elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function ones_eem(nie::Int; T = Float64, n = nie^2, bool=false)
+function ones_eem(nie::Int; T = Float64, n = nie^2, bool = false)
   indices = rand(1:n, nie)
   Bie = ones(T, nie, nie)
   counter = Counter_elt_mat()
@@ -97,7 +97,7 @@ Create a `nie` elemental element-matrix of type `T` at indices `index:index+nie-
 All the components of the element-matrix are set to `1` except the diagonal terms that are set to `mul`.
 This method is used to define diagonal dominant element-matrix.
 """
-function fixed_ones_eem(i::Int, nie::Int; T = Float64, mul = 5.0, bool=false)
+function fixed_ones_eem(i::Int, nie::Int; T = Float64, mul = 5.0, bool = false)
   indices = [i:(i + nie - 1);]
   Bie = ones(T, nie, nie)
   [Bie[i, i] = mul for i = 1:nie]

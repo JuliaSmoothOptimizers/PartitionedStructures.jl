@@ -253,7 +253,7 @@ function PCS_update!(
       update = BFGS!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
     else
       update = SR1!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
-    end 
+    end
     cem = get_cem(eemi)
     update_counter_elt_mat!(cem, update)
   end
