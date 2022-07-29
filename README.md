@@ -14,9 +14,12 @@
 [build-cirrus-url]: https://cirrus-ci.com/github/JuliaSmoothOptimizers/PartitionedStructures.jl
 [codecov-img]: https://codecov.io/gh/JuliaSmoothOptimizers/PartitionedStructures.jl/branch/main/graph/badge.svg
 [codecov-url]: https://app.codecov.io/gh/JuliaSmoothOptimizers/PartitionedStructures.jl
-[doi-img]: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.822073-blue.svg
-[doi-url]: https://doi.org/10.5281/zenodo.822073
+[doi-img]: https://zenodo.org/badge/346861459.svg
+[doi-url]: https://zenodo.org/badge/latestdoi/346861459
 
+## How to cite
+
+If you use PartitionedStructures.jl in your work, please cite using the format given in [CITATION.bib](CITATION.bib).
 
 ## Compatibility
 Julia ≥ 1.6.
@@ -89,4 +92,4 @@ Method                 | Description
 
 ## Modules using [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl)
 The structures defined here are used in the module
-[PartiallySeparableSolvers.jl](https://github.com/paraynaud/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
+[PartiallySeparableSolvers.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
