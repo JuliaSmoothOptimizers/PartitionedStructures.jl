@@ -10,8 +10,8 @@ using PartitionedStructures.Utils
 
   @testset "BFGS" begin
     n = 10
-    B = reshape([(i == j ? 1.0 : 0.0) for i = 1:n for j = 1:n], n, n)
-    B_x2 = (x -> 2 * x).(reshape([(i == j ? 1.0 : 0.0) for i = 1:n for j = 1:n], n, n))
+    B = [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
+    B_x2 = (x -> 2 * x).([(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n])
     s = rand(n)
     y = rand(n)
 

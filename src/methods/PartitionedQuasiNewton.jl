@@ -64,7 +64,7 @@ function PBFGS_update!(
     si = get_vec(get_eev_set(epv_s, i))
     yi = get_vec(get_eev_set(epv_y, i))
     index = get_index(eemi)
-    update = BFGS!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+    update = BFGS!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
     cem = get_cem(eemi)
     update_counter_elt_mat!(cem, update)
   end
@@ -125,7 +125,7 @@ function PSR1_update!(
     si = get_vec(get_eev_set(epv_s, i))
     yi = get_vec(get_eev_set(epv_y, i))
     index = get_index(eemi)
-    update = SR1!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+    update = SR1!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
     cem = get_cem(eemi)
     update_counter_elt_mat!(cem, update)
   end
@@ -250,9 +250,9 @@ function PCS_update!(
     index = get_index(eemi)
     convex = get_convex(eemi)
     if convex
-      update = BFGS!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+      update = BFGS!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
     else
-      update = SR1!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+      update = SR1!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
     end
     cem = get_cem(eemi)
     update_counter_elt_mat!(cem, update)
