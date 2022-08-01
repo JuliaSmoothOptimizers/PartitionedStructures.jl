@@ -187,7 +187,7 @@ function PSE_update!(
     si = get_vec(get_eev_set(epv_s, i))
     yi = get_vec(get_eev_set(epv_y, i))
     index = get_index(eemi)
-    update = SE!(si, yi, Bi, Bi; index = index, kwargs...) # return 0 or 1
+    update = SE!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
     cem = get_cem(eemi)
     update_counter_elt_mat!(cem, update)
   end
