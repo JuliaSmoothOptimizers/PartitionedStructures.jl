@@ -19,7 +19,8 @@ It has fields:
 * `nie`: elemental size (`=length(indices)`);
 * `Bie::Symmetric{T, Matrix{T}}`: the elemental matrix;
 * `counter`: counts how many update the elemental matrix goes through from its allocation;
-* `convex`: if `Elemental_em` is by default update with BFGS or SR1.
+* `convex`: if `Elemental_em` is by default update with BFGS or SR1;
+* `_Bsr`: a vector used during quasi-Newton update of the elemental matrix.
 """
 mutable struct Elemental_em{T} <: DenseEltMat{T}
   nie::Int # nᵢᴱ
@@ -27,6 +28,7 @@ mutable struct Elemental_em{T} <: DenseEltMat{T}
   Bie::Symmetric{T, Matrix{T}} # size nᵢᴱ × nᵢᴱ
   counter::Counter_elt_mat
   convex::Bool
+  _Bsr::Vector{T} # size nᵢᴱ
 end
 
 @inline (==)(eem1::Elemental_em{T}, eem2::Elemental_em{T}) where {T} =
@@ -40,6 +42,7 @@ end
   copy(get_Bie(eem)),
   Counter_elt_mat(),
   copy(get_convex(eem)),
+  copy(get_Bsr(eem))
 )
 @inline similar(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
@@ -47,6 +50,7 @@ end
   similar(get_Bie(eem)),
   Counter_elt_mat(),
   copy(get_convex(eem)),
+  similar(get_Bsr(eem))
 )
 
 """
@@ -59,7 +63,8 @@ function create_id_eem(elt_var::Vector{Int}; T = Float64, bool = false)
   Bie = zeros(T, nie, nie)
   [Bie[i, i] = 1 for i = 1:nie]
   counter = Counter_elt_mat()
-  eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter, bool)
+  _Bsr = Vector{T}(undef, nie)
+  eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter, bool, _Bsr)
   return eem
 end
 
@@ -73,7 +78,8 @@ function identity_eem(nie::Int; T = Float64, n = nie^2, bool = false)
   Bie = zeros(T, nie, nie)
   [Bie[i, i] = 1 for i = 1:nie]
   counter = Counter_elt_mat()
-  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool)
+  _Bsr = Vector{T}(undef, nie)
+  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool, _Bsr)
   return eem
 end
 
@@ -86,7 +92,8 @@ function ones_eem(nie::Int; T = Float64, n = nie^2, bool = false)
   indices = rand(1:n, nie)
   Bie = ones(T, nie, nie)
   counter = Counter_elt_mat()
-  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool)
+  _Bsr = Vector{T}(undef, nie)
+  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool, _Bsr)
   return eem
 end
 
@@ -102,7 +109,8 @@ function fixed_ones_eem(i::Int, nie::Int; T = Float64, mul = 5.0, bool = false)
   Bie = ones(T, nie, nie)
   [Bie[i, i] = mul for i = 1:nie]
   counter = Counter_elt_mat()
-  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool)
+  _Bsr = Vector{T}(undef, nie)
+  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool, _Bsr)
   return eem
 end
 
@@ -112,7 +120,7 @@ end
 Return an elemental element-matrix of type `T` of size one at `index`.
 """
 one_size_bloc(index::Int; T = Float64) =
-  Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat())
+  Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat(), false, Vector{T}(undef, 1))
 
 """
     permute!(eem::Elemental_em{T}, p::Vector{Int}) where T
