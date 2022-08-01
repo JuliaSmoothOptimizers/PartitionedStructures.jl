@@ -179,10 +179,10 @@ end
   B_PBFGS2 = Matrix(partitioned_matrix)
 
   norm(B_BFGS1 * s1 - y1)
-  @test norm(B_BFGS1 * s1 - y1) == 0.0
+  @test isapprox(norm(B_BFGS1 * s1 - y1), 0.0; atol=1e-10)
 
   norm(B_PBFGS1 * s1 - y1)
-  @test norm(B_PBFGS1 * s1 - y1) == 0.0
+  @test isapprox(norm(B_PBFGS1 * s1 - y1), 0.0)
 
   partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
   partitioned_matrix_PSE = copy(partitioned_matrix_PSR1)
@@ -196,10 +196,10 @@ end
   B_PLBFGS = update(partitioned_linear_operator_PLBFGS, partitioned_gradient_difference, s1)
   B_PLSE = update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s1)
 
-  @test norm(B_PSR1 * s1 - y1) == 0.0
-  @test norm(B_PSE * s1 - y1) == 0.0
-  @test norm(B_PLBFGS * s1 - y1) == 0.0
-  @test norm(B_PLSE * s1 - y1) == 0.0
+  @test isapprox(norm(B_PSR1 * s1 - y1), 0.0)
+  @test isapprox(norm(B_PSE * s1 - y1), 0.0)
+  @test isapprox(norm(B_PLBFGS * s1 - y1), 0.0)
+  @test isapprox(norm(B_PLSE * s1 - y1), 0.0)
 
   # There is also a PLSR1 approximation, but is not fullt working since there is some issues with LSR1Operator
   partitioned_linear_operator_PLSR1 = eplo_lsr1_from_epv(partitioned_gradient_x0)

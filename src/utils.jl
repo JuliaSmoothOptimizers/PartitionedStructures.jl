@@ -37,9 +37,9 @@ min_indices(elt_vars::Vector{Vector{T}}) where {T <: Number} =
 Perform the BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
 function BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y, 2}; kwargs...) where {Y <: Number}
-  B_1 = similar(B)
-  BFGS!(s, y, B, B_1; kwargs...)
-  return B_1
+  _B = copy(B)
+  BFGS!(s, y, _B; kwargs...)
+  return _B
 end
 
 function BFGS(
@@ -50,15 +50,15 @@ function BFGS(
   B::Array{Y, 2};
   kwargs...,
 ) where {Y <: Number}
-  B_1 = similar(B)
-  BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...)
-  return B_1
+  _B = copy(B)
+  BFGS!(x_1 - x, g_1 - g, _B; kwargs...)
+  return _B
 end
 
 """
-    BFGS!(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B0::Array{Y,2}, B1::Array{Y,2}; kwargs...) where Y <: Number
-    BFGS!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y,Matrix{Y}}, B1::Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number
-    BFGS!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}, B1::Array{Y,2}; index=0, reset=4, kwargs...)
+    BFGS!(x0::Vector{Y}, x1::Vector{Y}, g0::Vector{Y}, g1::Vector{Y}, B0::Array{Y,2}; kwargs...) where Y <: Number
+    BFGS!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y,Matrix{Y}}; kwargs...) where Y <: Number
+    BFGS!(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; index=0, reset=4, kwargs...)
 
 Perform the BFGS update in place of the matrix `B1` by using the vectors `s = x1 - x0` and `y = g1 - g0` and the current matrix `B0`.
 """
@@ -67,38 +67,36 @@ BFGS!(
   x_1::Vector{Y},
   g::Vector{Y},
   g_1::Vector{Y},
-  B::Array{Y, 2},
-  B_1::Array{Y, 2};
+  B::Array{Y, 2};
   kwargs...,
-) where {Y <: Number} = BFGS!(x_1 - x, g_1 - g, B, B_1; kwargs...)
+) where {Y <: Number} = BFGS!(x_1 - x, g_1 - g, B; kwargs...)
 BFGS!(
   s::Vector{Y},
   y::Vector{Y},
-  B::Symmetric{Y, Matrix{Y}},
-  B_1::Symmetric{Y, Matrix{Y}};
+  B::Symmetric{Y, Matrix{Y}};
   kwargs...,
-) where {Y <: Number} = BFGS!(s, y, B.data, B_1.data; kwargs...)
+) where {Y <: Number} = BFGS!(s, y, B.data; kwargs...)
 function BFGS!(
   s::Vector{Y},
   y::Vector{Y},
-  B::Array{Y, 2},
-  B_1::Array{Y, 2};
+  B::Array{Y, 2};
   index = 0,
   reset = 4,
+  Bs::Vector{Y} = similar(s),
   kwargs...,
-) where {Y <: Number} #Array that will store the next approximation of the Hessian
-  if dot(s, y) > eps(Y) # curvature condition
-    Bs = B * s
-    terme1 = (y * y') ./ dot(y, s)
-    terme2 = (Bs * Bs') ./ dot(Bs, s)
-    B_1 .= B .+ terme1 .- terme2
+) where {Y <: Number} #Array that will store the next approximation of the Hessia
+  ys = dot(y, s)
+  if ys > eps(Y) # curvature condition    
+    mul!(Bs, B, s)
+    mul!(B, y, y', 1/ys, 1) # first term    
+    mul!(B, Bs, Bs', -1/dot(Bs, s), 1) # second term    
     return 1
   elseif index < reset #
-    B_1 .= B
+    B .= B
     return 0
   else
     n = length(s)
-    B_1 .= reshape([(i == j ? (Y)(1) : (Y)(0)) for i = 1:n for j = 1:n], n, n)
+    B .= [(i == j ? (Y)(1) : (Y)(0)) for i = 1:n, j = 1:n]
     return -1
   end
 end
@@ -110,9 +108,9 @@ end
 Perform the SR1 update over the matrix `B` by using the vectors `s = x1 - x0` and `y = g1 - g0`.
 """
 function SR1(s::Vector{Y}, y::Vector{Y}, B::Array{Y, 2}; kwargs...) where {Y <: Number}
-  B_1 = similar(B)
-  SR1!(s, y, B, B_1; kwargs...)
-  B_1
+  _B = copy(B)
+  SR1!(s, y, _B; kwargs...)
+  _B
 end
 
 function SR1(
@@ -123,9 +121,9 @@ function SR1(
   B::Array{Y, 2};
   kwargs...,
 ) where {Y <: Number}
-  B_1 = similar(B)
-  SR1!(x_1 - x, g_1 - g, B, B_1; kwargs...)
-  B_1
+  _B = copy(B)
+  SR1!(x_1 - x, g_1 - g, _B; kwargs...)
+  _B
 end
 
 """
@@ -140,36 +138,38 @@ SR1!(
   x_1::Vector{Y},
   g::Vector{Y},
   g_1::Vector{Y},
-  B::Array{Y, 2},
-  B_1::Array{Y, 2},
-) where {Y <: Number} = SR1!(x_1 - x, g_1 - g, B, B_1)
+  B::Array{Y, 2};
+) where {Y <: Number} = SR1!(x_1 - x, g_1 - g, B)
 SR1!(
   s::Vector{Y},
   y::Vector{Y},
-  B::Symmetric{Y, Matrix{Y}},
-  B_1::Symmetric{Y, Matrix{Y}};
+  B::Symmetric{Y, Matrix{Y}};
   kwargs...,
-) where {Y <: Number} = SR1!(s, y, B.data, B_1.data; kwargs...)
+) where {Y <: Number} = SR1!(s, y, B.data; kwargs...)
 function SR1!(
   s::Vector{Y},
   y::Vector{Y},
-  B::Array{Y, 2},
-  B_1::Array{Y, 2};
+  B::Array{Y, 2};
+  r::Vector{Y}=similar(s),
   index = 0,
   reset = 4,
   ω = 1e-6,
   kwargs...,
 ) where {Y <: Number}
-  r = y .- B * s
-  if abs(dot(s, r)) > ω * norm(s, 2) * norm(r, 2)
-    B_1 .= B .+ ((r * r') ./ dot(s, r))
+  r .= y
+  mul!(r, B, s, -1, 1)
+  # r = y .- B * s
+  sr = dot(s, r)
+  if abs(sr) > ω * norm(s, 2) * norm(r, 2)
+    mul!(B, r, r', 1/sr, 1) # first term    
+    # B_1 .= B .+ ((r * r') ./ dot(s, r))
     return 1
   elseif index < reset #
-    B_1 .= B
+    B .= B
     return 0
   else
     n = length(s)
-    B_1 .= reshape([(i == j ? (Y)(1) : (Y)(0)) for i = 1:n for j = 1:n], n, n)
+    B .= [(i == j ? (Y)(1) : (Y)(0)) for i = 1:n, j = 1:n]
     return -1
   end
 end
