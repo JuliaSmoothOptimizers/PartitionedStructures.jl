@@ -4,7 +4,8 @@ using ..Acronyms
 using ..M_abstract_element_struct
 
 export Elt_mat, DenseEltMat, LOEltMat
-export get_Bie, get_counter_elt_mat, get_cem, get_current_untouched, get_index, get_convex
+export get_Bie, get_Bsr
+export get_counter_elt_mat, get_cem, get_current_untouched, get_index, get_convex
 
 export Counter_elt_mat
 export update_counter_elt_mat!, iter_info, total_info
@@ -39,6 +40,14 @@ end
 Return the element-matrix `elt_mat.Bie`.
 """
 @inline get_Bie(elt_mat::T) where {T <: Elt_mat} = elt_mat.Bie
+
+"""
+    get_Bsr(elt_mat::T) where T <: Elt_mat
+
+Return the temporary vector `elt_mat._Bsr`.
+"""
+@inline get_Bsr(elt_mat::T) where {T <: Elt_mat} = elt_mat._Bsr
+
 
 """
     cem = get_counter_elt_mat(elt_mat::T) where T <: Elt_mat
