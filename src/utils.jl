@@ -158,11 +158,9 @@ function SR1!(
 ) where {Y <: Number}
   r .= y
   mul!(r, B, s, -1, 1)
-  # r = y .- B * s
   sr = dot(s, r)
   if abs(sr) > ω * norm(s, 2) * norm(r, 2)
     mul!(B, r, r', 1/sr, 1) # first term    
-    # B_1 .= B .+ ((r * r') ./ dot(s, r))
     return 1
   elseif index < reset #
     B .= B
@@ -195,9 +193,9 @@ function SE(
   B::Array{Y, 2};
   kwargs...,
 ) where {Y <: Number}
-  B_1 = similar(B)
-  SE!(x_1 - x, g_1 - g, B, B_1; kwargs...)
-  B_1
+  _B = copy(B)
+  SE!(x_1 - x, g_1 - g, _B; kwargs...)
+  _B
 end
 
 """
@@ -214,42 +212,42 @@ SE!(
   g::Vector{Y},
   g_1::Vector{Y},
   B::Array{Y, 2},
-  B_1::Array{Y, 2},
-) where {Y <: Number} = SE!(x_1 - x, g_1 - g, B, B_1)
+) where {Y <: Number} = SE!(x_1 - x, g_1 - g, B)
 SE!(
   s::Vector{Y},
   y::Vector{Y},
-  B::Symmetric{Y, Matrix{Y}},
-  B_1::Symmetric{Y, Matrix{Y}};
+  B::Symmetric{Y, Matrix{Y}};
   kwargs...,
-) where {Y <: Number} = SE!(s, y, B.data, B_1.data; kwargs...)
+) where {Y <: Number} = SE!(s, y, B.data; kwargs...)
 function SE!(
   s::Vector{Y},
   y::Vector{Y},
-  B::Array{Y, 2},
-  B_1::Array{Y, 2};
+  B::Array{Y, 2};
+  Bs_r::Vector{Y}=similar(s),
   index = 0,
   reset = 4,
   ω = 1e-6,
   kwargs...,
 ) where {Y <: Number}
-  if dot(s, y) > eps(Y) # curvature condition
-    Bs = B * s
-    terme1 = (y * y') ./ dot(y, s)
-    terme2 = (Bs * Bs') ./ dot(Bs, s)
-    B_1 .= B .+ terme1 .- terme2
+  ys = dot(s, y)
+  if ys > eps(Y) # curvature condition
+    mul!(Bs_r, B, s)
+    mul!(B, y, y', 1/ys, 1) # first term    
+    mul!(B, Bs_r, Bs_r', -1/dot(Bs_r, s), 1) # second term   
     return 1
   else
-    r = y .- B * s
-    if abs(dot(s, r)) > ω * norm(s, 2) * norm(r, 2)
-      B_1 .= B .+ ((r * r') ./ dot(s, r))
+    Bs_r .= y
+    mul!(Bs_r, B, s, -1, 1)
+    sr = dot(s, Bs_r)
+    if abs(dot(s, Bs_r)) > ω * norm(s, 2) * norm(Bs_r, 2)
+      mul!(B, Bs_r, Bs_r', 1/sr, 1) # first term    
       return 1
     elseif index < reset #
-      B_1 .= B
+      B .= B
       return 0
     else
       n = length(s)
-      B_1 .= reshape([(i == j ? (Y)(1) : (Y)(0)) for i = 1:n for j = 1:n], n, n)
+      B .= [(i == j ? (Y)(1) : (Y)(0)) for i = 1:n for j = 1:n]
       return -1
     end
   end
