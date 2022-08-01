@@ -135,18 +135,8 @@ The method uses temporary the $(_epv).
 The method returns `result`, a vector similar to `x`.
 """
 function mul_epm_vector(epm::T, x::Vector{Y}) where {Y <: Number, T <: Part_mat{Y}}
-  epv = epv_from_epm(epm)
-  return mul_epm_vector(epm, epv, x)
-end
-
-function mul_epm_vector(
-  epm::T,
-  epv::Elemental_pv{Y},
-  x::Vector{Y},
-) where {Y <: Number, T <: Part_mat{Y}}
   res = similar(x)
-  mul_epm_vector!(res, epm, epv, x)
-  return res
+  return mul_epm_vector!(res, epm, x)
 end
 
 """
@@ -159,20 +149,11 @@ The result is stored in `res`, a vector similar to `x`.
 """
 function mul_epm_vector!(res::Vector{Y}, epm::T, x::Vector{Y}) where {Y <: Number, T <: Part_mat{Y}}
   epv = epv_from_epm(epm)
-  mul_epm_vector!(res, epm, epv, x)
-  return res
-end
-
-function mul_epm_vector!(
-  res::Vector{Y},
-  epm::T,
-  epv::Elemental_pv{Y},
-  x::Vector{Y},
-) where {Y <: Number, T <: Part_mat{Y}}
   epv_from_v!(epv, x)
-  mul_epm_epv!(epv, epm, epv)
-  build_v!(epv)
-  res .= get_v(epv)
+  epv_res = similar(epv)
+  mul_epm_epv!(epv_res, epm, epv)
+  build_v!(epv_res)
+  res .= get_v(epv_res)
   return res
 end
 
@@ -204,7 +185,8 @@ function mul_epm_epv!(
   for i = 1:N
     Bie = get_ee_struct_Bie(epm, i)
     vie = get_eev_value(epv, i)
-    set_eev!(epv_res, i, Bie * vie)
+    res_i = get_eev_value(epv_res, i)
+    mul!(res_i, Bie, vie, 1., 0.)
   end
   return epv_res
 end

@@ -51,7 +51,7 @@ export initialize_component_list!
 export full_check_epv_epm
 export epm_from_epv, eplo_lbfgs_from_epv, eplo_lose_from_epv, eplo_lsr1_from_epv
 export create_epv_eplo, epv_from_eplo, epv_from_epm
-export mul_epm_vector, mul_epm_vector!, mul_epm_epv
+export mul_epm_vector, mul_epm_vector!, mul_epm_epv, mul_epm_epv!
 export Counter_elt_mat, string_counters_iter, string_counters_total
 export prod_part_vectors
 
