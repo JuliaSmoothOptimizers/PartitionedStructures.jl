@@ -186,7 +186,7 @@ function mul_epm_epv!(
     Bie = get_ee_struct_Bie(epm, i)
     vie = get_eev_value(epv, i)
     res_i = get_eev_value(epv_res, i)
-    mul!(res_i, Bie, vie, 1., 0.)
+    mul!(res_i, Bie, vie, 1.0, 0.0)
   end
   return epv_res
 end

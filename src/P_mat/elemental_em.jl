@@ -42,7 +42,7 @@ end
   copy(get_Bie(eem)),
   Counter_elt_mat(),
   copy(get_convex(eem)),
-  copy(get_Bsr(eem))
+  copy(get_Bsr(eem)),
 )
 @inline similar(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
@@ -50,7 +50,7 @@ end
   similar(get_Bie(eem)),
   Counter_elt_mat(),
   copy(get_convex(eem)),
-  similar(get_Bsr(eem))
+  similar(get_Bsr(eem)),
 )
 
 """

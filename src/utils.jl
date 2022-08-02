@@ -70,12 +70,8 @@ BFGS!(
   B::Array{Y, 2};
   kwargs...,
 ) where {Y <: Number} = BFGS!(x_1 - x, g_1 - g, B; kwargs...)
-BFGS!(
-  s::Vector{Y},
-  y::Vector{Y},
-  B::Symmetric{Y, Matrix{Y}};
-  kwargs...,
-) where {Y <: Number} = BFGS!(s, y, B.data; kwargs...)
+BFGS!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y, Matrix{Y}}; kwargs...) where {Y <: Number} =
+  BFGS!(s, y, B.data; kwargs...)
 function BFGS!(
   s::Vector{Y},
   y::Vector{Y},
@@ -88,8 +84,8 @@ function BFGS!(
   ys = dot(y, s)
   if ys > eps(Y) # curvature condition    
     mul!(Bs, B, s)
-    mul!(B, y, y', 1/ys, 1) # first term    
-    mul!(B, Bs, Bs', -1/dot(Bs, s), 1) # second term    
+    mul!(B, y, y', 1 / ys, 1) # first term    
+    mul!(B, Bs, Bs', -1 / dot(Bs, s), 1) # second term    
     return 1
   elseif index < reset #
     B .= B
@@ -140,17 +136,13 @@ SR1!(
   g_1::Vector{Y},
   B::Array{Y, 2};
 ) where {Y <: Number} = SR1!(x_1 - x, g_1 - g, B)
-SR1!(
-  s::Vector{Y},
-  y::Vector{Y},
-  B::Symmetric{Y, Matrix{Y}};
-  kwargs...,
-) where {Y <: Number} = SR1!(s, y, B.data; kwargs...)
+SR1!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y, Matrix{Y}}; kwargs...) where {Y <: Number} =
+  SR1!(s, y, B.data; kwargs...)
 function SR1!(
   s::Vector{Y},
   y::Vector{Y},
   B::Array{Y, 2};
-  r::Vector{Y}=similar(s),
+  r::Vector{Y} = similar(s),
   index = 0,
   reset = 4,
   ω = 1e-6,
@@ -160,7 +152,7 @@ function SR1!(
   mul!(r, B, s, -1, 1)
   sr = dot(s, r)
   if abs(sr) > ω * norm(s, 2) * norm(r, 2)
-    mul!(B, r, r', 1/sr, 1) # first term    
+    mul!(B, r, r', 1 / sr, 1) # first term    
     return 1
   elseif index < reset #
     B .= B
@@ -213,17 +205,13 @@ SE!(
   g_1::Vector{Y},
   B::Array{Y, 2},
 ) where {Y <: Number} = SE!(x_1 - x, g_1 - g, B)
-SE!(
-  s::Vector{Y},
-  y::Vector{Y},
-  B::Symmetric{Y, Matrix{Y}};
-  kwargs...,
-) where {Y <: Number} = SE!(s, y, B.data; kwargs...)
+SE!(s::Vector{Y}, y::Vector{Y}, B::Symmetric{Y, Matrix{Y}}; kwargs...) where {Y <: Number} =
+  SE!(s, y, B.data; kwargs...)
 function SE!(
   s::Vector{Y},
   y::Vector{Y},
   B::Array{Y, 2};
-  Bs_r::Vector{Y}=similar(s),
+  Bs_r::Vector{Y} = similar(s),
   index = 0,
   reset = 4,
   ω = 1e-6,
@@ -232,15 +220,15 @@ function SE!(
   ys = dot(s, y)
   if ys > eps(Y) # curvature condition
     mul!(Bs_r, B, s)
-    mul!(B, y, y', 1/ys, 1) # first term    
-    mul!(B, Bs_r, Bs_r', -1/dot(Bs_r, s), 1) # second term   
+    mul!(B, y, y', 1 / ys, 1) # first term    
+    mul!(B, Bs_r, Bs_r', -1 / dot(Bs_r, s), 1) # second term   
     return 1
   else
     Bs_r .= y
     mul!(Bs_r, B, s, -1, 1)
     sr = dot(s, Bs_r)
     if abs(dot(s, Bs_r)) > ω * norm(s, 2) * norm(Bs_r, 2)
-      mul!(B, Bs_r, Bs_r', 1/sr, 1) # first term    
+      mul!(B, Bs_r, Bs_r', 1 / sr, 1) # first term    
       return 1
     elseif index < reset #
       B .= B
