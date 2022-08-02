@@ -48,7 +48,6 @@ Return the temporary vector `elt_mat._Bsr`.
 """
 @inline get_Bsr(elt_mat::T) where {T <: Elt_mat} = elt_mat._Bsr
 
-
 """
     cem = get_counter_elt_mat(elt_mat::T) where T <: Elt_mat
 

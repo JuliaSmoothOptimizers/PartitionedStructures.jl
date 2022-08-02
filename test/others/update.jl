@@ -179,7 +179,7 @@ end
   B_PBFGS2 = Matrix(partitioned_matrix)
 
   norm(B_BFGS1 * s1 - y1)
-  @test isapprox(norm(B_BFGS1 * s1 - y1), 0.0; atol=1e-10)
+  @test isapprox(norm(B_BFGS1 * s1 - y1), 0.0; atol = 1e-10)
 
   norm(B_PBFGS1 * s1 - y1)
   @test isapprox(norm(B_PBFGS1 * s1 - y1), 0.0)

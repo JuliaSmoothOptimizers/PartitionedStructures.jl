@@ -126,7 +126,7 @@ function PSR1_update!(
     si = get_vec(get_eev_set(epv_s, i))
     yi = get_vec(get_eev_set(epv_y, i))
     r = get_Bsr(get_eem_set(epm_B, i))
-    index = get_index(eemi)    
+    index = get_index(eemi)
     update = SR1!(si, yi, Bi; index = index, r, kwargs...) # return 0 or 1
     cem = get_cem(eemi)
     update_counter_elt_mat!(cem, update)
