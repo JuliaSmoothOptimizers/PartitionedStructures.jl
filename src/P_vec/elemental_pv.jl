@@ -1,5 +1,5 @@
 module ModElemental_pv
-using SparseArrays
+using LinearAlgebra, SparseArrays
 
 using ..Acronyms
 using ..Utils
@@ -277,7 +277,11 @@ Usefull to define Uᵢ x, ∀ i ∈ {1,...,N}.
 """
 function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where {T}
   for idx = 1:get_N(epv_x)
-    set_eev!(epv_x, idx, x[get_indices(get_eev_set(epv_x, idx))]) # met le vecteur élément comme une copie de x
+    indices = get_indices(get_eev_set(epv_x, idx))
+    vec = get_eev_value(epv_x, idx)
+    _view_x = view(x, indices)
+    mul!(vec, I, _view_x, 1, 0)
+    # set_eev!(epv_x, idx, x) # met le vecteur élément comme une copie de x
   end
   return epv_x
 end
