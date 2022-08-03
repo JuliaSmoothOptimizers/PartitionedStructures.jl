@@ -70,3 +70,28 @@ end
   @test epm != similar_epm
   @test epm != epm_true
 end
+
+@testset "Allocation partitioned matrices (dense)" begin
+  N = 4
+  n = 8
+  element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+  epm = identity_epm(element_variables)
+  epv = epv_from_epm(epm)
+  epv2 = similar(epv)
+
+  PartitionedStructures.mul_epm_epv!(epv2, epm, epv) # warm-up
+  a = @allocated PartitionedStructures.mul_epm_epv!(epv2, epm, epv)
+  @test a == 0
+
+  update!(epm, epv, epv2; name=:pbfsg, verbose=false)
+  a = @allocated update!(epm, epv, epv2; name=:pbfsg, verbose=false)
+  @test a == 0
+
+  update!(epm, epv, epv2; name=:psr1, verbose=false)
+  a = @allocated update!(epm, epv, epv2; name=:psr1, verbose=false)
+  @test a == 0
+
+  update!(epm, epv, epv2; name=:pse, verbose=false)
+  a = @allocated update!(epm, epv, epv2; name=:pse, verbose=false)
+  @test a == 0
+end
