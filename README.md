@@ -34,9 +34,11 @@ pkg> test PartitionedStructures
 Methods exploiting the derivatives of partially-separable functions require specific data structures to store partitioned derivatives.
 There are several types of partial separability.
 We write a partially-separable function $f: \mathbb{R}^n \to \mathbb{R}$ in the form
+
+$$  
+f(x) = \sum_{i=1}^N f_i (U_i(x)), f_i : \mathbb{R}^{n_i} \to \mathbb{R}, U_i \in \mathbb{R}^{n_i \times n}, n_i \ll n,
 $$
-  f(x) = \sum_{i=1}^N f_i (U_i(x)),\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i \ll n
-$$
+
 where:
 * $f_i$ is the $i$-th element function whose dimension is smaller than $f$;
 * $U_i$ the linear operator selecting the linear combinations of variables that parametrize $f_i$.
