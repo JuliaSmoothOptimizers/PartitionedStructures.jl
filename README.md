@@ -33,10 +33,10 @@ pkg> test PartitionedStructures
 ## Philosophy
 Methods exploiting the derivatives of partially-separable functions require specific data structures to store partitioned derivatives.
 There are several types of partial separability.
-We write a partially-separable function $f: \R^n \to \R$ in the form
-```math
+We write a partially-separable function $f: \mathbb{R}^n \to \mathbb{R}$ in the form
+$$
   f(x) = \sum_{i=1}^N f_i (U_i(x)),\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i \ll n
-```
+$$
 where:
 * $f_i$ is the $i$-th element function whose dimension is smaller than $f$;
 * $U_i$ the linear operator selecting the linear combinations of variables that parametrize $f_i$.
@@ -57,7 +57,7 @@ The implementation of the linear-operator $U_i$, which describe entirely the par
 At the moment, we only developed the elemental partitioned structures, but we left the door open to the development of internal partitioned structures in the future.
 
 ## How to use
-Check the [tutorial](https://JuliaSmoothOptimizers.github.io/PartitionedStructures.jl/dev/tutorial/).
+Check the [tutorial](https://JuliaSmoothOptimizers.github.io/PartitionedStructures.jl/stable/tutorial/).
 
 ## Partitioned structures available
 Structure              | Description

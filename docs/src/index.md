@@ -36,7 +36,7 @@ The implementation of the linear-operator $U_i$, which describe entirely the par
 At the moment, we only developed the elemental partitioned structures, but we left the door open to the development of internal partitioned structures in the future.
 
 ## How to use
-Check the [tutorial](https://JuliaSmoothOptimizers.github.io/PartitionedStructures.jl/dev/tutorial/).
+Check the [tutorial](https://JuliaSmoothOptimizers.github.io/PartitionedStructures.jl/stable/tutorial/).
 
 ## Partitioned structures available
 Structure              | Description
@@ -71,4 +71,4 @@ Method                 | Description
 
 ## Modules using [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl)
 The structures defined here are used in the module
-[PartiallySeparableSolvers.jl](https://github.com/paraynaud/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
+[PartiallySeparableSolvers.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
