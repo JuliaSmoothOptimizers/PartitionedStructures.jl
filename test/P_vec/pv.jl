@@ -89,17 +89,16 @@ end
   @test epv1.eev_set[1].vec[1] != 1.0
 end
 
-
 @testset "Allocations partitioned vectors" begin
   N = 15
   n = 30
   ni = 5
-  element_variables = map(i -> sample(1:n, ni, replace = false) ,1:N)
+  element_variables = map(i -> sample(1:n, ni, replace = false), 1:N)
 
   epv = create_epv(element_variables)
   epv2 = create_epv(element_variables)
   v = ones(n)
-  
+
   epv_from_v!(epv, v)
   a = @allocated epv_from_v!(epv, v)
   @test a == 0
@@ -107,9 +106,8 @@ end
   build_v!(epv)
   a = @allocated build_v!(epv)
   @test a == 0
-    
-  add_epv!(epv, epv2)  
+
+  add_epv!(epv, epv2)
   a = @allocated add_epv!(epv, epv2)
   @test a == 0
-    
 end

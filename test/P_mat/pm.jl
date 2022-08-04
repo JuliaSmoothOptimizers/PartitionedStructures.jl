@@ -83,15 +83,15 @@ end
   a = @allocated PartitionedStructures.mul_epm_epv!(epv2, epm, epv)
   @test a == 0
 
-  update!(epm, epv, epv2; name=:pbfsg, verbose=false)
-  a = @allocated update!(epm, epv, epv2; name=:pbfsg, verbose=false)
+  update!(epm, epv, epv2; name = :pbfsg, verbose = false)
+  a = @allocated update!(epm, epv, epv2; name = :pbfsg, verbose = false)
   @test a == 0
 
-  update!(epm, epv, epv2; name=:psr1, verbose=false)
-  a = @allocated update!(epm, epv, epv2; name=:psr1, verbose=false)
+  update!(epm, epv, epv2; name = :psr1, verbose = false)
+  a = @allocated update!(epm, epv, epv2; name = :psr1, verbose = false)
   @test a == 0
 
-  update!(epm, epv, epv2; name=:pse, verbose=false)
-  a = @allocated update!(epm, epv, epv2; name=:pse, verbose=false)
+  update!(epm, epv, epv2; name = :pse, verbose = false)
+  a = @allocated update!(epm, epv, epv2; name = :pse, verbose = false)
   @test a == 0
 end
