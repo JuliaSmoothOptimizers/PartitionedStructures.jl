@@ -46,7 +46,7 @@ makedocs(
     PartMatInterface,
   ],
   doctest = true,
-  linkcheck = true,
+  # linkcheck = true,
   strict = true,
   format = Documenter.HTML(
     assets = ["assets/style.css"],

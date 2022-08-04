@@ -33,7 +33,7 @@ f(x) = x[1]^2 + x[1]*x[2] + x[2]^2 + x[3]^2 + 3x[2]*x[3]
 ```
 `f` can be considered as the sum of two element functions
 ```@example PartitionedStructuresQuadratic
-f1(y) = y[1]^2 + y[1]*x[2]
+f1(y) = y[1]^2 + y[1]*y[2]
 f2(y) = y[1]^2 + y[2]^2 + 3y[1]*y[2]
 ```
 Define $U_1$ and $U_2$ indicating which variables are required by each element function:
@@ -55,8 +55,8 @@ U = [U1, U2]
 we define the function exploiting the partially-separable structure `f_pss` as
 ```@example PartitionedStructuresQuadratic
 f_pss(x, U) = f1(x[U[1]]) + f2(x[U[2]])
-
 x0 = [2., 3., 4.]
+
 f(x0) == f_pss(x0, U)
 ```
 
@@ -67,7 +67,7 @@ Similarly, we can compute: the gradient, the element gradients and explicit how 
 ∇f2(y) = [2y[1] + 3y[2], 2y[2] + 3y[1]]
 function ∇f_pss(x, U)
   gradient = zeros(length(x))
-  gradient[U1] = ∇f1(x[U[1]])
+  gradient[U1] .+= ∇f1(x[U[1]])
   gradient[U2] .+= ∇f2(x[U[2]])
   return gradient
 end
@@ -122,7 +122,7 @@ B_BFGS = BFGS(s,y,B)
 
 using LinearAlgebra
 # numerical verification of the secant equation
-atol = sqrt(eps(eltype(s1)))
+atol = sqrt(eps(eltype(s)))
 norm(B_BFGS * s - y) < atol 
 ```
 but the approximation `B_BFGS` is dense:
@@ -175,7 +175,6 @@ which respects the sparsity structure of ∇²f.
 In addition, `update()` indicates the number of elements: updated, not updated or untouched, as long as the user doesn't set `verbose=false`.
 The partitioned update verifies the secant equation
 ```@example PartitionedStructuresQuadratic
-atol = sqrt(eps(eltype(s1)))
 norm(B_PBFGS*s - y) < atol
 ```
 which may also be calculated with
@@ -235,16 +234,21 @@ partitioned_linear_operator_PLSE = eplo_lose_from_epv(partitioned_gradient_x0)
 The different types simplify the `update` method, since no argument `name` is required to determine which update is applied
 ```@example PartitionedStructuresQuadratic
 B_PLBFGS = update(partitioned_linear_operator_PLBFGS, partitioned_gradient_difference, s)
-B_PLSE = update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s)
-B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s)
+norm(B_PLBFGS * s - y) < atol
+```
 
-@test norm(B_PLBFGS * s - y) < atol
-@test norm(B_PLSE * s - y) < atol
-@test norm(B_PLSR1 * s - y) < atol
+```@example PartitionedStructuresQuadratic
+B_PLSE = update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s)
+norm(B_PLSE * s - y) < atol
+```
+
+```@example PartitionedStructuresQuadratic
+B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s)
+norm(B_PLSR1 * s - y) < atol
 ```
 
 That's it, you have all the tools to implement a partitioned quasi-Newton method. Enjoy!
 
 ### Tips
 The main issue about the definition of partitioned structures is informing the $f_i$ and $U_i$.
-To address this issue you may want to take a look at [ExpressionTreeForge.jl](https://github.com/paraynaud/CalculusTreeTools.jl) which detect automatically the partially separable structure from an [ADNLPModels](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl) or a [JuMP model](https://github.com/jump-dev/JuMP.jl).
+To address this issue you may want to take a look at [ExpressionTreeForge.jl](https://github.com/JuliaSmoothOptimizers/ExpressionTreeForge.jl) which detect automatically the partially separable structure from an [ADNLPModels](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl) or a [JuMP model](https://github.com/jump-dev/JuMP.jl).
