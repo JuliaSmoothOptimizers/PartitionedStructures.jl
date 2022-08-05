@@ -42,7 +42,7 @@ using PartitionedStructures.M_abstract_part_struct
   @test perm_pm1 != original_spm1
 end
 
-@testset "pm PartiallySeparableNLPModels" begin
+@testset "Partitioned Matrices" begin
   N = 4
   n = 8
   element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
@@ -69,6 +69,28 @@ end
   @test epm == copy_epm
   @test epm != similar_epm
   @test epm != epm_true
+
+  epm = identity_epm(element_variables)
+  
+  @test correlated_var(epm, 1) == [1, 2, 5, 7, 3, 6]
+  @test correlated_var(epm, 8) == [3, 6, 7, 8, 2, 4]
+  for i in 1:3
+    @test get_eem_set_Bie(epm, i) == [i==j ? 1. : 0. for i in 1:4, j in 1:4]
+  end
+  @test get_eem_set_Bie(epm, 4) == [i==j ? 1. : 0. for i in 1:5, j in 1:5]
+
+  indices = [1,2]
+  @test get_eem_sub_set(epm, indices) == epm.eem_set[indices]
+end
+
+@testset "Generate partitioned matrices" begin
+  epm1 = ones_epm_and_id(6, 9)
+  emp2 = n_i_sep(25)
+  epm3 = n_i_SPS(20)
+
+  @test epm1 != epm2
+  @test epm1 != epm3
+  @test epm2 != epm3
 end
 
 @testset "Allocation partitioned matrices (dense)" begin
