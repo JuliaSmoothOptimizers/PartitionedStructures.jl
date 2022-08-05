@@ -195,7 +195,8 @@ end
   N = 15
   n = 20
   nie = 5
-  element_variables = vcat(map((i -> rand(1:n, nie)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
+  element_variables = vcat(map((i -> sample(1:n, nie, replace = false)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
+  
   eplo = identity_eplo_LOSE(element_variables, N, n)
 
   Test.get_testset_depth
