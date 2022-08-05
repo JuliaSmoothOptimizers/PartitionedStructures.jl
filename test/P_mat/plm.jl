@@ -104,7 +104,7 @@ end
   eplo = identity_eplo_LBFGS(element_variables, N, n)
   @test eplo == identity_eplo_LBFGS(element_variables)
   epv = epv_from_epm(eplo)
-  update(eplo, epv, s)
+  update(eplo, epv, s; verbose=false)
 
   copy_eplo = copy(eplo)
   similar_eplo = similar(eplo)
@@ -125,7 +125,7 @@ end
   eplo = identity_eplo_LSR1(element_variables, N, n)
   @test eplo == identity_eplo_LSR1(element_variables)
   epv = epv_from_epm(eplo)
-  update(eplo, epv, s)
+  update(eplo, epv, s; verbose=false)
 
   copy_eplo = copy(eplo)
   similar_eplo = similar(eplo)
@@ -146,7 +146,7 @@ end
   @test eplo == identity_eplo_LOSE(element_variables)
   s = rand(n)
   epv = epv_from_epm(eplo)
-  update(eplo, epv, s)
+  update(eplo, epv, s; verbose=false)
 
   copy_eplo = copy(eplo)
   similar_eplo = similar(eplo)
@@ -196,8 +196,7 @@ end
   n = 20
   nie = 5
   element_variables = vcat(map((i -> sample(1:n, nie, replace = false)), 1:(N - 1)), [[4, 8, 12, 16, 20]])
-  
-  eplo = identity_eplo_LOSE(element_variables, N, n)
-
-  Test.get_testset_depth
+  eplose = identity_eplo_LOSE(element_variables, N, n)
+  eplosr1 = identity_eplo_LSR1(element_variables)
+  @test SparseMatrixCSC(eplose) == SparseMatrixCSC(eplosr1)
 end
