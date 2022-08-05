@@ -21,3 +21,37 @@ using PartitionedStructures.M_elt_mat, PartitionedStructures.ModElemental_em
   permute!(eem1, p_view)
   @test cp_eem1 != eem1
 end
+
+@testset "Counters" begin
+  T = Float64
+  nie = 5
+  n = 20
+  eem = identity_eem(nie; T, n, bool = true)
+
+  cpt_eem = get_counter_elt_mat(eem)
+  cpt = Counter_elt_mat()
+  cpt2 = similar(cpt)
+
+  @test cpt == cpt2
+  @test cpt == cpt_eem
+
+  @test iter_info(cpt) == (0, 0, 0)
+  @test total_info(cpt) == (0, 0, 0)
+  
+  update_counter_elt_mat!(cpt_eem, 1)
+  update_counter_elt_mat!(cpt, 0)
+  update_counter_elt_mat!(cpt2, -1)
+
+  @test cpt != cpt2
+  @test cpt != cpt_eem
+
+  @test iter_info(cpt) == (0, 1, 0)
+  @test total_info(cpt) == (0, 1, 0)
+  
+  @test iter_info(cpt_eem) == (1, 0, 0)
+  @test total_info(cpt_eem) == (1, 0, 0)
+  
+  @test iter_info(cpt2) == (0, 0, 1)
+  @test total_info(cpt2) == (0, 0, 1)
+  
+end
