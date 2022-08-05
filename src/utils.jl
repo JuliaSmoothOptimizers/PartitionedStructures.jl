@@ -172,9 +172,9 @@ Perform a BFGS update over the matrix `B` by using the vectors `s = x1 - x0` and
 Otherwise, it performs a SR1 update with `B, s, y`.
 """
 function SE(s::Vector{Y}, y::Vector{Y}, B::Array{Y, 2}; kwargs...) where {Y <: Number}
-  B_1 = similar(B)
-  SE!(s, y, B, B_1; kwargs...)
-  B_1
+  _B = copy(B)
+  SE!(s, y, _B; kwargs...)
+  return _B
 end
 
 function SE(
