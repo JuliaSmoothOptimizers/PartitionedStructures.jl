@@ -19,16 +19,15 @@ using PartitionedStructures.M_abstract_part_struct, PartitionedStructures.M_part
   @test check_epv_epm(epm3, epv1) == false
   @test full_check_epv_epm(epm3, epv1) == false
 
-  epm4, epv4 = create_epv_epm<(; n = 9, nie = 7, overlapping = 6, mul_m = 5.0, mul_v = 100.0)
+  epm4, epv4 = create_epv_epm(; n = 9, nie = 7, overlapping = 6, mul_m = 5.0, mul_v = 100.0)
   @test check_epv_epm(epm2, epv4)
   @test full_check_epv_epm(epm2, epv4) == false
 
-  epm5, epv5 = create_epv_epm_rand(; n = 9, nie = 7, overlapping = 6, mul_m = 5.0, mul_v = 100.0)
+  epm5, epv5 = create_epv_epm_rand(; n = 9, nie = 7, overlapping = 6, mul_v = 100.0)
   @test check_epv_epm(epm2, epv5)
   @test full_check_epv_epm(epm2, epv5) == false
   @test check_epv_epm(epm4, epv5)
   @test full_check_epv_epm(epm4, epv5)
-
 end
 
 @testset "Matrix interface" begin
@@ -68,11 +67,6 @@ end
 
   n_i_sps_pm = n_i_SPS(n; overlapping = 1)
   sps_sp_m = SparseMatrixCSC(n_i_sps_pm)
-  ldl(sps_sp_m)
   sps_m = Matrix(n_i_sps_pm)
 
-  sp_m = sprand(10, 10, 0.1)
-  sp_m2 = copy(sp_m)
-  m = Matrix(sp_m)
-  sm = Symmetric(triu(sp_m2), :U) # get upper triangle and apply Symmetric wrapper
 end

@@ -35,3 +35,13 @@ using PartitionedStructures.M_abstract_part_struct
 
   @test build_v(epv) != zeros(n)
 end
+
+@testset "dynamical safeguard" begin
+  mutable struct TestPartitionedVector{T} <: Part_v{T}  
+    c::T
+  end 
+
+  pv = TestPartitionedVector{Int}(5)
+  @test_throws ErrorException build_v!(pv)
+end
+

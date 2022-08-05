@@ -149,8 +149,10 @@ end
   epv_from_epv!(epv_tmp, epv)
   @test epv_tmp == epv
 
-
   @test scale_epv!(epv_from_v(ones(n), epv), 2 * ones(N)) == 2 * scale_epv!(epv_from_v(ones(n), epv), ones(N))
+  @test scale_epv(epv_from_v(ones(n), epv), 2 * ones(N)) == 2 * scale_epv(epv_from_v(ones(n), epv), ones(N))
+
+  @test Vector(epv) == get_v(epv)
 end
 
 @testset "Allocations partitioned vectors" begin
