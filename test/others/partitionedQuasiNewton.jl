@@ -9,9 +9,9 @@ using PartitionedStructures.PartitionedQuasiNewton
   epm_B1, epv_y1 = create_epv_epm(; n = n, nie = 5, overlapping = 1, mul_m = 5.0, mul_v = 100.0)
   epm_B2, epv_y2 = create_epv_epm(; n = n, nie = 3, overlapping = 0, mul_m = 5.0, mul_v = 100.0)
   s = ones(n)
-  epm_B11 = PBFGS_update(epm_B1, epv_y1, s)
-  epm_B12 = PSR1_update(epm_B1, epv_y1, s)
-  epm_B13 = PSE_update(epm_B1, epv_y1, s)
+  epm_B11 = PBFGS_update(epm_B1, epv_y1, s; verbose=false)
+  epm_B12 = PSR1_update(epm_B1, epv_y1, s; verbose=false)
+  epm_B13 = PSE_update(epm_B1, epv_y1, s; verbose=false)
 
   @test Matrix(epm_B1) == transpose(Matrix(epm_B1))
   @test Matrix(epm_B11) != Matrix(epm_B1)
@@ -21,8 +21,8 @@ using PartitionedStructures.PartitionedQuasiNewton
   @test Matrix(epm_B11) == transpose(Matrix(epm_B11))
   @test Matrix(epm_B12) == transpose(Matrix(epm_B12))
 
-  @test_throws DimensionMismatch PBFGS_update(epm_B1, epv_y2, s)
-  @test_throws DimensionMismatch PSR1_update(epm_B1, epv_y2, s)
+  @test_throws DimensionMismatch PBFGS_update(epm_B1, epv_y2, s; verbose=false)
+  @test_throws DimensionMismatch PSR1_update(epm_B1, epv_y2, s; verbose=false)
 
   @testset "Convexity preservation test of PBFGS_update" begin
     n_test = 50
@@ -41,7 +41,7 @@ using PartitionedStructures.PartitionedQuasiNewton
         mul_v = rand() * 100,
       )
       s = 100 .* rand(n)
-      epm_B11 = PBFGS_update(epm_B1, epv_y1, s)
+      epm_B11 = PBFGS_update(epm_B1, epv_y1, s; verbose=false)
       @test mapreduce((x -> x > 0), my_and, eigvals(Matrix(epm_B11))) #test positive eigensvalues
     end
   end
@@ -57,8 +57,8 @@ using PartitionedStructures.PartitionedQuasiNewton
     epv_y = epv_from_epm(epm)
     s = ones(n)
 
-    epmBFGS = PBFGS_update(epm, epv_y, s)
-    epmCS = PCS_update(epm, epv_y, s)
+    epmBFGS = PBFGS_update(epm, epv_y, s; verbose=false)
+    epmCS = PCS_update(epm, epv_y, s; verbose=false)
     @test Matrix(epmBFGS) != Matrix(epmCS)
   end
 end
