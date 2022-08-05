@@ -1,4 +1,6 @@
 using PartitionedStructures.Instances
+using StatsBase
+
 
 @testset "Test update/update!" begin
   @testset " partitioned-matrix update" begin
@@ -41,13 +43,8 @@ end
   n = 150
   N = 100
   ni = 9
-  sp_vec_elt(ni::Int, n; p = ni / n) = sprand(Float64, n, p)
-  vec_sp_eev = map(i -> sp_vec_elt(ni, n), 1:N)
-  map(spx -> begin
-    spx.nzval .*= 100
-    spx.nzval .-= 50
-  end, vec_sp_eev)
-  epv = create_epv(vec_sp_eev)
+  element_variables = map((i -> sample(1:n, ni, replace = false)), 1:N)
+  epv = create_epv(element_variables)
   build_v!(epv)
   y = get_v(epv)
   epm = epm_from_epv(epv)
@@ -205,6 +202,5 @@ end
   partitioned_linear_operator_PLSR1 = eplo_lsr1_from_epv(partitioned_gradient_x0)
   B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s1)
   # @test norm(B_PLSR1 * s1 - y1)==0. # the second element hessian approximation is not update,
-  # the partitioned quasi-Newton approximation doesn't satisfiy the secan equation.
-
+  
 end

@@ -61,7 +61,7 @@ end
   N = 15
   n = 20
   nie = 5
-  element_variables = map((i -> rand(1:n, nie)), 1:N)
+  element_variables = map((i -> sample(1:n, nie, replace = false)), 1:N)
   create_epv(element_variables, n)
 end
 
