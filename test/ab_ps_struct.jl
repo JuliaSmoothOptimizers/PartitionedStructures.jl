@@ -39,4 +39,15 @@ using PartitionedStructures.M_abstract_part_struct
   end
 end
 
+@testset "dynamical check methods" begin
 
+  mutable struct TestPartitionedStruct{T} <: M_abstract_part_struct.AbstractPartitionedStructure{T}
+    c::T
+  end 
+
+  ps = TestPartitionedStruct{Int}(5)
+  
+  @test_throws ErrorException get_ee_struct(ps)
+  @test_throws ErrorException initialize_component_list!(ps)
+
+end

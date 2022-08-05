@@ -51,7 +51,7 @@ function BFGS(
   kwargs...,
 ) where {Y <: Number}
   _B = copy(B)
-  BFGS!(x_1 - x, g_1 - g, _B; kwargs...)
+  BFGS!(x, x_1, g, x_1, _B; kwargs...)
   return _B
 end
 
@@ -118,7 +118,7 @@ function SR1(
   kwargs...,
 ) where {Y <: Number}
   _B = copy(B)
-  SR1!(x_1 - x, g_1 - g, _B; kwargs...)
+  SR1!(x, x_1, g, x_1, _B; kwargs...)
   _B
 end
 
@@ -186,7 +186,7 @@ function SE(
   kwargs...,
 ) where {Y <: Number}
   _B = copy(B)
-  SE!(x_1 - x, g_1 - g, _B; kwargs...)
+  SE!(x, x_1, g, x_1, _B; kwargs...)
   _B
 end
 
