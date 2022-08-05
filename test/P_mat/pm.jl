@@ -85,7 +85,7 @@ end
 
 @testset "Generate partitioned matrices" begin
   epm1 = ones_epm_and_id(6, 9)
-  emp2 = n_i_sep(25)
+  epm2 = n_i_sep(25)
   epm3 = n_i_SPS(20)
 
   @test epm1 != epm2
