@@ -79,7 +79,7 @@ initialize_component_list!(ps::T) where {T <: AbstractPartitionedStructure} =
     ee_vector = get_ee_struct(eps::AbstractPartitionedStructure{T}) where T
     ee = get_ee_struct(eps::AbstractPartitionedStructure{T}, i::Int) where T
 
-Return a vector composed of every elemental element structure or only its `i`-th elemental element.
+Return a vector of every elemental elements fom $(_eps) or only its `i`-th elemental element.
 """
 get_ee_struct(ps::T) where {T <: AbstractPartitionedStructure} = @error("should not be called")
 

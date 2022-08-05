@@ -24,7 +24,7 @@ Return the vector `pv.v` of the partitioned-vector `pv`.
 
 Set the components of the vector `pv.v` (resp. `pv.v[i]`) from the partitioned-vector `pv` to the vector `v` (resp. `value`).
 """
-@inline set_v!(pv::T, v::Vector{Y}) where {Y, T <: Part_v{Y}} = pv.v = v
+@inline set_v!(pv::T, v::Vector{Y}) where {Y, T <: Part_v{Y}} = pv.v .= v
 @inline set_v!(pv::T, i::Int, value::Y) where {Y, T <: Part_v{Y}} = pv.v[i] = value
 
 """
