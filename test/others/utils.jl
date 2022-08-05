@@ -8,6 +8,13 @@ using PartitionedStructures.Utils
     @test my_and(true, true) == true
   end
 
+  @testset "max_indices and min_indices" begin
+    N = 5
+    elt_vars = map(i-> [i:i+5;], 1:N)
+    @test max_indices(elt_vars) == 10
+    @test min_indices(elt_vars) == 1
+  end
+
   @testset "BFGS" begin
     n = 10
     B = [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
@@ -32,8 +39,8 @@ using PartitionedStructures.Utils
 
   @testset "SR1" begin
     n = 10
-    B = reshape([(i == j ? 1.0 : 0.0) for i = 1:n for j = 1:n], n, n)
-    B_x2 = (x -> 2 * x).(reshape([(i == j ? 1.0 : 0.0) for i = 1:n for j = 1:n], n, n))
+    B = [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
+    B_x2 = (x -> 2 * x).([(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n])
     s = ones(n)
     y = (x -> x / 2).(ones(n))
 
@@ -50,4 +57,16 @@ using PartitionedStructures.Utils
     B3 = SR1((x -> 1 / 2 * x).(s), s, B_x2; index = 5, reset = 4)
     @test B3 == B
   end
+
+  @testset "SE" begin
+    n = 10
+    B = [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
+    
+    s = ones(n)
+    y = (x -> x / 2).(ones(n))
+
+    @test SE(s, y, B) == BFGS(s, y, B)
+    @test SE(s, -s, B) == SR1(s, -s, B)
+  end
+
 end
