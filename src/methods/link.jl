@@ -198,8 +198,8 @@ Produce `s::String` that summarizes the partitioned update applied onto `pm` at 
 The method accumulates the informations gathered by each element-counter during the last iterate.
 """
 function string_counters_iter(pm::T; name = :PQN) where {T <: Part_mat}
-  epm_vectors = get_ee_struct(pm)
-  counters = (epm -> epm.counter).(epm_vectors)
+  eem_vectors = get_ee_struct(pm)
+  counters = (eem -> eem.counter).(eem_vectors)
   update = 0
   untouch = 0
   reset = 0
@@ -221,8 +221,8 @@ Produce `s::String` that summarizes the partitioned update applied onto `pm` sin
 The method accumulates the informations gathered by each element-counter since their allocations.
 """
 function string_counters_total(pm::T; name = :PQN) where {T <: Part_mat}
-  epm_vectors = get_ee_struct(pm)
-  counters = (epm -> epm.counter).(epm_vectors)
+  eem_vectors = get_ee_struct(pm)
+  counters = (eem -> eem.counter).(eem_vectors)
   update = 0
   untouch = 0
   reset = 0
