@@ -73,7 +73,7 @@ Check if each element-structure of both partitioned-structures depend of the sam
 Build for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
 """
 initialize_component_list!(ps::T) where {T <: AbstractPartitionedStructure} =
-  @error("should not be called")
+  error("should not be called")
 
 """
     ee_vector = get_ee_struct(eps::AbstractPartitionedStructure{T}) where T
@@ -81,6 +81,6 @@ initialize_component_list!(ps::T) where {T <: AbstractPartitionedStructure} =
 
 Return a vector of every elemental elements fom $(_eps) or only its `i`-th elemental element.
 """
-get_ee_struct(ps::T) where {T <: AbstractPartitionedStructure} = @error("should not be called")
+get_ee_struct(ps::T) where {T <: AbstractPartitionedStructure} = error("should not be called")
 
 end
