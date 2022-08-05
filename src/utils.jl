@@ -235,7 +235,7 @@ function SE!(
       return 0
     else
       n = length(s)
-      B .= [(i == j ? (Y)(1) : (Y)(0)) for i = 1:n for j = 1:n]
+      B .= [(i == j ? (Y)(1) : (Y)(0)) for i = 1:n, j = 1:n]
       return -1
     end
   end
