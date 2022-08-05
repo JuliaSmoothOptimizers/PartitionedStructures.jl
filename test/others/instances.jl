@@ -19,9 +19,16 @@ using PartitionedStructures.M_abstract_part_struct, PartitionedStructures.M_part
   @test check_epv_epm(epm3, epv1) == false
   @test full_check_epv_epm(epm3, epv1) == false
 
-  epm4, epv4 = create_epv_epm(; n = 9, nie = 7, overlapping = 6, mul_m = 5.0, mul_v = 100.0)
+  epm4, epv4 = create_epv_epm<(; n = 9, nie = 7, overlapping = 6, mul_m = 5.0, mul_v = 100.0)
   @test check_epv_epm(epm2, epv4)
   @test full_check_epv_epm(epm2, epv4) == false
+
+  epm5, epv5 = create_epv_epm_rand(; n = 9, nie = 7, overlapping = 6, mul_m = 5.0, mul_v = 100.0)
+  @test check_epv_epm(epm2, epv5)
+  @test full_check_epv_epm(epm2, epv5) == false
+  @test check_epv_epm(epm4, epv5)
+  @test full_check_epv_epm(epm4, epv5)
+
 end
 
 @testset "Matrix interface" begin

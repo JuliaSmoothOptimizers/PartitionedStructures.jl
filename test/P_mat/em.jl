@@ -53,5 +53,17 @@ end
   
   @test iter_info(cpt2) == (0, 0, 1)
   @test total_info(cpt2) == (0, 0, 1)
+end
+
+@testset "set_nie!" begin
+  T = Float64
+  nie = 5
+  n = 20
+  eem = identity_eem(nie; T, n, bool = true)
+
+  set_nie!(eem, 6)
+  @test get_nie(eem) == 6
   
+  set_nie!(eem, 5)
+  @test get_nie(eem) == 5
 end

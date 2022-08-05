@@ -24,4 +24,14 @@ using PartitionedStructures.M_abstract_part_struct, PartitionedStructures.M_part
   _eplo2 = eplo_lbfgs_from_epv(epv2)
   @test check_epv_epm(epv2, _eplo2)
   @test full_check_epv_epm(epv2, _eplo2)
+
+  epv = epv_from_eplo(_eplo2)
+  @test check_epv_epm(epv, _eplo2)
+  @test full_check_epv_epm(epv, _eplo2)
+
+  @test mul_epm_epv(_eplo2, epv) == mul_epm_epv(_epm2, epv)
+
+  @test string_counters_iter(_epm2) == "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
+
+  @test string_counters_total(_epm2) == "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
 end
