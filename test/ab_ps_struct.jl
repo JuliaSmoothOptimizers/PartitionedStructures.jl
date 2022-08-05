@@ -37,16 +37,24 @@ using PartitionedStructures.M_abstract_part_struct
     @test get_ee_struct(epv, i) == epv.eev_set[i]
     @test get_ee_struct(epm, i) == epm.eem_set[i]
   end
+
 end
 
 @testset "dynamical check methods" begin
 
   mutable struct TestPartitionedStruct{T} <: M_abstract_part_struct.AbstractPartitionedStructure{T}
     c::T
+    N::Int
+    n::Int
   end 
 
-  ps = TestPartitionedStruct{Int}(5)
+  ps = TestPartitionedStruct{Int}(5, 4, 5)
+  ps2 = TestPartitionedStruct{Int}(6, 4, 5)
+  ps3 = TestPartitionedStruct{Int}(5, 3, 5)
   
+  @test ps == ps2
+  @test ps != ps3
+
   @test_throws ErrorException get_ee_struct(ps)
   @test_throws ErrorException initialize_component_list!(ps)
 

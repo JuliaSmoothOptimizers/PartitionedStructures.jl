@@ -40,10 +40,10 @@ function create_epv_epm_rand(;
   n = 9,
   nie = 5,
   overlapping = 1,
-  range_mul_m = nie:(2 * nie),
+  range_mul_m = 1:(2 * nie),
   mul_v = 100.0,
 )
-  epm = part_mat(; n = n, nie = nie, overlapping = overlapping, mul = rand(1:range_mul_m))
+  epm = part_mat(; n = n, nie = nie, overlapping = overlapping, mul = rand(range_mul_m))
   epv = part_vec(; n = n, nie = nie, overlapping = overlapping, mul = mul_v)
   return (epm, epv)
 end
