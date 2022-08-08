@@ -11,7 +11,7 @@ using PartitionedStructures.M_part_v, PartitionedStructures.PartitionedLOQuasiNe
   s = ones(n)
   B = Matrix(eplo_B)
 
-  eplo_B1 = PLBFGS_update(eplo_B, epv_y, s; verbose=false)
+  eplo_B1 = PLBFGS_update(eplo_B, epv_y, s; verbose = false)
   B1 = Matrix(eplo_B1)
 
   @test B == transpose(B)
@@ -32,7 +32,7 @@ end
     epm_B1, epv_y1 =
       create_epv_eplo_bfgs(; n = n, nie = nie, overlapping = over, mul_v = rand() * 100)
     s = 100 .* rand(n)
-    epm_B11 = PLBFGS_update(epm_B1, epv_y1, s; verbose=false)
+    epm_B11 = PLBFGS_update(epm_B1, epv_y1, s; verbose = false)
     @test mapreduce((x -> x > 0), my_and, eigvals(Matrix(epm_B11))) #test positive eigensvalues
     @test Matrix(epm_B11) == transpose(Matrix(epm_B11))
   end
@@ -46,7 +46,7 @@ end
   s = ones(n)
   B = Matrix(eplo_B)
 
-  eplo_B1 = PLSR1_update(eplo_B, epv_y, s; verbose=false)
+  eplo_B1 = PLSR1_update(eplo_B, epv_y, s; verbose = false)
   B1 = Matrix(eplo_B1)
 
   @test B == transpose(B)
@@ -64,7 +64,7 @@ end
   B = Matrix(eplo_B)
   @test B == transpose(B)
 
-  eplo_B1 = Part_update(eplo_B, epv_y, s; verbose=false)
+  eplo_B1 = Part_update(eplo_B, epv_y, s; verbose = false)
   B1 = Matrix(eplo_B1)
   @test isapprox(B1, transpose(B1))
 end

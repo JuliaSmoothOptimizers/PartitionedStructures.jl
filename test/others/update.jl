@@ -1,15 +1,14 @@
 using PartitionedStructures.Instances
 using StatsBase
 
-
 @testset "Test update/update!" begin
   @testset " partitioned-matrix update" begin
     n = 9
     epm_bfgs, epv_y = create_epv_epm(; n = n, nie = 5, overlapping = 1, mul_m = 5.0, mul_v = 100.0)
     epm_sr1 = copy(epm_bfgs)
     s = ones(n)
-    mat_PBFGS = update(epm_bfgs, epv_y, s; verbose=false)
-    mat_PSR1 = update(epm_sr1, epv_y, s; name = :psr1, verbose=false)
+    mat_PBFGS = update(epm_bfgs, epv_y, s; verbose = false)
+    mat_PSR1 = update(epm_sr1, epv_y, s; name = :psr1, verbose = false)
   end
 
   @testset "partitioned linear-operators update" begin
@@ -18,11 +17,11 @@ using StatsBase
     over = 2
     s = ones(n)
     eplo_bfgs, epv_y = create_epv_eplo_bfgs(; n = n, nie = nie, overlapping = over)
-    mat_PLBFGS = update(eplo_bfgs, epv_y, s; verbose=false)
+    mat_PLBFGS = update(eplo_bfgs, epv_y, s; verbose = false)
     eplo_sr1, epv_y = create_epv_eplo_sr1(; n = n, nie = nie, overlapping = over)
-    mat_PSR1 = update(eplo_sr1, epv_y, s; verbose=false)
+    mat_PSR1 = update(eplo_sr1, epv_y, s; verbose = false)
     eplo_bfgs_sr1, epv_y = create_epv_eplo(; n = n, nie = nie, overlapping = over)
-    mat_PLBFGS_SR1 = update(eplo_bfgs_sr1, epv_y, s; verbose=false)
+    mat_PLBFGS_SR1 = update(eplo_bfgs_sr1, epv_y, s; verbose = false)
   end
 
   @testset "partitioned linear-operators update!" begin
@@ -31,11 +30,11 @@ using StatsBase
     over = 2
     s = ones(n)
     eplo_bfgs, epv_y = create_epv_eplo_bfgs(; n = n, nie = nie, overlapping = over)
-    mat_PLBFGS = update!(eplo_bfgs, epv_y, s; verbose=false)
+    mat_PLBFGS = update!(eplo_bfgs, epv_y, s; verbose = false)
     eplo_sr1, epv_y = create_epv_eplo_sr1(; n = n, nie = nie, overlapping = over)
-    mat_PSR1 = update!(eplo_sr1, epv_y, s; verbose=false)
+    mat_PSR1 = update!(eplo_sr1, epv_y, s; verbose = false)
     eplo_bfgs_sr1, epv_y = create_epv_eplo(; n = n, nie = nie, overlapping = over)
-    mat_PLBFGS_SR1 = update!(eplo_bfgs_sr1, epv_y, s; verbose=false)
+    mat_PLBFGS_SR1 = update!(eplo_bfgs_sr1, epv_y, s; verbose = false)
   end
 end
 
@@ -54,12 +53,12 @@ end
 
   s = ones(n)
 
-  epm_bfgs = PBFGS_update(epm, epv, s; verbose=false)
-  epm_sr1 = PSR1_update(epm, epv, s; verbose=false)
-  epm_se = PSE_update(epm, epv, s; verbose=false)
-  epm_plbfgs = PLBFGS_update(eplo_lbfgs, epv, s; verbose=false)
-  epm_plsr1 = PLSR1_update(eplo_sr1, epv, s; verbose=false)
-  epm_plse = PLSE_update(eplo_lose, epv, s; verbose=false)
+  epm_bfgs = PBFGS_update(epm, epv, s; verbose = false)
+  epm_sr1 = PSR1_update(epm, epv, s; verbose = false)
+  epm_se = PSE_update(epm, epv, s; verbose = false)
+  epm_plbfgs = PLBFGS_update(eplo_lbfgs, epv, s; verbose = false)
+  epm_plsr1 = PLSR1_update(eplo_sr1, epv, s; verbose = false)
+  epm_plse = PLSE_update(eplo_lose, epv, s; verbose = false)
 end
 
 @testset "Concrete example of the partitioned updates (verify the secant equation)" begin
@@ -170,9 +169,10 @@ end
   B_BFGS1 = BFGS(s1, y1, B0)
   B_BFGS2 = BFGS(s2, y2, B_BFGS1)
 
-  B_PBFGS1 = update(partitioned_matrix, partitioned_gradient_difference, s1; name = :pbfgs, verbose=false)
+  B_PBFGS1 =
+    update(partitioned_matrix, partitioned_gradient_difference, s1; name = :pbfgs, verbose = false)
   @test norm(mul_epm_vector(partitioned_matrix, s1) - y1) == 0.0
-  update!(partitioned_matrix, partitioned_gradient_difference2, s2; name = :pbfgs, verbose=false)
+  update!(partitioned_matrix, partitioned_gradient_difference2, s2; name = :pbfgs, verbose = false)
   B_PBFGS2 = Matrix(partitioned_matrix)
 
   norm(B_BFGS1 * s1 - y1)
@@ -186,11 +186,25 @@ end
   partitioned_linear_operator_PLBFGS = eplo_lbfgs_from_epv(partitioned_gradient_x0)
   partitioned_linear_operator_PLSE = eplo_lose_from_epv(partitioned_gradient_x0)
 
-  B_PSR1 = update(partitioned_matrix_PSR1, partitioned_gradient_difference, s1; name = :psr1, verbose=false)
-  B_PSE = update(partitioned_matrix_PSE, partitioned_gradient_difference, s1; name = :pse, verbose=false) # the default update
+  B_PSR1 = update(
+    partitioned_matrix_PSR1,
+    partitioned_gradient_difference,
+    s1;
+    name = :psr1,
+    verbose = false,
+  )
+  B_PSE = update(
+    partitioned_matrix_PSE,
+    partitioned_gradient_difference,
+    s1;
+    name = :pse,
+    verbose = false,
+  ) # the default update
 
-  B_PLBFGS = update(partitioned_linear_operator_PLBFGS, partitioned_gradient_difference, s1; verbose=false)
-  B_PLSE = update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s1; verbose=false)
+  B_PLBFGS =
+    update(partitioned_linear_operator_PLBFGS, partitioned_gradient_difference, s1; verbose = false)
+  B_PLSE =
+    update(partitioned_linear_operator_PLSE, partitioned_gradient_difference, s1; verbose = false)
 
   @test isapprox(norm(B_PSR1 * s1 - y1), 0.0)
   @test isapprox(norm(B_PSE * s1 - y1), 0.0)
@@ -199,7 +213,8 @@ end
 
   # There is also a PLSR1 approximation, but is not fullt working since there is some issues with LSR1Operator
   partitioned_linear_operator_PLSR1 = eplo_lsr1_from_epv(partitioned_gradient_x0)
-  B_PLSR1 = update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s1; verbose=false)
+  B_PLSR1 =
+    update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s1; verbose = false)
   # @test norm(B_PLSR1 * s1 - y1)==0. # the second element hessian approximation is not update,
-  
+
 end

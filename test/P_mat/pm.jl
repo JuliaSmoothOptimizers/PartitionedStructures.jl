@@ -71,15 +71,15 @@ end
   @test epm != epm_true
 
   epm = identity_epm(element_variables)
-  
+
   @test correlated_var(epm, 1) == [1, 2, 5, 7, 3, 6]
   @test correlated_var(epm, 8) == [3, 6, 7, 8, 2, 4]
-  for i in 1:3
-    @test get_eem_set_Bie(epm, i) == [i==j ? 1. : 0. for i in 1:4, j in 1:4]
+  for i = 1:3
+    @test get_eem_set_Bie(epm, i) == [i == j ? 1.0 : 0.0 for i = 1:4, j = 1:4]
   end
-  @test get_eem_set_Bie(epm, 4) == [i==j ? 1. : 0. for i in 1:5, j in 1:5]
+  @test get_eem_set_Bie(epm, 4) == [i == j ? 1.0 : 0.0 for i = 1:5, j = 1:5]
 
-  indices = [1,2]
+  indices = [1, 2]
   @test get_eem_sub_set(epm, indices) == epm.eem_set[indices]
 end
 

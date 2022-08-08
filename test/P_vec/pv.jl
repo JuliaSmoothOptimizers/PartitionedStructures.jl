@@ -6,7 +6,6 @@ using PartitionedStructures.ModElemental_ev
 using PartitionedStructures.M_abstract_element_struct
 using PartitionedStructures.M_abstract_part_struct
 
-
 @testset "first test" begin
   N = 30
   nᵢ = 50
@@ -95,7 +94,7 @@ end
   N = 15
   n = 20
   nie = 5
-  element_variables = map((i -> sample(1:n, nie, replace=false)), 1:N)
+  element_variables = map((i -> sample(1:n, nie, replace = false)), 1:N)
   epv = create_epv(element_variables, n)
 
   @test get_eev_set(epv) == epv.eev_set
@@ -103,54 +102,57 @@ end
 
   indices = 1:2:5
   vec_indices = [indices;]
-  
+
   @test get_eev_subset(epv, vec_indices) == epv.eev_set[indices]
 
   @test get_ee_struct(epv) == epv.eev_set
   @test get_ee_struct(epv, 1) == epv.eev_set[1]
 
   epv_ones = epv_from_v(ones(n), epv)
-  
-  for i in 1:N    
+
+  for i = 1:N
     @test get_eev_value(epv_ones, i) == ones(nie)
-    for j in 1:nie
-      @test get_eev_value(epv_ones, i, j) == 1.
+    for j = 1:nie
+      @test get_eev_value(epv_ones, i, j) == 1.0
     end
   end
 
   minus_epv!(epv_ones)
-  for i in 1:N    
-    @test get_eev_value(epv_ones, i) == - ones(nie)
-    for j in 1:nie
-      @test get_eev_value(epv_ones, i, j) == -1.
+  for i = 1:N
+    @test get_eev_value(epv_ones, i) == -ones(nie)
+    for j = 1:nie
+      @test get_eev_value(epv_ones, i, j) == -1.0
     end
   end
 
   add_epv!(epv_from_v(ones(n), epv), epv_ones)
-  for i in 1:N    
+  for i = 1:N
     @test get_eev_value(epv_ones, i) == zeros(nie)
-    for j in 1:nie
-      @test get_eev_value(epv_ones, i, j) == 0.
+    for j = 1:nie
+      @test get_eev_value(epv_ones, i, j) == 0.0
     end
   end
 
-  values = map(i-> 3*ones(nie),1:N)
+  values = map(i -> 3 * ones(nie), 1:N)
   set_epv!(epv, values)
-  for i in 1:N    
-    @test get_eev_value(epv, i) == 3*ones(nie)
-    for j in 1:nie
-      @test get_eev_value(epv, i, j) == 3.
+  for i = 1:N
+    @test get_eev_value(epv, i) == 3 * ones(nie)
+    for j = 1:nie
+      @test get_eev_value(epv, i, j) == 3.0
     end
   end
 
-  @test prod_part_vectors(epv_from_v(ones(n), epv), epv_from_v(ones(n), epv)) == (N*nie, map(i-> nie*1., 1:N))
+  @test prod_part_vectors(epv_from_v(ones(n), epv), epv_from_v(ones(n), epv)) ==
+        (N * nie, map(i -> nie * 1.0, 1:N))
 
   epv_tmp = similar(epv)
   epv_from_epv!(epv_tmp, epv)
   @test epv_tmp == epv
 
-  @test scale_epv!(epv_from_v(ones(n), epv), 2 * ones(N)) == 2 * scale_epv!(epv_from_v(ones(n), epv), ones(N))
-  @test scale_epv(epv_from_v(ones(n), epv), 2 * ones(N)) == 2 * scale_epv(epv_from_v(ones(n), epv), ones(N))
+  @test scale_epv!(epv_from_v(ones(n), epv), 2 * ones(N)) ==
+        2 * scale_epv!(epv_from_v(ones(n), epv), ones(N))
+  @test scale_epv(epv_from_v(ones(n), epv), 2 * ones(N)) ==
+        2 * scale_epv(epv_from_v(ones(n), epv), ones(N))
 
   @test Vector(epv) == get_v(epv)
 end

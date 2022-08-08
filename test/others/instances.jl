@@ -68,5 +68,4 @@ end
   n_i_sps_pm = n_i_SPS(n; overlapping = 1)
   sps_sp_m = SparseMatrixCSC(n_i_sps_pm)
   sps_m = Matrix(n_i_sps_pm)
-
 end
