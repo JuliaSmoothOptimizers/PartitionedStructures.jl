@@ -10,7 +10,7 @@ using PartitionedStructures.Utils
 
   @testset "max_indices and min_indices" begin
     N = 5
-    elt_vars = map(i-> [i:i+5;], 1:N)
+    elt_vars = map(i -> [i:(i + 5);], 1:N)
     @test max_indices(elt_vars) == 10
     @test min_indices(elt_vars) == 1
   end
@@ -31,7 +31,7 @@ using PartitionedStructures.Utils
     x0 = zeros(n)
     g1 = ones(n)
     g0 = zeros(n)
-    @test BFGS(x0, x1, g0, g1, B) == BFGS(x1-x0, g1-g0, B)
+    @test BFGS(x0, x1, g0, g1, B) == BFGS(x1 - x0, g1 - g0, B)
 
     B2 = BFGS(s, -s, B)
     @test B2 == B
@@ -54,7 +54,7 @@ using PartitionedStructures.Utils
     x0 = zeros(n)
     g1 = ones(n)
     g0 = zeros(n)
-    @test SR1(x0, x1, g0, g1, B) == SR1(x1-x0, g1-g0, B)
+    @test SR1(x0, x1, g0, g1, B) == SR1(x1 - x0, g1 - g0, B)
 
     B1 = SR1(s, y, B)
     @test B1 == transpose(B1)
@@ -73,7 +73,7 @@ using PartitionedStructures.Utils
   @testset "SE" begin
     n = 10
     B = [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
-    
+
     s = ones(n)
     y = (x -> x / 2).(ones(n))
 
@@ -82,19 +82,17 @@ using PartitionedStructures.Utils
     @test SE(s, -s, B) == SR1(s, -s, B)
     @test isapprox(SE(s, y, B) * s, y)
 
-
     s = zeros(n)
     y = (x -> x / 2).(ones(n))
 
-    @test SE(s, y, B; index=1, reset=2) == B
-    @test SE(s, y, B; index=4, reset=2) == [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
+    @test SE(s, y, B; index = 1, reset = 2) == B
+    @test SE(s, y, B; index = 4, reset = 2) == [(i == j ? 1.0 : 0.0) for i = 1:n, j = 1:n]
 
     x1 = ones(n)
     x0 = zeros(n)
     g1 = ones(n)
     g0 = zeros(n)
 
-    @test SE(x0, x1, g0, g1, B) == SE(x1-x0, g1-g0, B)
+    @test SE(x0, x1, g0, g1, B) == SE(x1 - x0, g1 - g0, B)
   end
-
 end

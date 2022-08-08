@@ -83,7 +83,13 @@ copy(cem::Counter_elt_mat) = Counter_elt_mat(
 )
 similar(cem::Counter_elt_mat) = Counter_elt_mat()
 
-(==)(cem1::Counter_elt_mat, cem2::Counter_elt_mat) = (cem1.total_update == cem2.total_update) && (cem1.current_update == cem2.current_update) && (cem1.current_untouched == cem2.total_untouched) && (cem1.total_untouched == cem2.current_untouched) && (cem1.current_reset == cem2.total_reset) && (cem1.total_reset == cem2.current_reset)
+(==)(cem1::Counter_elt_mat, cem2::Counter_elt_mat) =
+  (cem1.total_update == cem2.total_update) &&
+  (cem1.current_update == cem2.current_update) &&
+  (cem1.current_untouched == cem2.total_untouched) &&
+  (cem1.total_untouched == cem2.current_untouched) &&
+  (cem1.current_reset == cem2.total_reset) &&
+  (cem1.total_reset == cem2.current_reset)
 
 """
     index = get_current_untouched(cem::Counter_elt_mat)

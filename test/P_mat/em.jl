@@ -37,7 +37,7 @@ end
 
   @test iter_info(cpt) == (0, 0, 0)
   @test total_info(cpt) == (0, 0, 0)
-  
+
   update_counter_elt_mat!(cpt_eem, 1)
   update_counter_elt_mat!(cpt, 0)
   update_counter_elt_mat!(cpt2, -1)
@@ -47,10 +47,10 @@ end
 
   @test iter_info(cpt) == (0, 1, 0)
   @test total_info(cpt) == (0, 1, 0)
-  
+
   @test iter_info(cpt_eem) == (1, 0, 0)
   @test total_info(cpt_eem) == (1, 0, 0)
-  
+
   @test iter_info(cpt2) == (0, 0, 1)
   @test total_info(cpt2) == (0, 0, 1)
 end
@@ -63,7 +63,7 @@ end
 
   set_nie!(eem, 6)
   @test get_nie(eem) == 6
-  
+
   set_nie!(eem, 5)
   @test get_nie(eem) == 5
 end

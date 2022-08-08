@@ -31,7 +31,9 @@ using PartitionedStructures.M_abstract_part_struct, PartitionedStructures.M_part
 
   @test mul_epm_epv(_eplo2, epv) == mul_epm_epv(_epm2, epv)
 
-  @test string_counters_iter(_epm2) == "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
+  @test string_counters_iter(_epm2) ==
+        "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
 
-  @test string_counters_total(_epm2) == "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
+  @test string_counters_total(_epm2) ==
+        "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
 end

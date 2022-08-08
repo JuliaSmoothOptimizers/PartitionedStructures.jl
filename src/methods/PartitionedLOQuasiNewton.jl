@@ -165,7 +165,12 @@ Each elemental element linear-operator from `eplo_B` is either a `LBFGSOperator`
 The update performs on each element the quasi-Newton update associated to the linear-operator.
 Return the updated copy of `eplo_B`.
 """
-function Part_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where {T, Y <: Part_LO_mat{T}}
+function Part_update(
+  eplo_B::Y,
+  epv_y::Elemental_pv{T},
+  s::Vector{T};
+  kwargs...,
+) where {T, Y <: Part_LO_mat{T}}
   epm_copy = copy(eplo_B)
   Part_update!(epm_copy, epv_y, s; kwargs...)
   return epm_copy
@@ -183,7 +188,7 @@ function Part_update!(
   eplo_B::Y,
   epv_y::Elemental_pv{T},
   s::Vector{T};
-  kwargs...
+  kwargs...,
 ) where {T, Y <: Part_LO_mat{T}}
   epv_s = epv_from_v(s, epv_y)
   Part_update!(eplo_B, epv_y, epv_s; kwargs...)
