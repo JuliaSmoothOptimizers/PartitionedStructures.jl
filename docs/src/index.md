@@ -71,4 +71,4 @@ Method                 | Description
 
 ## Modules using [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl)
 The structures defined here are used in the module
-[PartiallySeparableSolvers.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/JuliaSmoothOptimizers/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
+[PartiallySeparableSolvers.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
