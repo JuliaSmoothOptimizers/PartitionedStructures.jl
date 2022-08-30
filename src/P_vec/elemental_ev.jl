@@ -5,6 +5,7 @@ using SparseArrays, StatsBase
 using ..M_abstract_element_struct, ..M_elt_vec, ..Utils
 
 import Base.==, Base.copy, Base.similar
+import Base.broadcast!
 
 export Elemental_elt_vec
 export ones_eev, new_eev, specific_ones_eev
@@ -34,6 +35,11 @@ end
 @inline copy(eev::Elemental_elt_vec{T}) where {T} =
   Elemental_elt_vec{T}(Vector{T}(get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 
+function broadcast!(f::Function, eev::Elemental_elt_vec{T}, As...) where {T}
+  _As = map(as -> as[get_indices(eev)], As)
+  broadcast!(f, get_vec(eev), _As...)
+  return eev
+end
 """
     eem = new_eev(nᵢ::Int; T=Float64, n=nᵢ^2)
 
