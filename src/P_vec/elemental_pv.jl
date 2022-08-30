@@ -148,14 +148,14 @@ Create an elemental partitioned-vector from a vector `eev_set` of: `SparseVector
   type = Float64,
 ) = create_epv(vec_elt_var, n; type)
 
-function create_epv(eev_set::Vector{Elemental_elt_vec{T}}; n = max_indices(eev_set)) where {T}
+function create_epv(eev_set::Vector{Elemental_elt_vec{T}}; n = max_indices(eev_set)) where {T<:Number}
   N = length(eev_set)
   v = zeros(T, n)
   return Elemental_pv{T}(N, n, eev_set, v)
 end
 
 function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type = Float64)
-  eev_set = map((elt_var -> create_eev(elt_var, type = type)), vec_elt_var)
+  eev_set = map((elt_var -> create_eev(elt_var; type)), vec_elt_var) ::Vector{Elemental_elt_vec{type}}
   epv = create_epv(eev_set; n = n)
   return epv
 end
