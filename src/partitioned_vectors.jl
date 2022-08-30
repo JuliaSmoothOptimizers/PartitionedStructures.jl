@@ -34,24 +34,33 @@ end
 getindex(pv::PartitionedVector, inds...) = getindex(get_v(pv.epv), inds...)
 
 function broadcast!(f::Function, pv::PartitionedVector, As...)
-  broadcast!(f, get_v(pv.epv), As...)
-  epv_from_v!(pv.epv, get_v(pv.epv))
+  broadcast!(f, pv.epv, As...)
   return pv
 end
 
-function setindex!(pv::PartitionedVector, vec::Vector, inds...)
-  setindex!(get_v(pv.epv), vec, inds...)  
-  epv_from_v!(pv.epv, get_v(pv.epv))
+function setindex!(pv::PartitionedVector, vec::AbstractVector, inds...)
+  setindex!(pv.epv, vec, inds...)    
   return pv
+end 
+
+function setindex!(vec::AbstractVector, pv::PartitionedVector, inds...)
+  setindex!(vec, pv.epv, inds...)  
+  return vec
 end
 
-function(+)(pv1::PartitionedVector, pv2::PartitionedVector)
-  epv1 = pv1.epv
-  _epv2 = copy(pv2)
-  epv2 = _epv2.epv
-  add_epv!(epv1, epv2)
-  return _epv2
-end
+# function setindex!(pv1::PartitionedVector, pv2::PartitionedVector, inds...)
+#   setindex!(pv1.epv, pv2.epv, inds...)  
+#   return pv
+# end
+
+
+# function(+)(pv1::PartitionedVector, pv2::PartitionedVector)
+#   epv1 = pv1.epv
+#   _epv2 = copy(pv2)
+#   epv2 = _epv2.epv
+#   add_epv!(epv1, epv2)
+#   return _epv2
+# end
 
 copy(pv::PartitionedVector{T}) where {T <: Number} = PartitionedVector{T}(copy(pv.epv))
 similar(pv::PartitionedVector{T}) where {T <: Number} = PartitionedVector{T}(similar(pv.epv))

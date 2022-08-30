@@ -8,6 +8,7 @@ using ..M_abstract_part_struct, ..M_part_v  # partitoned modules
 
 import Base.Vector
 import Base.==, Base.similar, Base.copy
+import Base.broadcast!, Base.setindex!
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
 export Elemental_pv
@@ -88,10 +89,27 @@ Set either the `i`-th elemental element-vector `epv` to `vec` or its `j`-th comp
 
 @inline (==)(ep1::Elemental_pv{T}, ep2::Elemental_pv{T}) where {T} =
   (get_N(ep1) == get_N(ep2)) && (get_n(ep1) == get_n(ep2)) && (get_eev_set(ep1) == get_eev_set(ep2))
-@inline similar(ep::Elemental_pv{T}) where {T} =
-  Elemental_pv{T}(get_N(ep), get_n(ep), similar.(get_eev_set(ep)), Vector{T}(undef, get_n(ep)))
-@inline copy(ep::Elemental_pv{T}) where {T} =
-  Elemental_pv{T}(get_N(ep), get_n(ep), copy.(get_eev_set(ep)), Vector{T}(get_v(ep)))
+@inline similar(epv::Elemental_pv{T}) where {T} =
+  Elemental_pv{T}(get_N(epv), get_n(epv), similar.(get_eev_set(epv)), Vector{T}(undef, get_n(epv)))
+@inline copy(epv::Elemental_pv{T}) where {T} =
+  Elemental_pv{T}(get_N(epv), get_n(epv), copy.(get_eev_set(epv)), Vector{T}(get_v(epv)))
+
+function broadcast!(f::Function, epv::Elemental_pv{T}, As...) where {T}  
+  map(element -> broadcast!(f, element, As...), epv.eev_set)
+  broadcast!(f, get_v(epv), As...)
+  return epv
+end
+
+function setindex!(epv::Elemental_pv, vec::AbstractVector, inds...)
+  setindex!(get_v(epv), vec, inds...)
+  return epv
+end
+
+function setindex!(vec::AbstractVector, epv::Elemental_pv, inds...)
+  setindex!(vec, get_v(epv), inds...)  
+  return vec
+end
+
 
 """
     build_v!(epv::Elemental_pv{T}) where T
