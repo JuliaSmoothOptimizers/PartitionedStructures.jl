@@ -8,6 +8,7 @@ using ..M_abstract_part_struct, ..M_part_v  # partitoned modules
 
 import Base.Vector
 import Base.==, Base.similar, Base.copy
+import Base.+, Base.-
 import Base.broadcast!, Base.setindex!
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
@@ -100,8 +101,17 @@ function broadcast!(f::Function, epv::Elemental_pv{T}, As...) where {T}
   return epv
 end
 
-function setindex!(epv::Elemental_pv, vec::AbstractVector, inds...)
+function broadcast!(f::Function, epv_res::Elemental_pv{T}, epv::Elemental_pv{T}, As...) where {T}  
+  epv_from_epv!(epv_res, epv)
+  map(element -> broadcast!(f, element, As...), epv_res.eev_set)
+  get_v(epv_res) .= get_v(epv)
+  broadcast!(f, get_v(epv), As...)
+  return epv_res
+end
+
+function setindex!(epv::Elemental_pv, vec, inds...)
   setindex!(get_v(epv), vec, inds...)
+  epv_from_v!(epv, get_v(epv)) # get_v(epv) == vec
   return epv
 end
 
@@ -110,6 +120,11 @@ function setindex!(vec::AbstractVector, epv::Elemental_pv, inds...)
   return vec
 end
 
+function setindex!(epv1::Elemental_pv, epv2::Elemental_pv, inds...)
+  epv_from_epv!(epv1, epv2)
+  get_v(epv1) .= get_v(epv2)
+  return epv
+end
 
 """
     build_v!(epv::Elemental_pv{T}) where T
@@ -137,6 +152,18 @@ Build in place the `-epv`, by inversing the value of each elemental element-vect
 minus_epv!(epv::Elemental_pv{T}) where {T <: Number} =
   map((eev -> set_minus_vec!(eev)), get_eev_set(epv))
 
+function (-)(epv::Elemental_pv) 
+  _epv = copy(epv)
+  minus_epv!(_epv)
+  return _epv
+end
+
+function (-)(epv1::Elemental_pv, epv2::Elemental_pv)
+  _epv = - epv2
+  add_epv!(epv1, _epv)
+  return _epv
+end
+
 """
     add_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T})
 
@@ -150,6 +177,12 @@ function add_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where {T <: Numb
     set_add_vec!(get_eev_set(epv2, i), vec1)
   end
   return epv2
+end
+
+function (+)(epv1::Elemental_pv, epv2::Elemental_pv)
+  _epv = copy(epv1)
+  add_epv!(_epv, epv2)
+  return _epv
 end
 
 """
