@@ -36,7 +36,7 @@ using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
 using .Link, .Instances, .PartMatInterface
 
 using ..PartitionedVectors
-export PartitionedVector
+export PartitionedVector, build!
 # export the main methods of every submodule
 
 # structures and functions related to element-structures
