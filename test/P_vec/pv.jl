@@ -10,8 +10,8 @@ using PartitionedStructures.M_abstract_part_struct
   N = 30
   nᵢ = 50
   pev = rand_epv(N, nᵢ)
-  v1 = build_v!(pev)
-  v2 = build_v!(pev)
+  v1 = build_v(pev)
+  v2 = build_v(pev)
   @test v1 == v2
 end
 

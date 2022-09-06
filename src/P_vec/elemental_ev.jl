@@ -5,6 +5,7 @@ using SparseArrays, StatsBase
 using ..M_abstract_element_struct, ..M_elt_vec, ..Utils
 
 import Base.==, Base.copy, Base.similar
+import Base.-, Base.+
 import Base.broadcast!
 
 export Elemental_elt_vec
@@ -35,11 +36,16 @@ end
 @inline copy(eev::Elemental_elt_vec{T}) where {T} =
   Elemental_elt_vec{T}(Vector{T}(get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 
-function broadcast!(f::Function, eev::Elemental_elt_vec{T}, As...) where {T}
-  _As = map(as -> as[get_indices(eev)], As)
-  broadcast!(f, get_vec(eev), _As...)
-  return eev
-end
+(-)(eev::Elemental_elt_vec{T}) where {T} = Elemental_elt_vec{T}(Vector{T}(- get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
+(-)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T})  where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) - get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
+(+)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T})  where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) + get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
+
+# function broadcast!(f::Function, eev::Elemental_elt_vec{T}, As...) where {T}
+#   _As = map(as -> as[get_indices(eev)], As)
+#   broadcast!(f, get_vec(eev), _As...)
+#   return eev
+# end
+
 """
     eem = new_eev(nᵢ::Int; T=Float64, n=nᵢ^2)
 
