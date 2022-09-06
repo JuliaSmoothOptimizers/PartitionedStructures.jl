@@ -95,19 +95,19 @@ Set either the `i`-th elemental element-vector `epv` to `vec` or its `j`-th comp
 @inline copy(epv::Elemental_pv{T}) where {T} =
   Elemental_pv{T}(get_N(epv), get_n(epv), copy.(get_eev_set(epv)), Vector{T}(get_v(epv)))
 
-function broadcast!(f::Function, epv::Elemental_pv{T}, As...) where {T}  
-  map(element -> broadcast!(f, element, As...), epv.eev_set)
-  broadcast!(f, get_v(epv), As...)
-  return epv
-end
+# function broadcast!(f::Function, epv::Elemental_pv{T}, As...) where {T}  
+#   map(element -> broadcast!(f, element, As...), epv.eev_set)
+#   broadcast!(f, get_v(epv), As...)
+#   return epv
+# end
 
-function broadcast!(f::Function, epv_res::Elemental_pv{T}, epv::Elemental_pv{T}, As...) where {T}  
-  epv_from_epv!(epv_res, epv)
-  map(element -> broadcast!(f, element, As...), epv_res.eev_set)
-  get_v(epv_res) .= get_v(epv)
-  broadcast!(f, get_v(epv), As...)
-  return epv_res
-end
+# function broadcast!(f::Function, epv_res::Elemental_pv{T}, epv::Elemental_pv{T}, As...) where {T}  
+#   epv_from_epv!(epv_res, epv)
+#   map(element -> broadcast!(f, element, As...), epv_res.eev_set)
+#   get_v(epv_res) .= get_v(epv)
+#   broadcast!(f, get_v(epv), As...)
+#   return epv_res
+# end
 
 function setindex!(epv::Elemental_pv, vec, inds...)
   setindex!(get_v(epv), vec, inds...)
@@ -115,15 +115,9 @@ function setindex!(epv::Elemental_pv, vec, inds...)
   return epv
 end
 
-function setindex!(vec::AbstractVector, epv::Elemental_pv, inds...)
+function setindex!(vec::Elemental_pv, epv::Elemental_pv, inds...)
   setindex!(vec, get_v(epv), inds...)  
   return vec
-end
-
-function setindex!(epv1::Elemental_pv, epv2::Elemental_pv, inds...)
-  epv_from_epv!(epv1, epv2)
-  get_v(epv1) .= get_v(epv2)
-  return epv
 end
 
 """
@@ -155,12 +149,14 @@ minus_epv!(epv::Elemental_pv{T}) where {T <: Number} =
 function (-)(epv::Elemental_pv) 
   _epv = copy(epv)
   minus_epv!(_epv)
+  set_v!(_epv, - get_v(epv))
   return _epv
 end
 
 function (-)(epv1::Elemental_pv, epv2::Elemental_pv)
   _epv = - epv2
   add_epv!(epv1, _epv)
+  set_v!(_epv, get_v(epv1) - get_v(epv2))
   return _epv
 end
 
@@ -181,7 +177,8 @@ end
 
 function (+)(epv1::Elemental_pv, epv2::Elemental_pv)
   _epv = copy(epv1)
-  add_epv!(_epv, epv2)
+  add_epv!(epv2, _epv)
+  set_v!(_epv, get_v(epv1) + get_v(epv2))
   return _epv
 end
 
