@@ -8,7 +8,7 @@ using ..M_abstract_part_struct, ..M_part_v  # partitoned modules
 
 import Base.Vector
 import Base.==, Base.similar, Base.copy
-import Base.+, Base.-
+import Base: +, -, *
 import Base.broadcast!, Base.setindex!
 import ..M_abstract_part_struct: initialize_component_list!, get_ee_struct
 
@@ -175,10 +175,20 @@ function add_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where {T <: Numb
   return epv2
 end
 
-function (+)(epv1::Elemental_pv, epv2::Elemental_pv)
-  _epv = copy(epv1)
+function (+)(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
+  _epv = copy(epv1)::Elemental_pv{T}
   add_epv!(epv2, _epv)
   set_v!(_epv, get_v(epv1) + get_v(epv2))
+  return _epv
+end
+
+function (*)(epv::Elemental_pv{T}, val::Y) where {T,Y}
+  _epv = copy(epv)::Elemental_pv{T}
+  N = get_N(_epv)
+  for i = 1:N
+    get_eev_set(_epv, i) = get_eev_set(_epv, i) * val
+  end
+  get_v(_epv) .*= val  
   return _epv
 end
 
