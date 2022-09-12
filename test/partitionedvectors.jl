@@ -11,13 +11,27 @@
 
   pv64 = PartitionedVector(element_variables)
 
+  pv_number = similar(pv32)
+  pv_number .= 1
+
   pv_sim = similar(pv32)
   pv_copy = copy(pv32)
-  pv_res = copy(pv32)
+  pv_res = similar(pv32)
 
   pv_copy .= pv32 .+ pv32
   pv_res .= pv_copy .- pv32
 
   @test pv_res == pv32
   @test pv_res == -pv32 + pv32 + pv32
+
+  @test (Float32)(2) * pv32 == pv32 + pv32
+  @test 2 * pv32 == pv32 + pv32
+  @test (Float32)(2) * pv32 == pv32 .+ pv32
+  @test 2 * pv32 == pv32 .+ pv32
+
+  @test (Float32)(-1) * pv32 == - pv32
+  @test (Float32)(-1) .* pv32 == - pv32
+  @test (Float32)(-1) * pv32 == .- pv32
+  @test (Float32)(-1) .* pv32 == .- pv32
+  
 end
