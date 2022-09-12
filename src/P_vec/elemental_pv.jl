@@ -186,7 +186,8 @@ function (*)(epv::Elemental_pv{T}, val::Y) where {T,Y}
   _epv = copy(epv)::Elemental_pv{T}
   N = get_N(_epv)
   for i = 1:N
-    get_eev_set(_epv, i) = get_eev_set(_epv, i) * val
+    # get_eev_set(_epv, i) = get_eev_set(_epv, i) * val
+    get_eev_value(_epv, i) .= get_eev_value(_epv, i) .* val
   end
   get_v(_epv) .*= val  
   return _epv
