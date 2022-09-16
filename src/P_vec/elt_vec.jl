@@ -4,7 +4,7 @@ using ..Acronyms
 using ..M_abstract_element_struct
 
 export Elt_vec
-export get_vec, set_vec!
+export get_vec, get_vec_from_indices, set_vec!
 export set_add_vec!, set_minus_vec!
 
 """Supertype of element-vectors."""
@@ -18,6 +18,8 @@ Return the vector `ev.vec` or `ev.vec[i]` from an element-vector.
 """
 @inline get_vec(ev::T) where {T <: Elt_vec} = ev.vec
 @inline get_vec(ev::T, i::Int) where {T <: Elt_vec} = ev.vec[i]
+
+@inline get_vec_from_indices(ev::T, i::Int) where {T <: Elt_vec} = get_vec(ev, findfirst(x -> x==i, get_indices(ev)))
 
 """
     set_vec!(ev::T, vec::Vector{Y}) where {Y <: Number, T <: Elt_vec{Y}}

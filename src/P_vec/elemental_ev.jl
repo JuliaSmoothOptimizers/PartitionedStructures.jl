@@ -16,10 +16,10 @@ export create_eev, eev_from_sparse_vec, sparse_vec_from_eev
 """
     Elemental_elt_vec{T} <: Elt_vec{T}
 
-Represent an elemental element-vector.
-`indices` retains the indices of the elemental variables.
-`nie` is the elemental size (`=length(indices)`).
-`vec` is the current value of the elemental element vector.
+Represent an elemental element-vector:
+- `indices` retains the indices of the elemental variables;
+- `nie` is the elemental size (`=length(indices)`);
+- `vec` is the current value of the elemental element vector.
 """
 mutable struct Elemental_elt_vec{T} <: Elt_vec{T}
   vec::Vector{T} # length(vec)==nᵢᴱ
@@ -36,9 +36,9 @@ end
 @inline copy(eev::Elemental_elt_vec{T}) where {T} =
   Elemental_elt_vec{T}(Vector{T}(get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 
-(-)(eev::Elemental_elt_vec{T}) where {T} = Elemental_elt_vec{T}(Vector{T}(- get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
-(-)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T})  where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) - get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
-(+)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T})  where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) + get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
+(-)(eev::Elemental_elt_vec{T}) where {T} = Elemental_elt_vec{T}(Vector{T}(.- get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
+(-)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T}) where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) .- get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
+(+)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T}) where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) .+ get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
 (*)(eev::Elemental_elt_vec{T}, val::Y) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 (*)(val::Y, eev::Elemental_elt_vec{T}) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 (*)(eev::Elemental_elt_vec{T}, val::Y) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))

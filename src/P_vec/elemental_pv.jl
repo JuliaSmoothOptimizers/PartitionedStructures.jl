@@ -149,14 +149,14 @@ minus_epv!(epv::Elemental_pv{T}) where {T <: Number} =
 function (-)(epv::Elemental_pv) 
   _epv = copy(epv)
   minus_epv!(_epv)
-  set_v!(_epv, - get_v(epv))
+  # set_v!(_epv, - get_v(epv))
   return _epv
 end
 
 function (-)(epv1::Elemental_pv, epv2::Elemental_pv)
   _epv = - epv2
   add_epv!(epv1, _epv)
-  set_v!(_epv, get_v(epv1) - get_v(epv2))
+  # set_v!(_epv, get_v(epv1) - get_v(epv2))
   return _epv
 end
 
@@ -178,18 +178,20 @@ end
 function (+)(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
   _epv = copy(epv1)::Elemental_pv{T}
   add_epv!(epv2, _epv)
-  set_v!(_epv, get_v(epv1) + get_v(epv2))
+  # set_v!(_epv, get_v(epv1) + get_v(epv2))
   return _epv
 end
+
+
+(*)(val::Y, epv::Elemental_pv{T}) where {T,Y} = (*)(epv, val)
 
 function (*)(epv::Elemental_pv{T}, val::Y) where {T,Y}
   _epv = copy(epv)::Elemental_pv{T}
   N = get_N(_epv)
   for i = 1:N
-    # get_eev_set(_epv, i) = get_eev_set(_epv, i) * val
     get_eev_value(_epv, i) .= get_eev_value(_epv, i) .* val
   end
-  get_v(_epv) .*= val  
+  # get_v(_epv) .*= val  
   return _epv
 end
 
