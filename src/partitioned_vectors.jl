@@ -26,7 +26,7 @@ end
 function PartitionedVector(eevar::Vector{Vector{Int}}; T::DataType=Float64, simulate_vector::Bool=false)
   epv = create_epv(eevar; type=T)
   vec = Vector{T}(undef, get_n(epv))
-  pv = PartitionedVector{T}(epv, vec,simulate_vector)
+  pv = PartitionedVector{T}(epv, vec, simulate_vector)
   return pv
 end 
 
@@ -70,26 +70,30 @@ function (+)(pv1::PartitionedVector, pv2::PartitionedVector)
   epv1 = pv1.epv
   epv2 = pv2.epv
   _epv = (+)(epv1, epv2)
-  return PartitionedVector(_epv)
+  simulate_vector = min(pv1.simulate_vector, pv2.simulate_vector)
+  return PartitionedVector(_epv; simulate_vector)
 end
 
 function (-)(pv1::PartitionedVector, pv2::PartitionedVector)
   epv1 = pv1.epv
   epv2 = pv2.epv
   _epv = (-)(epv1, epv2)
-  return PartitionedVector(_epv)
+  simulate_vector = min(pv1.simulate_vector, pv2.simulate_vector)
+  return PartitionedVector(_epv; simulate_vector)
 end
 
 function (-)(pv::PartitionedVector)
   epv = pv.epv
   _epv = (-)(epv)
-  return PartitionedVector(_epv)
+  simulate_vector = pv.simulate_vector
+  return PartitionedVector(_epv; simulate_vector)
 end
 
 function (*)(pv::PartitionedVector{Y}, val::T) where {Y<:Number, T<:Number}
   epv = pv.epv
   _epv = (*)(epv, val)
-  return PartitionedVector(_epv)
+  simulate_vector = pv.simulate_vector
+  return PartitionedVector(_epv; simulate_vector)
 end
 
 (*)(val::T, pv::PartitionedVector{Y}) where {Y<:Number, T<:Number} = (*)(pv, val)
@@ -158,8 +162,6 @@ function axpy!(s::Y, x::PartitionedVector{T}, y::PartitionedVector{T}, ::Val{fal
   yvector = y.epv.v
   epv_from_v!(y.epv, s .* xvector .+ yvector)
   return y
-  y .+= s .* x
-  return y
 end
 
 function axpby!(s::Y1, x::PartitionedVector{T}, t::Y2, y::PartitionedVector{T}) where {T<:Number,Y1<:Number,Y2<:Number}
@@ -172,6 +174,13 @@ function axpby!(s::Y1, x::PartitionedVector{T}, t::Y2, y::PartitionedVector{T}, 
   xvector = x.epv.v
   yvector = y.epv.v
   epv_from_v!(y.epv, s .* xvector .+ yvector .* t)
+  return y
+end
+
+function axpby!(s::Y1, x::PartitionedVector{T}, t::Y2, y::PartitionedVector{T}, ::Val{false}, ::Val{false}) where {T<:Number,Y1<:Number,Y2<:Number}
+  println("test")
+  y .= x .* s .+ y .* t
+  return y
 end
 
 function axpby!(s::Y1, x::PartitionedVector{T}, t::Y2, y::PartitionedVector{T}, ::Val{true}, ::Val{true}) where {T<:Number,Y1<:Number,Y2<:Number}
