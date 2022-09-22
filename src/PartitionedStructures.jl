@@ -21,7 +21,7 @@ include("P_mat/_include.jl")
 include("methods/_include.jl")
 
 
-include("partitioned_vectors.jl")
+# include("partitioned_vectors.jl")
 
 
 # use the submodule of PartitionedStructures.jl
@@ -35,8 +35,8 @@ using .ModElemental_pv,
 using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
 using .Link, .Instances, .PartMatInterface
 
-using ..PartitionedVectors
-export PartitionedVector, build!
+# using ..PartitionedVectors
+# export PartitionedVector, build!
 # export the main methods of every submodule
 
 # structures and functions related to element-structures
