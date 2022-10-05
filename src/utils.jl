@@ -19,7 +19,7 @@ my_and = (a::Bool, b::Bool) -> (a && b)
 Return the maximum index of the element variables in `list_of_element_variables` or in `elt_set`.
 """
 max_indices(elt_vars::Vector{Vector{T}}) where {T <: Number} =
-  isempty(elt_vars) ? 0 : maximum(maximum.(elt_vars))
+  isempty(elt_vars[1]) ? 0 : maximum(maximum.(elt_vars))
 
 """
     indice_min = min_indices(list_of_element_variables::Vector{Vector{T}}) where T
@@ -28,7 +28,7 @@ max_indices(elt_vars::Vector{Vector{T}}) where {T <: Number} =
 Return the minimum index of the element variables in `list_of_element_variables` or in `elt_set`.
 """
 min_indices(elt_vars::Vector{Vector{T}}) where {T <: Number} =
-  isempty(elt_vars) ? 0 : minimum(minimum.(elt_vars))
+  isempty(elt_vars[1]) ? 0 : minimum(minimum.(elt_vars))
 
 """
     BFGS(s::Vector{Y}, y::Vector{Y}, B::Array{Y,2}; kwargs...) where Y <: Number

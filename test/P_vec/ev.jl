@@ -6,7 +6,6 @@ using PartitionedStructures.M_abstract_element_struct
 
 @testset "Test ev getter/setter" begin
   nᵢᴱ = 5
-  nᵢᴵ = 2
 
   # elemental
   ev1 = new_eev(nᵢᴱ)
@@ -65,4 +64,12 @@ end
   [lin_com[i, i] = 1 for i = 1:nᵢᴱ]
   sv = sparsevec(i1, v1)
   _tmp = rand(Int, nᵢᴱ)
+end
+
+@testset "Base.methods" begin
+  eev = Elemental_elt_vec([1:3;], [1:2:5;], 3)
+
+  @test 2 * eev == eev + eev
+  @test - eev == -1 * eev
+  @test eev - eev == 0 * eev
 end
