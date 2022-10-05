@@ -179,3 +179,17 @@ end
   a = @allocated add_epv!(epv, epv2)
   @test a == 0
 end
+
+@testset "Base.methods" begin
+  N = 15
+  n = 30
+  ni = 5
+  element_variables = map(i -> sample(1:n, ni, replace = false), 1:N)
+
+  epv = create_epv(element_variables)
+
+  @test epv + epv == 2 * epv
+  @test - epv == -1 * epv
+  @test epv - epv == 0 * epv
+
+end
