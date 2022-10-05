@@ -6,7 +6,6 @@ using ..M_abstract_element_struct, ..M_elt_vec, ..Utils
 
 import Base.==, Base.copy, Base.similar
 import Base:-, +, *
-import Base.broadcast!
 
 export Elemental_elt_vec
 export ones_eev, new_eev, specific_ones_eev
@@ -42,12 +41,6 @@ end
 (*)(eev::Elemental_elt_vec{T}, val::Y) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 (*)(val::Y, eev::Elemental_elt_vec{T}) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 (*)(eev::Elemental_elt_vec{T}, val::Y) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
-
-# function broadcast!(f::Function, eev::Elemental_elt_vec{T}, As...) where {T}
-#   _As = map(as -> as[get_indices(eev)], As)
-#   broadcast!(f, get_vec(eev), _As...)
-#   return eev
-# end
 
 """
     eem = new_eev(nᵢ::Int; T=Float64, n=nᵢ^2)
