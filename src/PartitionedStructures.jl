@@ -20,10 +20,6 @@ include("P_mat/_include.jl")
 # - how element/partitioned structures interact between themselves
 include("methods/_include.jl")
 
-
-# include("partitioned_vectors.jl")
-
-
 # use the submodule of PartitionedStructures.jl
 using .Utils
 using .M_abstract_part_struct, .M_abstract_element_struct
@@ -34,10 +30,6 @@ using .ModElemental_pv,
   .ModElemental_pm, .ModElemental_plo_bfgs, .ModElemental_plo_sr1, .ModElemental_plo
 using .PartitionedQuasiNewton, .PartitionedLOQuasiNewton
 using .Link, .Instances, .PartMatInterface
-
-# using ..PartitionedVectors
-# export PartitionedVector, build!
-# export the main methods of every submodule
 
 # structures and functions related to element-structures
 export Elemental_elt_vec, Elemental_em, Elemental_elo_bfgs, Elemental_elo_sr1
