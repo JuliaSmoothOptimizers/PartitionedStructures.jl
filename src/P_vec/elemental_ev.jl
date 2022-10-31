@@ -40,7 +40,6 @@ end
 (+)(eev1::Elemental_elt_vec{T}, eev2::Elemental_elt_vec{T}) where {T} = Elemental_elt_vec{T}(Vector{T}(get_vec(eev1) .+ get_vec(eev2)), Vector{Int}(get_indices(eev1)), get_nie(eev1))
 (*)(eev::Elemental_elt_vec{T}, val::Y) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 (*)(val::Y, eev::Elemental_elt_vec{T}) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
-(*)(eev::Elemental_elt_vec{T}, val::Y) where {T, Y} = Elemental_elt_vec{T}(Vector{T}(val .* get_vec(eev)), Vector{Int}(get_indices(eev)), get_nie(eev))
 
 """
     eem = new_eev(nᵢ::Int; T=Float64, n=nᵢ^2)

@@ -86,8 +86,8 @@ end
   epv1 = ones_kchained_epv(N, k)
   epv2 = similar(epv1)
   PartitionedStructures.epv_from_epv!(epv1, epv2)
-  epv2.eev_set[1].vec[1] = 1.0
-  @test epv1.eev_set[1].vec[1] != 1.0
+  epv2.eev_set[1].vec[1] = 1.1
+  @test epv1.eev_set[1].vec[1] != 1.1
 end
 
 @testset "methods" begin
@@ -180,7 +180,7 @@ end
   @test a == 0
 end
 
-@testset "Base.methods" begin
+@testset "Base.methods (PartitionedVectors.jl)" begin
   N = 15
   n = 30
   ni = 5
@@ -189,7 +189,22 @@ end
   epv = create_epv(element_variables)
 
   @test epv + epv == 2 * epv
+  @test 2 * epv == epv * 2
   @test - epv == -1 * epv
   @test epv - epv == 0 * epv
+  @test 2*epv - epv == 1/2 * epv + 1/2 * epv
+end
 
+@testset "utilities functions for PartitonedVectors.jl" begin
+  Uis = [[1:5;], [5:9;], [9:13;]]
+  N = length(Uis)
+  epv = create_epv(Uis)
+  eevs = PartitionedStructures.get_eev_set(epv)
+  eev = eevs[1]
+
+  get_vec_from_indices(eev, 1) == epv.eev_set[1].vec[1]
+  get_vec_from_indices(eev, 2) == epv.eev_set[1].vec[2]
+
+  @test 2 * eev == eev + eev
+  @test eev * 2  == eev + eev
 end

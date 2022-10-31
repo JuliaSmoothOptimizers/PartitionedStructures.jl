@@ -95,17 +95,6 @@ Set either the `i`-th elemental element-vector `epv` to `vec` or its `j`-th comp
 @inline copy(epv::Elemental_pv{T}) where {T} =
   Elemental_pv{T}(get_N(epv), get_n(epv), copy.(get_eev_set(epv)), Vector{T}(get_v(epv)))
 
-function setindex!(epv::Elemental_pv, vec, inds...)
-  setindex!(get_v(epv), vec, inds...)
-  epv_from_v!(epv, get_v(epv)) # get_v(epv) == vec
-  return epv
-end
-
-function setindex!(vec::Elemental_pv, epv::Elemental_pv, inds...)
-  setindex!(vec, get_v(epv), inds...)  
-  return vec
-end
-
 """
     build_v!(epv::Elemental_pv{T}) where T
 
@@ -162,7 +151,6 @@ end
 function (+)(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
   _epv = copy(epv1)::Elemental_pv{T}
   add_epv!(epv2, _epv)
-  # set_v!(_epv, get_v(epv1) + get_v(epv2))
   return _epv
 end
 
@@ -175,7 +163,6 @@ function (*)(epv::Elemental_pv{T}, val::Y) where {T,Y}
   for i = 1:N
     get_eev_value(_epv, i) .= get_eev_value(_epv, i) .* val
   end
-  # get_v(_epv) .*= val  
   return _epv
 end
 
@@ -326,7 +313,6 @@ function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where {T}
     vec = get_eev_value(epv_x, idx)
     _view_x = view(x, indices)
     mul!(vec, I, _view_x, 1, 0)
-    # set_eev!(epv_x, idx, x) # met le vecteur élément comme une copie de x
   end
   return epv_x
 end
