@@ -70,6 +70,6 @@ end
   eev = Elemental_elt_vec([1:3;], [1:2:5;], 3)
 
   @test 2 * eev == eev + eev
-  @test - eev == -1 * eev
+  @test -eev == -1 * eev
   @test eev - eev == 0 * eev
 end

@@ -121,14 +121,14 @@ Build in place the `-epv`, by inversing the value of each elemental element-vect
 minus_epv!(epv::Elemental_pv{T}) where {T <: Number} =
   map((eev -> set_minus_vec!(eev)), get_eev_set(epv))
 
-function (-)(epv::Elemental_pv) 
+function (-)(epv::Elemental_pv)
   _epv = copy(epv)
-  minus_epv!(_epv)  
+  minus_epv!(_epv)
   return _epv
 end
 
 function (-)(epv1::Elemental_pv, epv2::Elemental_pv)
-  _epv = - epv2
+  _epv = -epv2
   add_epv!(epv1, _epv)
   return _epv
 end
@@ -148,16 +148,15 @@ function add_epv!(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where {T <: Numb
   return epv2
 end
 
-function (+)(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
+function (+)(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where {T}
   _epv = copy(epv1)::Elemental_pv{T}
   add_epv!(epv2, _epv)
   return _epv
 end
 
+(*)(val::Y, epv::Elemental_pv{T}) where {T, Y} = (*)(epv, val)
 
-(*)(val::Y, epv::Elemental_pv{T}) where {T,Y} = (*)(epv, val)
-
-function (*)(epv::Elemental_pv{T}, val::Y) where {T,Y}
+function (*)(epv::Elemental_pv{T}, val::Y) where {T, Y}
   _epv = copy(epv)::Elemental_pv{T}
   N = get_N(_epv)
   for i = 1:N
@@ -180,14 +179,18 @@ Create an elemental partitioned-vector from a vector `eev_set` of: `SparseVector
   type = Float64,
 ) = create_epv(vec_elt_var, n; type)
 
-function create_epv(eev_set::Vector{Elemental_elt_vec{T}}; n = max_indices(eev_set)) where {T<:Number}
+function create_epv(
+  eev_set::Vector{Elemental_elt_vec{T}};
+  n = max_indices(eev_set),
+) where {T <: Number}
   N = (n != 0) ? length(eev_set) : 0
   v = zeros(T, n)
   return Elemental_pv{T}(N, n, eev_set, v)
 end
 
 function create_epv(vec_elt_var::Vector{Vector{Int}}, n::Int; type = Float64)
-  eev_set = map((elt_var -> create_eev(elt_var; type)), vec_elt_var) ::Vector{Elemental_elt_vec{type}}
+  eev_set =
+    map((elt_var -> create_eev(elt_var; type)), vec_elt_var)::Vector{Elemental_elt_vec{type}}
   epv = create_epv(eev_set; n = n)
   return epv
 end

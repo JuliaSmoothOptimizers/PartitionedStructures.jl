@@ -190,9 +190,9 @@ end
 
   @test epv + epv == 2 * epv
   @test 2 * epv == epv * 2
-  @test - epv == -1 * epv
+  @test -epv == -1 * epv
   @test epv - epv == 0 * epv
-  @test 2*epv - epv == 1/2 * epv + 1/2 * epv
+  @test 2 * epv - epv == 1 / 2 * epv + 1 / 2 * epv
 end
 
 @testset "utilities functions for PartitonedVectors.jl" begin
@@ -206,5 +206,5 @@ end
   get_vec_from_indices(eev, 2) == epv.eev_set[1].vec[2]
 
   @test 2 * eev == eev + eev
-  @test eev * 2  == eev + eev
+  @test eev * 2 == eev + eev
 end
