@@ -19,7 +19,8 @@ Return the vector `ev.vec` or `ev.vec[i]` from an element-vector.
 @inline get_vec(ev::T) where {T <: Elt_vec} = ev.vec
 @inline get_vec(ev::T, i::Int) where {T <: Elt_vec} = ev.vec[i]
 
-@inline get_vec_from_indices(ev::T, i::Int) where {T <: Elt_vec} = get_vec(ev, findfirst(x -> x==i, get_indices(ev)))
+@inline get_vec_from_indices(ev::T, i::Int) where {T <: Elt_vec} =
+  get_vec(ev, findfirst(x -> x == i, get_indices(ev)))
 
 """
     set_vec!(ev::T, vec::Vector{Y}) where {Y <: Number, T <: Elt_vec{Y}}
