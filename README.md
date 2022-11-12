@@ -93,7 +93,7 @@ Method                 | Description
 `add_epv!`             | Perform elementwise addition between two partitioned vectors
 
 ## Modules using [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl)
-The structures defined here are used in the module:
+The structures defined here are used in the modules:
 - [PartiallySeparableSolvers.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators;
 - [PartitionedVectors.jl](https://github.com/paraynaud/PartitionedVectors.jl) which relies on `Elemental_pv` to make `PartitionedVector <: AbstractVector`;
 - [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
