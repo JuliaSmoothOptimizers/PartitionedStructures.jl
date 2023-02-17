@@ -19,7 +19,8 @@ It has fields:
 * `nie`: elemental size (`=length(indices)`);
 * `Bie::Symmetric{T, Matrix{T}}`: the elemental matrix;
 * `counter`: counts how many update the elemental matrix goes through from its allocation;
-* `convex`: if `Elemental_em` is by default update with BFGS or SR1;
+* `convex`: if `convex==true`, then `Elemental_em` default update is BFGS otherwise it is SR1;
+* `linear`: if `linear==true`, then the element matrix contribution is null;
 * `_Bsr`: a vector used during quasi-Newton update of the elemental matrix.
 """
 mutable struct Elemental_em{T} <: DenseEltMat{T}

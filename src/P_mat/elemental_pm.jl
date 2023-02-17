@@ -107,12 +107,13 @@ Get the matrix of the `i`-th elemental element-matrix of `epm`.
 )
 
 """
-    epm = identity_epm(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64)
-    epm = identity_epm(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
+    epm = identity_epm(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
+    epm = identity_epm(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
 
 Return a partitionned matrix of type `T` of `N` identity elemental element-matrices.
 `N` and `n` may be extrapolate from `element_variables`.
 The elemental variables are based from the indices informed in `element_variables`.
+`linear_vector` indicates which element linear-opeartor should not contribute to the partitioned linear-operator.
 """
 identity_epm(
   element_variables::Vector{Vector{Int}};
@@ -145,10 +146,11 @@ function identity_epm(
 end
 
 """
-    epm = identity_epm(N::Int, n::Int; T=Float64, nie::Int=5)
+    epm = identity_epm(N::Int, n::Int; T=Float64, nie::Int=5, linear_vector::Vector{Bool} = zeros(Bool, N))
 
 Return a partitionned matrix of type `T` of `N` identity elemental element-matrices.
 Each elemental element-matrix is of size `nie` with randoms positions.
+`linear_vector` indicates which element linear-opeartor should not contribute to the partitioned linear-operator.
 """
 function identity_epm(
   N::Int,
@@ -298,13 +300,16 @@ function set_spm!(epm::Elemental_pm{T}) where {T}
   spm = get_spm(epm)
   for i = 1:N
     epmᵢ = get_eem_set(epm, i)
-    nie = get_nie(epmᵢ)
-    Bie = get_Bie(epmᵢ)
-    for i = 1:nie, j = 1:nie
-      val = Bie[i, j]
-      real_i = get_indices(epmᵢ, i) # epmᵢ.indices[i]
-      real_j = get_indices(epmᵢ, j) # epmᵢ.indices[j]
-      spm[real_i, real_j] += val
+    linear = get_linear(epmᵢ)
+    if !linear
+      nie = get_nie(epmᵢ)
+      Bie = get_Bie(epmᵢ)
+      for i = 1:nie, j = 1:nie
+        val = Bie[i, j]
+        real_i = get_indices(epmᵢ, i) # epmᵢ.indices[i]
+        real_j = get_indices(epmᵢ, j) # epmᵢ.indices[j]
+        spm[real_i, real_j] += val
+      end
     end
   end
   return epm

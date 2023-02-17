@@ -13,11 +13,12 @@ export reset_eelo_sr1!
 """
     Elemental_elo_sr1{T} <: LOEltMat{T}
 
-Represent an elemental element `LSR1Operator`.
-`indices` retains the indices of the elemental variables.
-`nie` is the elemental size (`=length(indices)`).
-`Bie` a `LSR1Operator`.
-`counter` counts how many update the elemental limited-memory operator goes through from its allocation.
+Represent an elemental element `LSR1Operator`;
+* `indices` retains the indices of the elemental variables;
+* `nie` is the elemental size (`=length(indices)`);
+* `Bie` a `LSR1Operator`;
+* `linear`: if `linear==true`, then the element matrix contribution is null;
+* `counter` counts how many update the elemental limited-memory operator goes through from its allocation.
 """
 mutable struct Elemental_elo_sr1{T} <: LOEltMat{T}
   nie::Int # nᵢᴱ

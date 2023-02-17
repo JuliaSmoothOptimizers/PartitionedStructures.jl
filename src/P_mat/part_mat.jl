@@ -38,13 +38,16 @@ function set_spm!(plm::P) where {T <: Number, P <: Part_LO_mat{T}}
   n = get_n(plm)
   spm = get_spm(plm)
   for i = 1:N
-    plmᵢ = get_eelo_set(plm, i)
-    nie = get_nie(plmᵢ)
-    Bie = get_Bie(plmᵢ)
-    indicesᵢ = get_indices(plmᵢ)
-    value_Bie = zeros(T, nie, nie)
-    map((i -> value_Bie[:, i] .= Bie * SparseVector(nie, [i], [1])), 1:nie)
-    spm[indicesᵢ, indicesᵢ] .+= value_Bie
+    elmᵢ = get_eelo_set(plm, i)    
+    linear = get_linear(elmᵢ)
+    if !linear
+      nie = get_nie(elmᵢ)
+      Bie = get_Bie(elmᵢ)
+      indicesᵢ = get_indices(elmᵢ)
+      value_Bie = zeros(T, nie, nie)
+      map((i -> value_Bie[:, i] .= Bie * SparseVector(nie, [i], [1])), 1:nie)
+      spm[indicesᵢ, indicesᵢ] .+= value_Bie
+    end
   end
   return plm
 end
