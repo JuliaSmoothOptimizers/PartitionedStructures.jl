@@ -60,14 +60,17 @@ function PBFGS_update!(
   N = get_N(epm_B)
   for i = 1:N
     eemi = get_eem_set(epm_B, i)
-    Bi = get_Bie(eemi)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    index = get_index(eemi)
-    Bs = get_Bsr(get_eem_set(epm_B, i))
-    update = BFGS!(si, yi, Bi; index = index, Bs, kwargs...) # return 0 or 1
-    cem = get_cem(eemi)
-    update_counter_elt_mat!(cem, update)
+    linear = get_linear(eemi)
+    if !linear
+      Bi = get_Bie(eemi)
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      index = get_index(eemi)
+      Bs = get_Bsr(get_eem_set(epm_B, i))
+      update = BFGS!(si, yi, Bi; index = index, Bs, kwargs...) # return 0 or 1
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
+    end
   end
   verbose && (str = string_counters_iter(epm_B))
   verbose && (print("\n PBFGS" * str))
@@ -122,14 +125,17 @@ function PSR1_update!(
   N = get_N(epm_B)
   for i = 1:N
     eemi = get_eem_set(epm_B, i)
-    Bi = get_Bie(eemi)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    r = get_Bsr(get_eem_set(epm_B, i))
-    index = get_index(eemi)
-    update = SR1!(si, yi, Bi; index = index, r, kwargs...) # return 0 or 1
-    cem = get_cem(eemi)
-    update_counter_elt_mat!(cem, update)
+    linear = get_linear(eemi)
+    if !linear
+      Bi = get_Bie(eemi)
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      r = get_Bsr(get_eem_set(epm_B, i))
+      index = get_index(eemi)
+      update = SR1!(si, yi, Bi; index = index, r, kwargs...) # return 0 or 1
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
+    end
   end
   verbose && (str = string_counters_iter(epm_B))
   verbose && (print("\n PSR1" * str))
@@ -185,14 +191,17 @@ function PSE_update!(
   acc = 0
   for i = 1:N
     eemi = get_eem_set(epm_B, i)
-    Bi = get_Bie(eemi)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    Bs_r = get_Bsr(get_eem_set(epm_B, i))
-    index = get_index(eemi)
-    update = SE!(si, yi, Bi; index = index, Bs_r, kwargs...) # return 0 or 1
-    cem = get_cem(eemi)
-    update_counter_elt_mat!(cem, update)
+    linear = get_linear(eemi)
+    if !linear
+      Bi = get_Bie(eemi)
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      Bs_r = get_Bsr(get_eem_set(epm_B, i))
+      index = get_index(eemi)
+      update = SE!(si, yi, Bi; index = index, Bs_r, kwargs...) # return 0 or 1
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
+    end
   end
   verbose && (str = string_counters_iter(epm_B))
   verbose && (print("\n PSE" * str))
@@ -247,18 +256,21 @@ function PCS_update!(
   N = get_N(epm_B)
   for i = 1:N
     eemi = get_eem_set(epm_B, i)
-    Bi = get_Bie(eemi)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    index = get_index(eemi)
-    convex = get_convex(eemi)
-    if convex
-      update = BFGS!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
-    else
-      update = SR1!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
+    linear = get_linear(eemi)
+    if !linear
+      Bi = get_Bie(eemi)
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      index = get_index(eemi)
+      convex = get_convex(eemi)
+      if convex
+        update = BFGS!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
+      else
+        update = SR1!(si, yi, Bi; index = index, kwargs...) # return 0 or 1
+      end
+      cem = get_cem(eemi)
+      update_counter_elt_mat!(cem, update)
     end
-    cem = get_cem(eemi)
-    update_counter_elt_mat!(cem, update)
   end
   verbose && (str = string_counters_iter(epm_B))
   verbose && (print("\n PCS" * str))

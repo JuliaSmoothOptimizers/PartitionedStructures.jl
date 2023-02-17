@@ -28,6 +28,7 @@ mutable struct Elemental_em{T} <: DenseEltMat{T}
   Bie::Symmetric{T, Matrix{T}} # size nᵢᴱ × nᵢᴱ
   counter::Counter_elt_mat
   convex::Bool
+  linear::Bool
   _Bsr::Vector{T} # size nᵢᴱ
 end
 
@@ -35,14 +36,16 @@ end
   (get_nie(eem1) == get_nie(eem2)) &&
   (get_Bie(eem1) == get_Bie(eem2)) &&
   (get_indices(eem1) == get_indices(eem2)) &&
-  (get_convex(eem1) == get_convex(eem2))
+  (get_convex(eem1) == get_convex(eem2)) && 
+  (get_linear(eem1) == get_linear(eem2))
 @inline copy(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
   copy(get_indices(eem)),
   copy(get_Bie(eem)),
   Counter_elt_mat(),
   copy(get_convex(eem)),
-  copy(get_Bsr(eem)),
+  copy(get_linear(eem)),
+  copy(get_Bsr(eem)),  
 )
 @inline similar(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
@@ -50,7 +53,8 @@ end
   similar(get_Bie(eem)),
   Counter_elt_mat(),
   copy(get_convex(eem)),
-  similar(get_Bsr(eem)),
+  copy(get_linear(eem)),
+  similar(get_Bsr(eem)),  
 )
 
 """
@@ -58,13 +62,14 @@ end
 
 Create a `nie` identity elemental element-matrix of type `T` based on the vector of the elemental variables `elt_var`.
 """
-function create_id_eem(elt_var::Vector{Int}; T = Float64, bool = false)
+function create_id_eem(elt_var::Vector{Int}; T = Float64, convex = false, linear = false)
   nie = length(elt_var)
-  Bie = zeros(T, nie, nie)
-  [Bie[i, i] = 1 for i = 1:nie]
+  _nie = (!linear) * nie
+  Bie = zeros(T, _nie, _nie)
+  [Bie[i, i] = 1 for i = 1:_nie]
   counter = Counter_elt_mat()
-  _Bsr = Vector{T}(undef, nie)
-  eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter, bool, _Bsr)
+  _Bsr = Vector{T}(undef, _nie)
+  eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter, convex, linear, _Bsr)
   return eem
 end
 
@@ -73,13 +78,14 @@ end
 
 Return a `nie` identity elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function identity_eem(nie::Int; T = Float64, n = nie^2, bool = false)
+function identity_eem(nie::Int; T = Float64, n = nie^2, convex = false, linear = false)  
   indices = rand(1:n, nie)
-  Bie = zeros(T, nie, nie)
-  [Bie[i, i] = 1 for i = 1:nie]
+  _nie = (!linear) * nie
+  Bie = zeros(T, _nie, _nie)
+  [Bie[i, i] = 1 for i = 1:_nie]
   counter = Counter_elt_mat()
-  _Bsr = Vector{T}(undef, nie)
-  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool, _Bsr)
+  _Bsr = Vector{T}(undef, _nie)
+  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, convex, linear, _Bsr)
   return eem
 end
 
@@ -88,12 +94,13 @@ end
 
 Return a `nie` ones elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function ones_eem(nie::Int; T = Float64, n = nie^2, bool = false)
+function ones_eem(nie::Int; T = Float64, n = nie^2, convex = false, linear = false)
   indices = rand(1:n, nie)
-  Bie = ones(T, nie, nie)
+  _nie = (!linear) * nie
+  Bie = ones(T, _nie, _nie)
   counter = Counter_elt_mat()
-  _Bsr = Vector{T}(undef, nie)
-  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool, _Bsr)
+  _Bsr = Vector{T}(undef, _nie)
+  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, convex, linear, _Bsr)
   return eem
 end
 
@@ -104,13 +111,14 @@ Create a `nie` elemental element-matrix of type `T` at indices `index:index+nie-
 All the components of the element-matrix are set to `1` except the diagonal terms that are set to `mul`.
 This method is used to define diagonal dominant element-matrix.
 """
-function fixed_ones_eem(i::Int, nie::Int; T = Float64, mul = 5.0, bool = false)
+function fixed_ones_eem(i::Int, nie::Int; T = Float64, mul = 5.0, convex = false, linear = false)
   indices = [i:(i + nie - 1);]
-  Bie = ones(T, nie, nie)
-  [Bie[i, i] = mul for i = 1:nie]
+  _nie = (!linear) * nie
+  Bie = ones(T, _nie, _nie)
+  [Bie[i, i] = mul for i = 1:_nie]
   counter = Counter_elt_mat()
-  _Bsr = Vector{T}(undef, nie)
-  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, bool, _Bsr)
+  _Bsr = Vector{T}(undef, _nie)
+  eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, convex, linear, _Bsr)
   return eem
 end
 
@@ -119,8 +127,10 @@ end
 
 Return an elemental element-matrix of type `T` of size one at `index`.
 """
-one_size_bloc(index::Int; T = Float64) =
-  Elemental_em{T}(1, [index], Symmetric(ones(1, 1)), Counter_elt_mat(), false, Vector{T}(undef, 1))
+function one_size_bloc(index::Int; nie=1, T = Float64, convex = false, linear = false)
+  _nie = (!linear) * nie
+  Elemental_em{T}(nie, [index], Symmetric(ones(_nie, _nie)), Counter_elt_mat(), convex, linear, Vector{T}(undef, _nie))
+end
 
 """
     permute!(eem::Elemental_em{T}, p::Vector{Int}) where T

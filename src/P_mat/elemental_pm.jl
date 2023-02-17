@@ -120,7 +120,8 @@ identity_epm(
   n::Int = max_indices(element_variables),
   T = Float64,
   convex_vector::Vector{Bool} = zeros(Bool, N),
-) = identity_epm(element_variables, N, n; T, convex_vector)
+  linear_vector::Vector{Bool} = zeros(Bool, N),
+) = identity_epm(element_variables, N, n; T, convex_vector, linear_vector)
 
 function identity_epm(
   element_variables::Vector{Vector{Int}},
@@ -128,9 +129,10 @@ function identity_epm(
   n::Int;
   T = Float64,
   convex_vector::Vector{Bool} = zeros(Bool, N),
+  linear_vector::Vector{Bool} = zeros(Bool, N),
 )
   eem_set = map(
-    (i -> create_id_eem(element_variables[i]; T = T, bool = convex_vector[i])),
+    (i -> create_id_eem(element_variables[i]; T = T, convex = convex_vector[i], linear = linear_vector[i])),
     1:length(element_variables),
   )
   spm = spzeros(T, n, n)
@@ -154,8 +156,9 @@ function identity_epm(
   T = Float64,
   nie::Int = 5,
   convex_vector::Vector{Bool} = zeros(Bool, N),
+  linear_vector::Vector{Bool} = zeros(Bool, N),
 )
-  eem_set = map(i -> identity_eem(nie; T = T, n = n, bool = convex_vector[i]), [1:N;])
+  eem_set = map(i -> identity_eem(nie; T = T, n = n, convex = convex_vector[i], linear = linear_vector[i]), [1:N;])
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])

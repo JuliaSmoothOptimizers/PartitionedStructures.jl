@@ -5,8 +5,8 @@ using PartitionedStructures.M_elt_mat, PartitionedStructures.ModElemental_em
   T = Float64
   nie = 5
   n = 20
-  eem1 = identity_eem(nie; T = T, n = n, bool = true)
-  eem2 = ones_eem(nie; T = T, n = n, bool = false)
+  eem1 = identity_eem(nie; T = T, n = n, convex = true)
+  eem2 = ones_eem(nie; T = T, n = n, convex = false)
   @test eem1.convex == true
   @test eem2.convex == false
 
@@ -26,7 +26,7 @@ end
   T = Float64
   nie = 5
   n = 20
-  eem = identity_eem(nie; T, n, bool = true)
+  eem = identity_eem(nie; T, n, convex = true)
 
   cpt_eem = get_counter_elt_mat(eem)
   cpt = Counter_elt_mat()
@@ -59,7 +59,7 @@ end
   T = Float64
   nie = 5
   n = 20
-  eem = identity_eem(nie; T, n, bool = true)
+  eem = identity_eem(nie; T, n, convex = true)
 
   set_nie!(eem, 6)
   @test get_nie(eem) == 6

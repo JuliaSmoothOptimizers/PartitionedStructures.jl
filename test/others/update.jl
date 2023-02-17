@@ -154,7 +154,6 @@ end
   @test get_v(partitioned_gradient_difference) == y1
   @test get_v(partitioned_gradient_difference2) == y2
 
-  using LinearAlgebra
   @test dot(s1, y1) > 0
 
   @test dot(s1[U1], element1_y1) > 0
@@ -216,5 +215,39 @@ end
   B_PLSR1 =
     update(partitioned_linear_operator_PLSR1, partitioned_gradient_difference, s1; verbose = false)
   # @test norm(B_PLSR1 * s1 - y1)==0. # the second element hessian approximation is not update,
+end
 
+@testset "update with linear_vector" begin
+  N = 4
+  n = 8
+  element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+
+  epv = PartitionedStructures.epv_from_v(ones(n), create_epv(element_variables))
+  epv_y = similar(epv)
+  epv_s = similar(epv)
+  y_values = [Float64[1:4;], Float64[2:5;], Float64[3:6;], Float64[5:9;]]
+  s_values = [Float64[1, 2, 5, 7], Float64[3, 6, 7, 8], Float64[2, 4, 6, 8], Float64[1, 3, 5, 6, 7]]
+  set_epv!(epv_y, y_values)
+  set_epv!(epv_s, s_values)
+
+  # without linear_vectors
+  B = identity_epm(element_variables)
+  # with linear_vectors
+  linears = [true,false,false,true]
+  B_linear = identity_epm(element_variables; linear_vector=linears)
+
+  Bv = Vector(mul_epm_epv(B, epv))
+  B_linearv = Vector(mul_epm_epv(B_linear, epv))
+  @test Bv != B_linearv
+
+  # update
+  PSR1_update!(B, epv_y, epv_s)
+  PSR1_update!(B_linear, epv_y, epv_s)
+
+  # verify the effectiveness of update
+  @test Bv != Vector(mul_epm_epv(B, epv))
+  @test B_linearv != Vector(mul_epm_epv(B_linear, epv))
+
+  # verify different update
+  @test Vector(mul_epm_epv(B, epv)) != Vector(mul_epm_epv(B_linear, epv))
 end
