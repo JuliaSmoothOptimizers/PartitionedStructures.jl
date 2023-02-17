@@ -15,9 +15,10 @@ using PartitionedStructures.M_abstract_part_struct
       Bie_bfgs = LinearOperators.LBFGSOperator(T, nie)
       Bie_sr1 = LinearOperators.LSR1Operator(T, nie)
       counter = Counter_elt_mat()
-      @test Elemental_elo_bfgs{T}(nie, indices, Bie_bfgs, counter) ==
+      linear = false
+      @test Elemental_elo_bfgs{T}(nie, indices, Bie_bfgs, counter, linear) ==
             LBFGS_eelo(nie; T = T, index = index)
-      @test Elemental_elo_sr1{T}(nie, indices, Bie_sr1, counter) ==
+      @test Elemental_elo_sr1{T}(nie, indices, Bie_sr1, counter, linear) ==
             LSR1_eelo(nie; T = T, index = index)
     end
   end

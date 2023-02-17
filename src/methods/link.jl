@@ -56,6 +56,7 @@ Each element-matrix of `epm` is set with an identity matrix of suitable size.
 function epm_from_epv(
   epv::T;
   convex_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+  linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
 ) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
@@ -65,7 +66,7 @@ function epm_from_epv(
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  epm = identity_epm(eelo_indices_set, N, n; T = Y, convex_vector)
+  epm = identity_epm(eelo_indices_set, N, n; T = Y, convex_vector, linear_vector)
   return epm
 end
 
@@ -75,7 +76,9 @@ end
 Create an $(_elmpqno) PLBFGS `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable size.
 """
-function eplo_lbfgs_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
+function eplo_lbfgs_from_epv(epv::T;
+   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
   eelo_indices_set = Vector{Vector{Int}}(undef, N)
@@ -84,7 +87,7 @@ function eplo_lbfgs_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  eplo = identity_eplo_LBFGS(eelo_indices_set, N, n; T = Y)
+  eplo = identity_eplo_LBFGS(eelo_indices_set, N, n; T = Y, linear_vector)
   return eplo
 end
 
@@ -94,7 +97,9 @@ end
 Create an $(_elmpqno) PLSR1 `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LSR1Operator` of suitable size.
 """
-function eplo_lsr1_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
+function eplo_lsr1_from_epv(epv::T;
+  linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
   eelo_indices_set = Vector{Vector{Int}}(undef, N)
@@ -103,7 +108,7 @@ function eplo_lsr1_from_epv(epv::T) where {Y <: Number, T <: Elemental_pv{Y}}
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  eplo = identity_eplo_LSR1(eelo_indices_set, N, n; T = Y)
+  eplo = identity_eplo_LSR1(eelo_indices_set, N, n; T = Y, linear_vector)
   return eplo
 end
 
@@ -113,7 +118,9 @@ end
 Create an $(_elmpqno) PLSE `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable size, but it may change to a `LSR1Operator` later on.
 """
-function eplo_lose_from_epv(epv::Elemental_pv{T}) where {T <: Number}
+function eplo_lose_from_epv(epv::Elemental_pv{T};
+  linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+) where {T <: Number}
   N = get_N(epv)
   n = get_n(epv)
   eelo_indices_set = Vector{Vector{Int}}(undef, N)
@@ -122,7 +129,7 @@ function eplo_lose_from_epv(epv::Elemental_pv{T}) where {T <: Number}
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  eplo = identity_eplo_LOSE(eelo_indices_set, N, n; T = T)
+  eplo = identity_eplo_LOSE(eelo_indices_set, N, n; T = T, linear_vector)
   return eplo
 end
 
@@ -183,10 +190,16 @@ function mul_epm_epv!(
   full_check_epv_epm(epm, epv) || error("Different partitioned structure epm/epv")
   N = get_N(epm)
   for i = 1:N
-    Bie = get_ee_struct_Bie(epm, i)
-    vie = get_eev_value(epv, i)
-    res_i = get_eev_value(epv_res, i)
-    mul!(res_i, Bie, vie, 1.0, 0.0)
+    linear = get_linear(get_ee_struct(epm, i))
+    if !linear
+      Bie = get_ee_struct_Bie(epm, i)
+      vie = get_eev_value(epv, i)
+      res_i = get_eev_value(epv_res, i)
+      mul!(res_i, Bie, vie, 1.0, 0.0)
+    else
+      res_i = get_eev_value(epv_res, i)
+      res_i .= 0
+    end
   end
   return epv_res
 end

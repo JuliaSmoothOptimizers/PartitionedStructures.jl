@@ -37,3 +37,42 @@ using PartitionedStructures.M_abstract_part_struct, PartitionedStructures.M_part
   @test string_counters_total(_epm2) ==
         "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
 end
+
+
+@testset "mul_epm_epv with linear_vector" begin
+  N = 4
+  n = 8
+  element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+
+  epv = PartitionedStructures.epv_from_v(ones(n), create_epv(element_variables))
+  # without linear_vectors
+  B = identity_epm(element_variables)  
+
+  res = mul_epm_epv(B, epv)
+  vres = Vector(res)
+  @test sum(vres) == 17
+  @test vres[1] == 2
+  @test vres[2] == 2
+  @test vres[3] == 2
+  @test vres[4] == 1
+  @test vres[5] == 2
+  @test vres[6] == 3
+  @test vres[7] == 3
+  @test vres[8] == 2
+
+  # with linear_vectors
+  linears = [true,false,false,true]
+  B = identity_epm(element_variables; linear_vector=linears)
+
+  res = mul_epm_epv(B, epv)
+  vres = Vector(res)
+  @test sum(vres) == 8
+  @test vres[1] == 0
+  @test vres[2] == 1
+  @test vres[3] == 1
+  @test vres[4] == 1
+  @test vres[5] == 0
+  @test vres[6] == 2
+  @test vres[7] == 1
+  @test vres[8] == 2
+end

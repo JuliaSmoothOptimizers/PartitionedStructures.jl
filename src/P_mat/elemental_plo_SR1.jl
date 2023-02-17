@@ -74,11 +74,15 @@ identity_eplo_LSR1(
   N::Int = length(element_variables),
   n::Int = max_indices(element_variables),
   T = Float64,
-) = identity_eplo_LSR1(element_variables, N, n; T = Float64)
+  linear_vector::Vector{Bool} = zeros(Bool, N),
+) = identity_eplo_LSR1(element_variables, N, n; T, linear_vector)
 
-function identity_eplo_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T = Float64)
-  length(element_variables) != N && @error("unvalid list of element indices, PLSR1")
-  eelo_set = map((elt_var -> init_eelo_LSR1(elt_var; T = T)), element_variables)
+function identity_eplo_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T = Float64, linear_vector::Vector{Bool} = zeros(Bool, N),)
+  length(element_variables) != N && @error("unvalid list of element indices, PLSR1")  
+  eelo_set = map(
+    (i -> init_eelo_LSR1(element_variables[i]; T, linear = linear_vector[i])),
+    1:length(element_variables),
+  )
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])

@@ -5,7 +5,7 @@ using ..M_abstract_element_struct
 
 export Elt_mat, DenseEltMat, LOEltMat
 export get_Bie, get_Bsr
-export get_counter_elt_mat, get_cem, get_current_untouched, get_index, get_convex
+export get_counter_elt_mat, get_cem, get_current_untouched, get_index, get_convex, get_linear
 
 export Counter_elt_mat
 export update_counter_elt_mat!, iter_info, total_info
@@ -71,6 +71,8 @@ If the last partitioned-update updates `elt_mat` then `index` will be equal to `
 @inline get_index(elt_mat::T) where {T <: Elt_mat} = get_current_untouched(elt_mat.counter)
 
 @inline get_convex(elt_mat::Elt_mat) = elt_mat.convex
+
+@inline get_linear(elt_mat::Elt_mat) = elt_mat.linear
 
 Counter_elt_mat() = Counter_elt_mat(0, 0, 0, 0, 0, 0)
 copy(cem::Counter_elt_mat) = Counter_elt_mat(

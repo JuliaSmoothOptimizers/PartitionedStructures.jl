@@ -1,4 +1,4 @@
-using LinearAlgebra: Matrix
+using LinearAlgebra
 using PartitionedStructures
 using Test
 

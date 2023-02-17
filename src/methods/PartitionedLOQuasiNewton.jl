@@ -63,22 +63,25 @@ function PLBFGS_update!(
     @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
   for i = 1:N
-    eeloi = get_eelo_set(eplo_B, i)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    index = get_index(eeloi)
-    if (dot(si, yi) > eps(T))
-      Bi = get_Bie(eeloi)
-      push!(Bi, si, yi)
-      update = 1
-    elseif index < reset # Bi is not updated nor reset
-      update = 0
-    else
-      reset_eelo_bfgs!(eeloi)
-      update = -1
+    eelo = get_eelo_set(eplo_B, i)
+    linear = get_linear(eelo)
+    if !linear
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      index = get_index(eelo)
+      if (dot(si, yi) > eps(T))
+        Bi = get_Bie(eelo)
+        push!(Bi, si, yi)
+        update = 1
+      elseif index < reset # Bi is not updated nor reset
+        update = 0
+      else
+        reset_eelo_bfgs!(eelo)
+        update = -1
+      end
+      cem = get_cem(eelo)
+      update_counter_elt_mat!(cem, update)
     end
-    cem = get_cem(eeloi)
-    update_counter_elt_mat!(cem, update)
   end
   verbose && (str = string_counters_iter(eplo_B))
   verbose && (print("\n PLBFGS" * str))
@@ -134,23 +137,26 @@ function PLSR1_update!(
     @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
   for i = 1:N
-    eeloi = get_eelo_set(eplo_B, i)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    Bi = get_Bie(eeloi)
-    ri = yi .- Bi * si
-    index = get_index(eeloi)
-    if abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2)
-      push!(Bi, si, yi)
-      update = 1
-    elseif index < reset # Bi is not updated nor reset
-      update = 0
-    else
-      reset_eelo_sr1!(eeloi)
-      update = -1
+    eelo = get_eelo_set(eplo_B, i)
+    linear = get_linear(eelo)
+    if !linear
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      Bi = get_Bie(eelo)
+      ri = yi .- Bi * si
+      index = get_index(eelo)
+      if abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2)
+        push!(Bi, si, yi)
+        update = 1
+      elseif index < reset # Bi is not updated nor reset
+        update = 0
+      else
+        reset_eelo_sr1!(eelo)
+        update = -1
+      end
+      cem = get_cem(eelo)
+      update_counter_elt_mat!(cem, update)
     end
-    cem = get_cem(eeloi)
-    update_counter_elt_mat!(cem, update)
   end
   verbose && (str = string_counters_iter(eplo_B))
   verbose && (print("\n PLSR1" * str))
@@ -207,10 +213,14 @@ function Part_update!(
     @error("different partitioned structures between eplo_B and epv_s")
   N = get_N(eplo_B)
   for i = 1:N
-    Bi = get_Bie(get_eelo_set(eplo_B, i))
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    push!(Bi, si, yi)
+    eelo = get_eelo_set(eplo_B, i)
+    linear = get_linear(eelo)
+    if !linear
+      Bi = get_Bie(eelo)
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      push!(Bi, si, yi)
+    end
   end
   return eplo_B
 end
@@ -275,38 +285,41 @@ function PLSE_update!(
   acc_reset = 0
   for i = 1:N
     eelo = get_eelo_set(eplo_B, i)
-    Bi = get_Bie(eelo)
-    si = get_vec(get_eev_set(epv_s, i))
-    yi = get_vec(get_eev_set(epv_y, i))
-    ri = yi .- Bi * si
-    index = get_index(eelo)
-    if isa(Bi, LBFGSOperator{T})
-      if dot(si, yi) > eps(T) # curvature condition
-        push!(Bi, si, yi)
-        acc_lbfgs += 1
-      elseif abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2) # numerical condition of LSR1
-        indices = get_indices(eelo)
-        eelo = init_eelo_LSR1(indices; T = T)
-        Bi = get_Bie(eelo)
-        set_eelo_set!(eplo_B, i, eelo)
-        push!(Bi, si, yi)
-        acc_lsr1 += 1
-      elseif index < reset
-        acc_untouched += 1
-      else
-        reset_eelo_bfgs!(eelo)
-        acc_reset += 1
-      end
-    else # isa(Bi, LSR1Operator{T})
-      if abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2)
-        push!(Bi, si, yi)
-        acc_lsr1 += 1
-      elseif index < reset
-        acc_untouched += 1
-      else
-        indices = get_indices(eelo)
-        eelo = init_eelo_LBFGS(indices; T = T)
-        acc_reset += 1
+    linear = get_linear(eelo)
+    if !linear
+      Bi = get_Bie(eelo)
+      si = get_vec(get_eev_set(epv_s, i))
+      yi = get_vec(get_eev_set(epv_y, i))
+      ri = yi .- Bi * si
+      index = get_index(eelo)
+      if isa(Bi, LBFGSOperator{T})
+        if dot(si, yi) > eps(T) # curvature condition
+          push!(Bi, si, yi)
+          acc_lbfgs += 1
+        elseif abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2) # numerical condition of LSR1
+          indices = get_indices(eelo)
+          eelo = init_eelo_LSR1(indices; T = T)
+          Bi = get_Bie(eelo)
+          set_eelo_set!(eplo_B, i, eelo)
+          push!(Bi, si, yi)
+          acc_lsr1 += 1
+        elseif index < reset
+          acc_untouched += 1
+        else
+          reset_eelo_bfgs!(eelo)
+          acc_reset += 1
+        end
+      else # isa(Bi, LSR1Operator{T})
+        if abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2)
+          push!(Bi, si, yi)
+          acc_lsr1 += 1
+        elseif index < reset
+          acc_untouched += 1
+        else
+          indices = get_indices(eelo)
+          eelo = init_eelo_LBFGS(indices; T = T)
+          acc_reset += 1
+        end
       end
     end
   end

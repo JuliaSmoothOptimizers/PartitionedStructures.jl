@@ -15,7 +15,7 @@ export set_N!, set_n!, set_permutation!
 export get_eelo_set, get_ee_struct_Bie
 export set_eelo_set!
 
-export get_eelo_set, get_eelo_set, set_spm!, get_eelo_sub_set, get_eelo_set_Bie
+export get_eelo_sub_set, get_eelo_set_Bie
 export get_spm, get_L
 export set_L!, set_L_to_spm!
 
