@@ -76,8 +76,9 @@ end
 Create an $(_elmpqno) PLBFGS `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable size.
 """
-function eplo_lbfgs_from_epv(epv::T;
-   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+function eplo_lbfgs_from_epv(
+  epv::T;
+  linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
 ) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
@@ -97,7 +98,8 @@ end
 Create an $(_elmpqno) PLSR1 `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LSR1Operator` of suitable size.
 """
-function eplo_lsr1_from_epv(epv::T;
+function eplo_lsr1_from_epv(
+  epv::T;
   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
 ) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
@@ -118,7 +120,8 @@ end
 Create an $(_elmpqno) PLSE `eplo` with the same partitioned structure than `epv`.
 Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable size, but it may change to a `LSR1Operator` later on.
 """
-function eplo_lose_from_epv(epv::Elemental_pv{T};
+function eplo_lose_from_epv(
+  epv::Elemental_pv{T};
   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
 ) where {T <: Number}
   N = get_N(epv)

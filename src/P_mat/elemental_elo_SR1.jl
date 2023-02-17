@@ -56,7 +56,7 @@ end
 
 Return an `Elemental_elo_sr1` of type `T` based on the vector of the elemental variables `elt_var`.
 """
-function init_eelo_LSR1(elt_var::Vector{Int}; T = Float64, linear=false)
+function init_eelo_LSR1(elt_var::Vector{Int}; T = Float64, linear = false)
   nie = length(elt_var)
   _nie = (!linear) * nie
   Bie = LinearOperators.LSR1Operator(T, _nie)
@@ -70,7 +70,7 @@ end
 
 Return an `Elemental_elo_sr1` of type `T` with `nie` random indices within the range `1:n`.
 """
-function LSR1_eelo_rand(nie::Int; T = Float64, n = nie^2, linear=false)
+function LSR1_eelo_rand(nie::Int; T = Float64, n = nie^2, linear = false)
   indices = rand(1:n, nie)
   _nie = (!linear) * nie
   Bie = LinearOperators.LSR1Operator(T, _nie)
@@ -84,7 +84,7 @@ end
 
 Return an `Elemental_elo_sr1` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
-function LSR1_eelo(nie::Int; T = Float64, index = 1, linear=false)
+function LSR1_eelo(nie::Int; T = Float64, index = 1, linear = false)
   indices = [index:1:(index + nie - 1);]
   _nie = (!linear) * nie
   Bie = LinearOperators.LSR1Operator(T, _nie)

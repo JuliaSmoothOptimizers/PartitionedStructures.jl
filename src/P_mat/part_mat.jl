@@ -38,7 +38,7 @@ function set_spm!(plm::P) where {T <: Number, P <: Part_LO_mat{T}}
   n = get_n(plm)
   spm = get_spm(plm)
   for i = 1:N
-    elmᵢ = get_eelo_set(plm, i)    
+    elmᵢ = get_eelo_set(plm, i)
     linear = get_linear(elmᵢ)
     if !linear
       nie = get_nie(elmᵢ)

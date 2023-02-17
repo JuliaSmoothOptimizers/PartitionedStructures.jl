@@ -38,7 +38,6 @@ using PartitionedStructures.M_abstract_part_struct, PartitionedStructures.M_part
         "\t structure: Elemental_pm{Float64} based from 3 elements; update: 0, untouch: 0, reset: 0 \n"
 end
 
-
 @testset "mul_epm_epv with linear_vector" begin
   N = 4
   n = 8
@@ -46,7 +45,7 @@ end
 
   epv = PartitionedStructures.epv_from_v(ones(n), create_epv(element_variables))
   # without linear_vectors
-  B = identity_epm(element_variables)  
+  B = identity_epm(element_variables)
 
   res = mul_epm_epv(B, epv)
   vres = Vector(res)
@@ -61,8 +60,8 @@ end
   @test vres[8] == 2
 
   # with linear_vectors
-  linears = [true,false,false,true]
-  B = identity_epm(element_variables; linear_vector=linears)
+  linears = [true, false, false, true]
+  B = identity_epm(element_variables; linear_vector = linears)
 
   res = mul_epm_epv(B, epv)
   vres = Vector(res)
