@@ -202,3 +202,13 @@ end
   eplosr1 = identity_eplo_LSR1(element_variables)
   @test SparseMatrixCSC(eplose) == SparseMatrixCSC(eplosr1)
 end
+
+@testset "Matrix and SparseMatrix with linear element matrices (LinearOperators)" begin
+  N = 4
+  n = 8
+  element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
+  
+  linears = [true,false,false,true]
+  B = identity_eplo_LSR1(element_variables; linear_vector=linears)
+  Matrix(B)
+end

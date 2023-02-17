@@ -63,11 +63,12 @@ end
 )
 
 """
-    eplo = identity_eplo_LSR1(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64)
-    eplo = identity_eplo_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64)
+    eplo = identity_eplo_LSR1(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
+    eplo = identity_eplo_LSR1(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
 
 Return an elemental partitionned limited-memory operator PLSR1 of `N` elemental element linear-operators.
 The positions are given by the vector of the element variables `element_variables`.
+`linear_vector` indicates which element linear-opeartor should not contribute to the partitioned linear-operator.
 """
 identity_eplo_LSR1(
   element_variables::Vector{Vector{Int}};

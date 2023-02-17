@@ -13,11 +13,12 @@ export reset_eelo_bfgs!
 """
     Elemental_elo_bfgs{T} <: LOEltMat{T}
 
-Represent an elemental element `LBFGSOperator`.
-`indices` retains the indices of the elemental variables.
-`nie` is the elemental size (`=length(indices)`).
-`Bie` a `LBFGSOperator`.
-`counter` counts how many update the elemental limited-memory operator goes through from its allocation.
+Represent an elemental element `LBFGSOperator`:
+* `indices` retains the indices of the elemental variables;
+* `nie` is the elemental size (`=length(indices)`);
+* `Bie` a `LBFGSOperator`;
+* `linear`: if `linear==true`, then the element matrix contribution is null;
+* `counter` counts how many update the elemental limited-memory operator goes through from its allocation.
 """
 mutable struct Elemental_elo_bfgs{T} <: LOEltMat{T}
   nie::Int # nᵢᴱ
