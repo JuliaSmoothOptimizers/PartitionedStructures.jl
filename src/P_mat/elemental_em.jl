@@ -37,7 +37,7 @@ end
   (get_nie(eem1) == get_nie(eem2)) &&
   (get_Bie(eem1) == get_Bie(eem2)) &&
   (get_indices(eem1) == get_indices(eem2)) &&
-  (get_convex(eem1) == get_convex(eem2)) && 
+  (get_convex(eem1) == get_convex(eem2)) &&
   (get_linear(eem1) == get_linear(eem2))
 @inline copy(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
@@ -46,7 +46,7 @@ end
   Counter_elt_mat(),
   copy(get_convex(eem)),
   copy(get_linear(eem)),
-  copy(get_Bsr(eem)),  
+  copy(get_Bsr(eem)),
 )
 @inline similar(eem::Elemental_em{T}) where {T} = Elemental_em{T}(
   copy(get_nie(eem)),
@@ -55,7 +55,7 @@ end
   Counter_elt_mat(),
   copy(get_convex(eem)),
   copy(get_linear(eem)),
-  similar(get_Bsr(eem)),  
+  similar(get_Bsr(eem)),
 )
 
 """
@@ -79,7 +79,7 @@ end
 
 Return a `nie` identity elemental element-matrix of type `T` from `nie` random indices in the range `1:n`.
 """
-function identity_eem(nie::Int; T = Float64, n = nie^2, convex = false, linear = false)  
+function identity_eem(nie::Int; T = Float64, n = nie^2, convex = false, linear = false)
   indices = rand(1:n, nie)
   _nie = (!linear) * nie
   Bie = zeros(T, _nie, _nie)
@@ -128,9 +128,17 @@ end
 
 Return an elemental element-matrix of type `T` of size one at `index`.
 """
-function one_size_bloc(index::Int; nie=1, T = Float64, convex = false, linear = false)
+function one_size_bloc(index::Int; nie = 1, T = Float64, convex = false, linear = false)
   _nie = (!linear) * nie
-  Elemental_em{T}(nie, [index], Symmetric(ones(_nie, _nie)), Counter_elt_mat(), convex, linear, Vector{T}(undef, _nie))
+  Elemental_em{T}(
+    nie,
+    [index],
+    Symmetric(ones(_nie, _nie)),
+    Counter_elt_mat(),
+    convex,
+    linear,
+    Vector{T}(undef, _nie),
+  )
 end
 
 """

@@ -207,8 +207,8 @@ end
   N = 4
   n = 8
   element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
-  
-  linears = [true,false,false,true]
-  B = identity_eplo_LSR1(element_variables; linear_vector=linears)
+
+  linears = [true, false, false, true]
+  B = identity_eplo_LSR1(element_variables; linear_vector = linears)
   Matrix(B)
 end

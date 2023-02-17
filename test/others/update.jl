@@ -233,8 +233,8 @@ end
   # without linear_vectors
   B = identity_epm(element_variables)
   # with linear_vectors
-  linears = [true,false,false,true]
-  B_linear = identity_epm(element_variables; linear_vector=linears)
+  linears = [true, false, false, true]
+  B_linear = identity_epm(element_variables; linear_vector = linears)
 
   Bv = Vector(mul_epm_epv(B, epv))
   B_linearv = Vector(mul_epm_epv(B_linear, epv))
