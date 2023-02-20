@@ -85,7 +85,13 @@ identity_eplo_LOSE(
   linear_vector::Vector{Bool} = zeros(Bool, N),
 ) = identity_eplo_LOSE(element_variables, N, n; T, linear_vector)
 
-function identity_eplo_LOSE(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T = Float64, linear_vector::Vector{Bool} = zeros(Bool, N),)  
+function identity_eplo_LOSE(
+  element_variables::Vector{Vector{Int}},
+  N::Int,
+  n::Int;
+  T = Float64,
+  linear_vector::Vector{Bool} = zeros(Bool, N),
+)
   eelo_set = map(
     (i -> init_eelo_LBFGS(element_variables[i]; T, linear = linear_vector[i])),
     1:length(element_variables),
