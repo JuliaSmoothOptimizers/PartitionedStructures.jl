@@ -70,8 +70,8 @@ end
 )
 
 """
-    eplo = identity_eplo_LOSE(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
-    eplo = identity_eplo_LOSE(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
+    eplo = identity_eplo_LOSE(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N), mem=5)
+    eplo = identity_eplo_LOSE(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N), mem=5)
 
 Create an elemental partitionned limited-memory operator of `N` elemental element linear-operators initialized with LBFGS operators.
 The positions are given by the vector of the element variables `element_variables`.
@@ -83,7 +83,8 @@ identity_eplo_LOSE(
   n::Int = max_indices(element_variables),
   T = Float64,
   linear_vector::Vector{Bool} = zeros(Bool, N),
-) = identity_eplo_LOSE(element_variables, N, n; T, linear_vector)
+  mem=5,
+) = identity_eplo_LOSE(element_variables, N, n; T, linear_vector, mem)
 
 function identity_eplo_LOSE(
   element_variables::Vector{Vector{Int}},
@@ -91,9 +92,10 @@ function identity_eplo_LOSE(
   n::Int;
   T = Float64,
   linear_vector::Vector{Bool} = zeros(Bool, N),
+  mem=5,
 )
   eelo_set = map(
-    (i -> init_eelo_LBFGS(element_variables[i]; T, linear = linear_vector[i])),
+    (i -> init_eelo_LBFGS(element_variables[i]; T, linear = linear_vector[i], mem)),
     1:length(element_variables),
   )
   spm = spzeros(T, n, n)
@@ -112,7 +114,7 @@ Create an elemental partitionned limited-memory operator PLSE of `N` (deduced fr
 Each element overlaps the coordinates of the next element by `overlapping` components.
 Each element is randomly (`rand() > p`) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
 """
-function PLBFGSR1_eplo(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int = 1, prob = 0.5)
+function PLBFGSR1_eplo(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int = 1, prob = 0.5, mem=5)
   overlapping < nie || error("the overlapiing must be smaller than nie")
   mod(n - (nie - overlapping), nie - overlapping) == mod(overlapping, nie - overlapping) ||
     error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must holds")
@@ -122,7 +124,7 @@ function PLBFGSR1_eplo(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int
     vcat(1, (x -> x + (nie - overlapping)).([1:(nie - overlapping):(n - (nie - overlapping));])),
   )
   eelo_set = map(
-    i -> rand() > prob ? LBFGS_eelo(nie; T = T, index = i) : LSR1_eelo(nie; T = T, index = i),
+    i -> rand() > prob ? LBFGS_eelo(nie; T = T, index = i, mem) : LSR1_eelo(nie; T = T, index = i, mem),
     indices,
   )
   N = length(indices)
@@ -142,9 +144,9 @@ Create an elemental partitionned limited-memory operator PLSE of `N` elemental e
 The size of each element is `nie`, whose positions are random in the range `1:n`.
 Each element is randomly (rand() > p) choose between an elemental element LBFGS operator or an elemental element LSR1 operator.
 """
-function PLBFGSR1_eplo_rand(N::Int, n::Int; T = Float64, nie::Int = 5, prob = 0.5)
+function PLBFGSR1_eplo_rand(N::Int, n::Int; T = Float64, nie::Int = 5, prob = 0.5, mem=5)
   eelo_set = map(
-    i -> rand() > prob ? LBFGS_eelo_rand(nie; T = T, n = n) : LSR1_eelo_rand(nie; T = T, n = n),
+    i -> rand() > prob ? LBFGS_eelo_rand(nie; T = T, n = n, mem) : LSR1_eelo_rand(nie; T = T, n = n, mem),
     [1:N;],
   )
   spm = spzeros(T, n, n)

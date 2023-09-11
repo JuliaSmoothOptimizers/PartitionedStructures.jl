@@ -62,8 +62,8 @@ end
 )
 
 """
-    eplo = identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
-    eplo = identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N))
+    eplo = identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}; N::Int=length(element_variables), n::Int=max_indices(element_variables), T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N), mem=5)
+    eplo = identity_eplo_LBFGS(element_variables::Vector{Vector{Int}}, N::Int, n::Int; T=Float64, linear_vector::Vector{Bool} = zeros(Bool, N), mem=5)
 
 Return an $(_eplmo) PLBFGS of `N` elemental element linear-operators.
 The positions are given by the vector of the element variables `element_variables`.
@@ -75,7 +75,8 @@ identity_eplo_LBFGS(
   n::Int = max_indices(element_variables),
   T = Float64,
   linear_vector::Vector{Bool} = zeros(Bool, N),
-) = identity_eplo_LBFGS(element_variables, N, n; T, linear_vector)
+  mem = 5,
+) = identity_eplo_LBFGS(element_variables, N, n; T, linear_vector, mem)
 
 function identity_eplo_LBFGS(
   element_variables::Vector{Vector{Int}},
@@ -83,10 +84,11 @@ function identity_eplo_LBFGS(
   n::Int;
   T = Float64,
   linear_vector::Vector{Bool} = zeros(Bool, N),
+  mem = 5,
 )
   eelo_set = map(
-    (i -> init_eelo_LBFGS(element_variables[i]; T, linear = linear_vector[i])),
-    1:length(element_variables),
+    (i -> init_eelo_LBFGS(element_variables[i]; T, linear = linear_vector[i], mem)),
+    1:length(element_variables), 
   )
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
@@ -103,7 +105,7 @@ end
 Return an $(_eplmo) PLBFGS of `N` (deduced from `n` and `nie`) elemental element linear-operators.
 Each element overlaps the coordinates of the next element by `overlapping` components.
 """
-function PLBFGS_eplo(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int = 1)
+function PLBFGS_eplo(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int = 1, mem=5)
   overlapping < nie || error("the overlapping must be lower than nie")
   mod(n - (nie - overlapping), nie - overlapping) == mod(overlapping, nie - overlapping) ||
     error("wrong structure: mod(n-(nie-over), nie-over)==mod(over, nie-over) must hold")
@@ -112,7 +114,7 @@ function PLBFGS_eplo(; n::Int = 9, T = Float64, nie::Int = 5, overlapping::Int =
     x -> x <= n - nie + 1,
     vcat(1, (x -> x + (nie - overlapping)).([1:(nie - overlapping):(n - (nie - overlapping));])),
   )
-  eelo_set = map(i -> LBFGS_eelo(nie; T = T, index = i), indices)
+  eelo_set = map(i -> LBFGS_eelo(nie; T = T, index = i, mem), indices)
   N = length(indices)
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
@@ -129,8 +131,8 @@ end
 Return an $(_eplmo) PLBFGS of `N` elemental element linear-operators.
 The size of each element is `nie`, whose positions are random in the range `1:n`.
 """
-function PLBFGS_eplo_rand(N::Int, n::Int; T = Float64, nie::Int = 5)
-  eelo_set = map(i -> LBFGS_eelo_rand(nie; T = T, n = n), [1:N;])
+function PLBFGS_eplo_rand(N::Int, n::Int; T = Float64, nie::Int = 5, mem=5)
+  eelo_set = map(i -> LBFGS_eelo_rand(nie; T = T, n = n, mem), [1:N;])
   spm = spzeros(T, n, n)
   L = spzeros(T, n, n)
   component_list = map(i -> Vector{Int}(undef, 0), [1:n;])

@@ -311,10 +311,11 @@ Set the values of the element partitioned-vector `epv` to `x`.
 Usefull to define Uᵢ x, ∀ i ∈ {1,...,N}.
 """
 function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where {T}
-  for idx = 1:get_N(epv_x)
+  @inbounds @simd for idx = 1:get_N(epv_x)
     indices = get_indices(get_eev_set(epv_x, idx))
     vec = get_eev_value(epv_x, idx)
     _view_x = view(x, indices)
+    # vec .= _view_x
     mul!(vec, I, _view_x, 1, 0)
   end
   return epv_x
