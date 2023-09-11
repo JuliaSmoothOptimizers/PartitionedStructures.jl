@@ -79,6 +79,7 @@ Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable s
 function eplo_lbfgs_from_epv(
   epv::T;
   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+  mem = 5,
 ) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
@@ -88,7 +89,7 @@ function eplo_lbfgs_from_epv(
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  eplo = identity_eplo_LBFGS(eelo_indices_set, N, n; T = Y, linear_vector)
+  eplo = identity_eplo_LBFGS(eelo_indices_set, N, n; T = Y, linear_vector, mem)
   return eplo
 end
 
@@ -101,6 +102,7 @@ Each element linear-operator of `eplo` is set to a `LSR1Operator` of suitable si
 function eplo_lsr1_from_epv(
   epv::T;
   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+  mem = 5,
 ) where {Y <: Number, T <: Elemental_pv{Y}}
   N = get_N(epv)
   n = get_n(epv)
@@ -110,7 +112,7 @@ function eplo_lsr1_from_epv(
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  eplo = identity_eplo_LSR1(eelo_indices_set, N, n; T = Y, linear_vector)
+  eplo = identity_eplo_LSR1(eelo_indices_set, N, n; T = Y, linear_vector, mem)
   return eplo
 end
 
@@ -123,6 +125,7 @@ Each element linear-operator of `eplo` is set to a `LBFGSOperator` of suitable s
 function eplo_lose_from_epv(
   epv::Elemental_pv{T};
   linear_vector::Vector{Bool} = zeros(Bool, get_N(epv)),
+  mem = 5,
 ) where {T <: Number}
   N = get_N(epv)
   n = get_n(epv)
@@ -132,7 +135,7 @@ function eplo_lose_from_epv(
     indices = get_indices(eesi)
     eelo_indices_set[i] = indices
   end
-  eplo = identity_eplo_LOSE(eelo_indices_set, N, n; T = T, linear_vector)
+  eplo = identity_eplo_LOSE(eelo_indices_set, N, n; T = T, linear_vector, mem)
   return eplo
 end
 

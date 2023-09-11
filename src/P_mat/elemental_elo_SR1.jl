@@ -52,14 +52,14 @@ end
 )
 
 """
-    eelo = init_eelo_LSR1(elt_var::Vector{Int}; T=Float64)
+    eelo = init_eelo_LSR1(elt_var::Vector{Int}; T=Float64, mem=5)
 
 Return an `Elemental_elo_sr1` of type `T` based on the vector of the elemental variables `elt_var`.
 """
-function init_eelo_LSR1(elt_var::Vector{Int}; T = Float64, linear = false)
+function init_eelo_LSR1(elt_var::Vector{Int}; T = Float64, linear = false, mem=5)
   nie = length(elt_var)
   _nie = (!linear) * nie
-  Bie = LinearOperators.LSR1Operator(T, _nie)
+  Bie = LinearOperators.LSR1Operator(T, _nie; mem)
   counter = Counter_elt_mat()
   eelo = Elemental_elo_sr1{T}(nie, elt_var, Bie, counter, linear)
   return eelo
@@ -70,10 +70,10 @@ end
 
 Return an `Elemental_elo_sr1` of type `T` with `nie` random indices within the range `1:n`.
 """
-function LSR1_eelo_rand(nie::Int; T = Float64, n = nie^2, linear = false)
+function LSR1_eelo_rand(nie::Int; T = Float64, n = nie^2, linear = false, mem=5)
   indices = rand(1:n, nie)
   _nie = (!linear) * nie
-  Bie = LinearOperators.LSR1Operator(T, _nie)
+  Bie = LinearOperators.LSR1Operator(T, _nie; mem)
   counter = Counter_elt_mat()
   eelo = Elemental_elo_sr1{T}(nie, indices, Bie, counter, linear)
   return eelo
@@ -84,10 +84,10 @@ end
 
 Return an `Elemental_elo_sr1` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
-function LSR1_eelo(nie::Int; T = Float64, index = 1, linear = false)
+function LSR1_eelo(nie::Int; T = Float64, index = 1, linear = false, mem=5)
   indices = [index:1:(index + nie - 1);]
   _nie = (!linear) * nie
-  Bie = LinearOperators.LSR1Operator(T, _nie)
+  Bie = LinearOperators.LSR1Operator(T, _nie; mem)
   counter = Counter_elt_mat()
   eelo = Elemental_elo_sr1{T}(nie, indices, Bie, counter, linear)
   return eelo
@@ -99,7 +99,7 @@ end
 Reset the LSR1 linear-operator of the elemental element linear-operator matrix `eelo`.
 """
 function reset_eelo_sr1!(eelo::Elemental_elo_sr1{T}) where {T <: Number}
-  eelo.Bie = LinearOperators.LSR1Operator(T, eelo.nie)
+  eelo.Bie = LinearOperators.LSR1Operator(T, eelo.nie; mem=get_Bie(eelo).data.mem)
   return eelo
 end
 
