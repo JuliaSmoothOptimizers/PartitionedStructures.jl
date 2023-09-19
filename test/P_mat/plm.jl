@@ -213,14 +213,13 @@ end
   Matrix(B)
 end
 
-
 @testset "PLQN from vec + mem" begin
   N = 4
   n = 8
   element_variables = [[1, 2, 5, 7], [3, 6, 7, 8], [2, 4, 6, 8], [1, 3, 5, 6, 7]]
   s = rand(n)
 
-  mem = 10 
+  mem = 10
   epv = create_epv(element_variables, n)
   eplo_lbfgs = eplo_lbfgs_from_epv(epv; mem)
   eplo_lsr1 = eplo_lsr1_from_epv(epv; mem)
@@ -231,10 +230,9 @@ end
   @test eplo_lose == identity_eplo_LOSE(element_variables; mem)
 
   is = 1:4
-  for i in is  
+  for i in is
     @test get_Bie(get_eelo_set(eplo_lbfgs, i)).data.mem == mem
     @test get_Bie(get_eelo_set(eplo_lsr1, i)).data.mem == mem
     @test get_Bie(get_eelo_set(eplo_lose, i)).data.mem == mem
   end
-  
 end

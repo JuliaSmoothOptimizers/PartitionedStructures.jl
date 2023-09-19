@@ -56,7 +56,7 @@ end
 
 Return an `Elemental_elo_bfgs` of type `T` based on the vector of the elemental variables`elt_var`.
 """
-function init_eelo_LBFGS(elt_var::Vector{Int}; T = Float64, linear = false, mem=5)
+function init_eelo_LBFGS(elt_var::Vector{Int}; T = Float64, linear = false, mem = 5)
   nie = length(elt_var)
   _nie = (!linear) * nie
   Bie = LinearOperators.LBFGSOperator(T, _nie; mem)
@@ -70,7 +70,7 @@ end
 
 Return an `Elemental_elo_bfgs` of type `T` with `nie` random indices within the range `1:n`.
 """
-function LBFGS_eelo_rand(nie::Int; T = Float64, n = nie^2, linear = false, mem=5)
+function LBFGS_eelo_rand(nie::Int; T = Float64, n = nie^2, linear = false, mem = 5)
   indices = rand(1:n, nie)
   _nie = (!linear) * nie
   Bie = LinearOperators.LBFGSOperator(T, _nie; mem)
@@ -84,7 +84,7 @@ end
 
 Return an `Elemental_elo_bfgs` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
 """
-function LBFGS_eelo(nie::Int; T = Float64, index = 1, linear = false, mem=5)
+function LBFGS_eelo(nie::Int; T = Float64, index = 1, linear = false, mem = 5)
   indices = [index:1:(index + nie - 1);]
   _nie = (!linear) * nie
   Bie = LinearOperators.LBFGSOperator(T, _nie; mem)
@@ -99,7 +99,7 @@ end
 Reset the LBFGS linear-operator of the elemental element linear-operator `eelo`.
 """
 function reset_eelo_bfgs!(eelo::Elemental_elo_bfgs{T}) where {T <: Number}
-  eelo.Bie = LinearOperators.LBFGSOperator(T, eelo.nie; mem=get_Bie(eelo).data.mem)
+  eelo.Bie = LinearOperators.LBFGSOperator(T, eelo.nie; mem = get_Bie(eelo).data.mem)
   return eelo
 end
 
