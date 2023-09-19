@@ -298,7 +298,7 @@ function PLSE_update!(
           acc_lbfgs += 1
         elseif abs(dot(si, ri)) > ω * norm(si, 2) * norm(ri, 2) # numerical condition of LSR1
           indices = get_indices(eelo)
-          eelo_ = init_eelo_LSR1(indices; T = T, mem=Bi.data.mem)
+          eelo_ = init_eelo_LSR1(indices; T = T, mem = Bi.data.mem)
           set_eelo_set!(eplo_B, i, eelo_)
           Bi = get_Bie(eelo)
           push!(Bi, si, yi)
@@ -317,7 +317,7 @@ function PLSE_update!(
           acc_untouched += 1
         else
           indices = get_indices(eelo)
-          eelo_ = init_eelo_LBFGS(indices; T = T, mem=Bi.data.mem)
+          eelo_ = init_eelo_LBFGS(indices; T = T, mem = Bi.data.mem)
           set_eelo_set!(eplo_B, i, eelo_)
           acc_reset += 1
         end
