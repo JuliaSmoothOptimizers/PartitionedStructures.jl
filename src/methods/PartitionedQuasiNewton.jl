@@ -212,7 +212,7 @@ end
     B = PCS_update(epm_B::Elemental_pm{T}, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where T
 
 Perform the PCS update onto a copy of the $(_epmB), given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
-Each $(_eem) is update given its `convex` field, if `convex==true` the $(_eem) is update with BFGS otherwise it is SR1.
+Each $(_eem) is update given its `convex` field, if `convex==true` the $(_eem) is update with BFGS otherwise SR1 is applied.
 """
 function PCS_update(
   epm_B::Elemental_pm{T},

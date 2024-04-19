@@ -49,8 +49,11 @@ end
 
 """
     eev_set = get_eev_set(epv::Elemental_pv{T}) where T
+    get_eev_set(epv::Elemental_pv{T}, i::Int) where {T}
 
-Return either the vector of every elemental element-vector of the $(_epv) or the `i`-th elemental element-vector.
+Return either:
+- the vector of every elemental element-vector of the $(_epv);
+- the `i`-th elemental element-vector.
 """
 @inline get_eev_set(epv::Elemental_pv{T}) where {T} = epv.eev_set
 @inline get_eev_set(epv::Elemental_pv{T}, i::Int) where {T} = epv.eev_set[i]
@@ -62,7 +65,7 @@ Return either the vector of every elemental element-vector of the $(_epv) or the
 """
     eev_subset = get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where T
 
-Return a subset of the elemental element vector composing the $(_epv).
+Return a subset of the elemental element vectors composing the $(_epv).
 `indices` selects the differents elemental element-vector needed.
 """
 @inline get_eev_subset(epv::Elemental_pv{T}, indices::Vector{Int}) where {T} = epv.eev_set[indices]
@@ -71,7 +74,7 @@ Return a subset of the elemental element vector composing the $(_epv).
     eev_i_value = get_eev_value(epv::Elemental_pv{T}, i::Int) where T
     eev_ij_value = get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where T
 
-Return either the value of the `i`-th elemental element-vector of the $(_epv) or only the `j`-th component of the `i`-th elemental element-vector.
+Return either the value of the `i`-th elemental element-vector of the $(_epv) or the `j`-th component of the `i`-th elemental element-vector.
 """
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int) where {T} = get_vec(get_eev_set(epv, i))
 @inline get_eev_value(epv::Elemental_pv{T}, i::Int, j::Int) where {T} =
@@ -81,7 +84,7 @@ Return either the value of the `i`-th elemental element-vector of the $(_epv) or
     set_eev!(epv::Elemental_pv{T}, i::Int, vec::Vector{T}) where T
     set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val:: T) where T
 
-Set either the `i`-th elemental element-vector `epv` to `vec` or its `j`-th component to `val`.
+Set either the `i`-th elemental element-vector from `epv` to `vec` or its `j`-th component to `val`.
 """
 @inline set_eev!(epv::Elemental_pv{T}, i::Int, j::Int, val::T) where {T} =
   set_vec!(get_eev_set(epv, i), j, val)
@@ -116,7 +119,7 @@ end
 """
     minus_epv!(epv::Elemental_pv{T}) where T <: Number
 
-Build in place the `-epv`, by inversing the value of each elemental element-vector.
+Set in place `-epv`, by inversing the value of each elemental element-vector.
 """
 minus_epv!(epv::Elemental_pv{T}) where {T <: Number} =
   map((eev -> set_minus_vec!(eev)), get_eev_set(epv))
@@ -168,8 +171,9 @@ end
 """
     epv = create_epv(sp_set::Vector{SparseVector{T,Y}}; kwargs...) where {T,Y}
     epv = create_epv(eev_set::Vector{Elemental_elt_vec{T}}; n=max_indices(eev_set)) where T
+    create_epv(vec_elt_var::Vector{Vector{Int}}; n::Int = max_indices(vec_elt_var), type = Float64)
 
-Create an elemental partitioned-vector from a vector `eev_set` of: `SparseVector`, elemental element-vector or a vector of indices.
+Create an elemental partitioned-vector from a vector of: `SparseVector`, elemental element-vector or a vector of `Int` representing elemental indices.
 """
 @inline create_epv(sp_set::Vector{SparseVector{T, Y}}; kwargs...) where {T, Y} =
   create_epv(eev_from_sparse_vec.(sp_set); kwargs...)
@@ -198,7 +202,7 @@ end
 """
     set_epv!(epv::Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where T <: Number
 
-Set the values of the elemental element-vectors of `epv` with the components of `vec_value_eev`.
+Set the elemental element-vectors from `epv` to the values of components from `vec_value_eev`.
 """
 function set_epv!(epv::Elemental_pv{T}, vec_value_eev::Vector{Vector{T}}) where {T <: Number}
   N = get_N(epv)
@@ -244,7 +248,8 @@ end
 """
     epv = rand_epv(N::Int,n::Int; nie=3, T=Float64)
 
-Define an elemental partitioned-vector of `N` elemental element-vector of size `nᵢ` whose values are randoms and the indices are in the range `1:n`.
+Define an elemental partitioned-vector of `N` elemental element-vector of size `nᵢ`.
+Each element-vector has random values with indices randomly pick in the range `1:n`.
 """
 function rand_epv(N::Int, n::Int; nie = 3, T = Float64)
   eev_set = [new_eev(nie; T = T, n = n) for i = 1:N]
@@ -255,7 +260,8 @@ end
 """
     epv = ones_kchained_epv(N::Int, k::Int; T=Float64)
 
-Construct an elemental partitioned-vector of `N` elemental element-vector of size `k` which overlaps the next element-vector on `k-1` variables.
+Construct an elemental partitioned-vector of `N` elemental element-vector of size `k`.
+Each element-vector overlaps the next element-vector on `k-1` variables.
 """
 function ones_kchained_epv(N::Int, k::Int; T = Float64)
   n = N + k
@@ -307,7 +313,7 @@ end
 """
     epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where T
 
-Set the values of the element partitioned-vector `epv` to `x`.
+Set the element partitioned-vector `epv` to `x`.
 Usefull to define Uᵢ x, ∀ i ∈ {1,...,N}.
 """
 function epv_from_v!(epv_x::Elemental_pv{T}, x::Vector{T}) where {T}
@@ -352,8 +358,8 @@ end
     (acc, res) = prod_part_vectors(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where T
 
 Perform an elementwise scalar product between the two elemental partitioned-vector `epv1` and `epv2`.
-`acc` accumulates the sum of the element-vectors scalar product.
-`res` contrains the details of every element-vector scalar product.
+`acc` accumulates the sum of the element-vector scalar products.
+`res` contains the details of every element-vector scalar product.
 """
 function prod_part_vectors(epv1::Elemental_pv{T}, epv2::Elemental_pv{T}) where {T}
   full_check_epv_epm(epv1, epv2) ||

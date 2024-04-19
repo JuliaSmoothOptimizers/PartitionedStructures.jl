@@ -41,7 +41,7 @@ Multiply by `-1` the vector inside the element-vector `ev`.
 """
     set_add_vec!(ev::T, vec::Vector{Y}) where {T <: Elt_vec, Y <: Number}
 
-Add `vec` to the vector `ev.vec` of the element-vector `ev`.
+Add inplace `vec` to the vector `ev.vec` of the element-vector `ev`.
 """
 @inline set_add_vec!(ev::T, vec::Vector{Y}) where {T <: Elt_vec, Y <: Number} = ev.vec .+= vec
 

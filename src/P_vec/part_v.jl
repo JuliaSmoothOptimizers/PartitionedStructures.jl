@@ -8,7 +8,7 @@ export get_v
 export set_N!, set_n!, set_v!
 export add_v!, build_v!, build_v, reset_v!
 
-"""Supertype of every partitioned-vectors, ex : Elemental_elt_vec, Internal_elt_vec."""
+"""Supertype of every partitioned-vectors, ex : `Elemental_elt_vec`, `Internal_elt_vec`."""
 abstract type Part_v{T} <: AbstractPartitionedStructure{T} end
 
 """

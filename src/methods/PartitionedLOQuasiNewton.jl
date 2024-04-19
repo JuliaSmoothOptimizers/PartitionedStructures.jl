@@ -228,10 +228,10 @@ end
 """
     copy_eplo_B = PLSE_update(eplo_B::Y, epv_y::Elemental_pv{T}, s::Vector{T}; kwargs...) where {T, Y <: Part_LO_mat{T}}
 
-Perform the partitionned update PLSE onto a copy of the partitioned limited-memory operator `eplo_B`, given the step `s` and the difference of elemental partitioned-gradients `epv_y`.
-Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
-The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
-If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ is update.
+Perform the partitionned update PLSE onto the partitioned limited-memory operator `eplo_B`, given the step `s` (or the element-steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
+Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or a `LSR1Operator`.
+The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied, then it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
+If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ remains and is updated.
 Return the updated copy of `eplo_B`.
 """
 function PLSE_update(
@@ -250,9 +250,9 @@ end
     PLSE_update!(eplo_B::Y, epv_y::Elemental_pv{T}, epv_s::Elemental_pv{T}; ω = 1e-6, verbose=true, reset=4, kwargs...) where {T, Y <: Part_LO_mat{T}}
 
 Perform the partitionned update PLSE onto the partitioned limited-memory operator `eplo_B`, given the step `s` (or the element-steps `epv_s`) and the difference of elemental partitioned-gradients `epv_y`.
-Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or `LSR1Operator`.
-The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
-If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ is update.
+Each element linear-operator from `eplo_B` is either a `LBFGSOperator` or a `LSR1Operator`.
+The update tries to apply a LBFGS update to every Bᵢ, but if the curvature condition yᵢᵀUᵢs > 0 is not satisfied, then it replaces the `LBFGSOperator` by a `LSR1Operator` and applies a LSR1 update.
+If Bᵢ is initally a LSR1Opeartor, we replace it by a `LBFGSOperator` if the curvature condition yᵢᵀUᵢs > 0 holds and we update it, otherwise the `LSR1Operator` Bᵢ remains and is updated.
 """
 function PLSE_update!(
   eplo_B::Y,

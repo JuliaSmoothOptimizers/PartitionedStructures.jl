@@ -17,7 +17,7 @@ Create an $(_epm) and an $(_epv).
 Both have the same partitioned structure defined by the size of the problem `n::Int`, the size of the element `nie::Int` and the overlapping between the consecutive elements `overlapping::Int`.
 Each elemental element-matrix is fill with ones, except the terms of the diagonal of value `mul_v::Real`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
-Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+**Warning:** You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are correct.
 """
 function create_epv_epm(; n = 9, nie = 5, overlapping = 1, mul_m = 5.0, mul_v = 100.0)
@@ -33,7 +33,7 @@ Create an elemeental partitioned quasi-Newton operator `epm` and an $(_epv).
 Both have the same partitioned structure defined by the size of the problem `n::Int`, the size of the element `nie::Int` and the overlapping between the consecutive elements `overlapping::Int`.
 Each elemental element-matrix is fill with ones, except the terms of the diagonal of value `rand(1:range_mul_v)`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
-Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+**Warning:** You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are correct.
 """
 function create_epv_epm_rand(;
@@ -53,9 +53,9 @@ end
 
 Create an elemental partitioned limited-memory quasi-Newton operator PLBFGS `eplo` and an $(_epv).
 Both have the same partitioned structure defined by the size of the problem `n::Int`, the size of the element `nie::Int` and the overlapping between the consecutive elements `overlapping::Int`.
-Each elemental element-matrix is a `LBFGSOperator`.
+Each elemental element-linear-operator is a `LBFGSOperator`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
-Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+**Warning:** You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are correct.
 """
 function create_epv_eplo_bfgs(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)
@@ -69,9 +69,9 @@ end
 
 Create an elemental partitioned limited-memory quasi-Newton operator PLSR1 `eplo` and an $(_epv).
 Both have the same partitioned structure defined by the size of the problem `n::Int`, the size of the element `nie::Int` and the overlapping between the consecutive elements `overlapping::Int`.
-Each elemental element-matrix is a `LSR1Operator`.
+Each elemental element-linear-operator is a `LSR1Operator`.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
-Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+**Warning:** You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are correct.
 """
 function create_epv_eplo_sr1(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)
@@ -81,13 +81,13 @@ function create_epv_eplo_sr1(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)
 end
 
 """
-    (eplo,epv) = create_epv_eplo_sr1(;n=9,nie=5,overlapping=1, mul_v=100.)
+    (eplo,epv) = create_epv_eplo(;n=9,nie=5,overlapping=1, mul_v=100.)
 
-Create an elemental partitioned limited-memory quasi-Newton operator `eplo` and $(_epv).
+Create an elemental partitioned limited-memory quasi-Newton operator `eplo` and an $(_epv).
 Both have the same partitioned structure defined by the size of the problem `n::Int`, the size of the element `nie::Int` and the overlapping between the consecutive elements `overlapping::Int`.
-Each elemental element-matrix is instantiated as a `LBFGSOperator`, but it may change to a `LSR1Operator` later on.
+Each elemental element-linear-operator is instantiated as a `LBFGSOperator`, but it may change to a `LSR1Operator` later on.
 The value of each elemental element-vector is `rand(nie) .* mul_v::Real`.
-Warning: You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
+**Warning:** You have to choose carefully the values `n`, `nie` and `overlap`, otherwise the method may fail.
 The default values are correct.
 """
 function create_epv_eplo(; n = 9, nie = 5, overlapping = 1, mul_v = 100.0)

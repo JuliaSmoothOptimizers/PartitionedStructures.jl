@@ -22,8 +22,8 @@ abstract type LOEltMat{T} <: Elt_mat{T} end
 """
     Counter_elt_mat
 
-Count for an element-matrix the updates performed on it, from its allocation.
-`total_update + total_reset + total_untouched == attempt`, .
+Count the number of updates performed by an element-matrix, since its allocation.
+`total_update + total_reset + total_untouched == attempt`.
 """
 mutable struct Counter_elt_mat
   total_update::Int # count the total of update perform by the element linear-operator
@@ -65,7 +65,7 @@ Return the `Counter_elt_mat` of the elemental element-matrix `elt_mat`.
 """
     index = get_index(elt_mat::T) where T <: Elt_mat
 
-Return index: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
+Return `index`: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
 If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.
 """
 @inline get_index(elt_mat::T) where {T <: Elt_mat} = get_current_untouched(elt_mat.counter)
@@ -96,7 +96,7 @@ similar(cem::Counter_elt_mat) = Counter_elt_mat()
 """
     index = get_current_untouched(cem::Counter_elt_mat)
 
-Return index: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
+Return `index`: the number of the last partitioned-updates that did not update the element-matrix `elt_mat`.
 If the last partitioned-update updates `elt_mat` then `index` will be equal to `0`.
 """
 get_current_untouched(cem::Counter_elt_mat) = cem.current_untouched
@@ -109,9 +109,9 @@ Return the information about the last partitioned quasi-Newton update applied on
 iter_info(cem::Counter_elt_mat) = (cem.current_update, cem.current_untouched, cem.current_reset)
 
 """
-    (total_update, total_untouched, current_reset) = iter_info(cem::Counter_elt_mat)
+    (total_update, total_untouched, current_reset) = total_info(cem::Counter_elt_mat)
 
-Return the informations about all the quasi-Newton updates applied onto the element associated to the counter `cem`.
+Return the informations about all the quasi-Newton updates applied onto the element  counter `cem` (associated to an element-matrix).
 """
 total_info(cem::Counter_elt_mat) = (cem.total_update, cem.total_untouched, cem.current_reset)
 

@@ -55,7 +55,8 @@ end
 """
     eem = new_eev(nᵢ::Int; T=Float64, n=nᵢ^2)
 
-Create an elemental element-vector of size `nie`, with random values and whose the indices are within the range `1:n`.
+Create an elemental element-vector of size `nie`, with random values.
+The indices are within the range `1:n`.
 """
 @inline new_eev(nᵢ::Int; T = Float64, n = nᵢ^2) =
   Elemental_elt_vec(rand(T, nᵢ), sample(1:n, nᵢ, replace = false), nᵢ)
@@ -63,7 +64,8 @@ Create an elemental element-vector of size `nie`, with random values and whose t
 """
     eem = ones_eev(nᵢ::Int; T=Float64, n=nᵢ^2)
 
-Create an elemental element-vector of size `nie` with values set to `1` and whose the indices are within the range `1:n`.
+Create an elemental element-vector of size `nie` with values set to `1`.
+The indices are within the range `1:n`.
 """
 @inline ones_eev(nᵢ::Int; T = Float64, n = nᵢ^2) =
   Elemental_elt_vec(ones(T, nᵢ), sample(1:n, nᵢ, replace = false), nᵢ)
@@ -71,7 +73,8 @@ Create an elemental element-vector of size `nie` with values set to `1` and whos
 """
     eem = specific_ones_eev(nie::Int, index::Int; T=Float64, mul::Float64=1.)
 
-Create an elemental element-vector of size `nie`, of random values multiplied by `mul` and whose indices are in range `index:index+nie`.
+Create an elemental element-vector of size `nie` with random values multiplied by `mul`.
+Indices are in range `index:index+nie`.
 """
 @inline specific_ones_eev(nie::Int, index::Int; T = Float64, mul::Float64 = 1.0) =
   Elemental_elt_vec((xi -> mul * xi).(rand(T, nie)), [index:(index + nie - 1);], nie)

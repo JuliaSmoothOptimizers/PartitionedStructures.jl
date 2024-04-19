@@ -18,7 +18,7 @@ Represent an elemental element `LSR1Operator`;
 * `nie` is the elemental size (`=length(indices)`);
 * `Bie` a `LSR1Operator`;
 * `linear`: if `linear==true`, then the element matrix contribution is null;
-* `counter` counts how many update the elemental limited-memory operator goes through from its allocation.
+* `counter`: counts how many updates have been performed since the allocation of the elemental linear operator;
 """
 mutable struct Elemental_elo_sr1{T} <: LOEltMat{T}
   nie::Int # nᵢᴱ
@@ -82,7 +82,7 @@ end
 """
     eelo = LSR1_eelo(nie::Int; T=Float64, index=1)
 
-Return an `Elemental_elo_sr1` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
+Return an `Elemental_elo_sr1` of type `T` and of size `nie`, the indices are in the range `index:index+nie-1`.
 """
 function LSR1_eelo(nie::Int; T = Float64, index = 1, linear = false, mem = 5)
   indices = [index:1:(index + nie - 1);]

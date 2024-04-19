@@ -17,8 +17,8 @@ We write a partially-separable function $f: \R^n \to \R$ in the form
   f(x) = \sum_{i=1}^N f_i (U_i(x)),\; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i \ll n
 ```
 where:
-* $f_i$ is the $i$-th element function whose dimension is smaller than $f$;
-* $U_i$ the linear operator selecting the linear combinations of variables that parametrize $f_i$.
+- $f_i$ is the $i$-th element function whose dimension is smaller than $f$;
+- $U_i$ the linear operator selecting the linear combinations of variables that parametrize $f_i$.
 
 In the case of partitioned quasi-Newton methods, they require storing partitioned gradients and the partitioned Hessian approximation.
 [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl) facilitates the definition of those partitioned structures and defines methods to manipulate them.
@@ -31,9 +31,9 @@ Ui = [1,3,5] # i.e. [1 0 0 0 0; 0 0 1 0 0; 0 0 0 0 1]
 ```
 - the internal variables are linear combinations of the variables that parametrize $f_i$, i.e. $U_i$ may be a dense matrix.
 
-The implementation of the linear-operator $U_i$, which describe entirely the partially-separable structure of $f$, changes depending on wether we use internal or elemental variables.
+The implementation of the linear-operators $U_i$, which describe entirely the partially-separable structure of $f$, changes depending on wether we use internal or elemental variables.
 
-At the moment, we only developed the elemental partitioned structures, but we left the door open to the development of internal partitioned structures in the future.
+At the moment, **we only support the elemental partitioned structure**, but we left the door open to develop the internal partitioned structure in the future.
 
 ## How to use
 Check the [tutorial](https://JuliaSmoothOptimizers.github.io/PartitionedStructures.jl/stable/tutorial/).
@@ -45,7 +45,7 @@ Structure              | Description
 `Elemental_pm`         | An elemental partitioned matrix, each element-matrix is dense
 `Elemental_plo_bfgs`   | A limited-memory elemental partitioned matrix, each element limited-memory operator is a `LBFGSOperator`
 `Elemental_plo_sr1`    | A limited-memory elemental partitioned matrix, each element limited-memory operator is a `LSR1Operator`
-`Elemental_plo`        | A limited-memory elemental partitioned matrix, each element limited-memory operator is a `LBFGSOperator` or a `LSR1Operator`
+`Elemental_plo`        | A limited-memory elemental partitioned matrix, each element limited-memory operator is either a `LBFGSOperator` or a `LSR1Operator`
 `Elemental_pv`         | An elemental partitioned vector
 
 ## Methods available
@@ -55,7 +55,7 @@ Method                 | Description
 `identity_eplo_LBFGS`  | Create a PLBFGS limited-memory partitioned matrix
 `identity_eplo_LSR1`   | Create a PLSR1 limited-memory partitioned matrix
 `identity_eplo_LOSE`   | Create a PLSE limited-memory partitioned matrix
-`update`               | Performs a partitioned quasi-Newton update on a partitioned matrix
+`update`               | Perform a partitioned quasi-Newton update on a partitioned matrix
 `eplo_lbfgs_from_epv`  | Create an `Elemental_plo_bfgs` from the partitioned structure of an `Elemental_pv`
 `eplo_lsr1_from_epv`   | Create an `Elemental_plo_sr1` from the partitioned structure of an `Elemental_pv`
 `eplo_lose_from_epv`   | Create an `Elemental_plo` from the partitioned structure of an `Elemental_pv`
@@ -67,11 +67,12 @@ Method                 | Description
 `build_v!`             | Build a vector accumulating the element contributions of a partitioned vector 
 `set_epv!`             | Set the value of every element-vector
 `minus_epv!`           | Apply a unary minus on every element-vector of a partitioned vector
-`add_epv!`             | Perform elementwise addition between two partitioned vectors
+`add_epv!`             | Perform an elementwise addition between two partitioned vectors
 
 ## Modules using [PartitionedStructures.jl](https://github.com/JuliaSmoothOptimizers/PartitionedStructures.jl)
-The structures defined here are used in the module
-[PartiallySeparableSolvers.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableSolvers.jl) inside a trust-region method using partitioned quasi-Newton operators, and in [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
+The structures defined here are used in the modules [PartitionedVectors.jl](https://github.com/JuliaSmoothOptimizers/PartitionedVectors.jl) and [PartiallySeparableNLPModels.jl](https://github.com/JuliaSmoothOptimizers/PartiallySeparableNLPModels.jl)
+to define a trust-region method using partitioned quasi-Newton operators.
+Similarly, [PartitionedKnetNLPModels.jl](https://github.com/paraynaud/PartitionedKnetNLPModels.jl) provide methods to train a classification neural network with a limited-memory partitioned quasi-Newton stochastic method.
 
 # Bug reports and discussions
 

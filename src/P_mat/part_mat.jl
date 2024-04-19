@@ -78,7 +78,7 @@ Set the permutation of the partitioned-matrix `pm` to `perm`.
 """
     reset_spm!(pm::T) where {Y <: Number, T <: Part_mat{Y}}
 
-Set the elements of sparse matrix `pm.spm` to `0`.
+Set the elements of the sparse matrix `pm.spm` to `0`.
 """
 @inline reset_spm!(pm::T) where {Y <: Number, T <: Part_mat{Y}} = pm.spm.nzval .= (Y)(0)
 
@@ -92,7 +92,7 @@ Reset the sparse matrix `pm.spm`.
 """
     reset_L!(pm)
 
-Set the elements of sparse matrix `pm.L` to `0`.
+Set the elements of the sparse matrix `pm.L` to `0`.
 """
 @inline reset_L!(pm::T) where {T <: Part_mat{Y}} where {Y <: Number} = pm.L.nzval .= (Y)(0)
 
@@ -107,7 +107,7 @@ Reset the sparse matrix `pm.L`.
     L = get_L(pm::T) where T <: Part_mat
 
 Return the sparse matrix `pm.L`, who aims to store a Cholesky factor.
-By default `pm.L` is not instantiate.
+By default `pm.L` is empty.
 """
 @inline get_L(pm::T) where {T <: Part_mat} = pm.L
 
@@ -121,7 +121,7 @@ Return the value `pm.L[i,j]`, from the sparse matrix `pm.L`.
 """
     set_L!(pm::P, i::Int, j::Int, value::T) where {T <: Number, P <: Part_mat{T}}
 
-Set the value of `pm.L[i,j] = value`.
+Set `pm.L[i,j] = value`.
 """
 @inline set_L!(pm::P, i::Int, j::Int, value::T) where {T <: Number, P <: Part_mat{T}} =
   @inbounds pm.L[i, j] = value
@@ -137,7 +137,7 @@ Set the sparse matrix `plm.L` to the sparse matrix `plm.spm`.
     eelo_set = get_eelo_set(plm::T) where T <: Part_LO_mat
     eelo = get_eelo_set(plm::T, i::Int) where T <: Part_LO_mat
 
-Return either the vector of every elemental element linear-operator `plm.eelo_set` or the `i`-th elemental element linear-operator `plm.eelo_set[i]`.
+Return either the vector of all elemental element linear-operators `plm.eelo_set` or the `i`-th elemental element linear-operator `plm.eelo_set[i]`.
 """
 @inline get_eelo_set(plm::T) where {T <: Part_LO_mat} = plm.eelo_set
 @inline get_eelo_set(plm::T, i::Int) where {T <: Part_LO_mat} = @inbounds plm.eelo_set[i]
@@ -161,7 +161,7 @@ Return the linear-operator of the `i`-th elemental element linear-operator of `p
 """
     set_eelo_set!(eplo::P, i::Int, eelo::Y) where {T, P <: Part_LO_mat{T}, Y <: LOEltMat{T}}
 
-Set the `i`-th elemental element linear-operator `eplo.eelo` to `eelo`.
+Set the `i`-th elemental element linear-operator `eplo.eelo_set[i]` to `eelo`.
 """
 @inline set_eelo_set!(eplo::T) where {T <: Part_LO_mat} = @error("should not be called")
 

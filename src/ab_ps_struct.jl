@@ -23,7 +23,7 @@ get_n(ps::T) where {T <: AbstractPartitionedStructure} = ps.n
 """
     get_N(ps::T) where T <: AbstractPartitionedStructure
 
-Return the number of element composing the $(_ps).
+Return the number of elements composing the $(_ps).
 """
 get_N(ps::T) where {T <: AbstractPartitionedStructure} = ps.N
 
@@ -59,7 +59,7 @@ Similar to `==`, but it can compare different partitioned-structures, example: a
 """
     full_check_epv_epm(ep1::Y, ep2::Z) where {Y <: AbstractPartitionedStructure, Z <: AbstractPartitionedStructure}
 
-Check if each element-structure of both partitioned-structures depend of the same subset of variables.
+Check if all element-structures of both partitioned-structures depend on the same subset of variables.
 """
 @inline full_check_epv_epm(
   ep1::Y,
@@ -70,7 +70,7 @@ Check if each element-structure of both partitioned-structures depend of the sam
 """
     initialize_component_list!(ps::T) where T <: AbstractPartitionedStructure)
 
-Build for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
+Build for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrized by `i`.
 """
 initialize_component_list!(ps::T) where {T <: AbstractPartitionedStructure} =
   error("should not be called")
@@ -79,7 +79,7 @@ initialize_component_list!(ps::T) where {T <: AbstractPartitionedStructure} =
     ee_vector = get_ee_struct(eps::AbstractPartitionedStructure{T}) where T
     ee = get_ee_struct(eps::AbstractPartitionedStructure{T}, i::Int) where T
 
-Return a vector of every elemental elements fom $(_eps) or only its `i`-th elemental element.
+Return a vector containing every elemental element structures from $(_eps) or its `i`-th elemental element structure.
 """
 get_ee_struct(ps::T) where {T <: AbstractPartitionedStructure} = error("should not be called")
 
