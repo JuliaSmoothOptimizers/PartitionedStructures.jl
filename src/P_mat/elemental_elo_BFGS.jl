@@ -18,7 +18,7 @@ Represent an elemental element `LBFGSOperator`:
 * `nie` is the elemental size (`=length(indices)`);
 * `Bie` a `LBFGSOperator`;
 * `linear`: if `linear==true`, then the element matrix contribution is null;
-* `counter` counts how many update the elemental limited-memory operator goes through from its allocation.
+* `counter`: counts how many updates have been performed since the allocation of the elemental linear operator;
 """
 mutable struct Elemental_elo_bfgs{T} <: LOEltMat{T}
   nie::Int # nᵢᴱ
@@ -54,7 +54,7 @@ end
 """
     eelo = init_eelo_LBFGS(elt_var::Vector{Int}; T=Float64, mem=5)
 
-Return an `Elemental_elo_bfgs` of type `T` based on the vector of the elemental variables`elt_var`.
+Return an `Elemental_elo_bfgs` of type `T` based on the vector of the elemental variables `elt_var`.
 """
 function init_eelo_LBFGS(elt_var::Vector{Int}; T = Float64, linear = false, mem = 5)
   nie = length(elt_var)
@@ -82,7 +82,7 @@ end
 """
     eelo = LBFGS_eelo(nie::Int; T=Float64, index=1)
 
-Return an `Elemental_elo_bfgs` of type `T` of size `nie`, the indices are all the values in the range `index:index+nie-1`.
+Return an `Elemental_elo_bfgs` of type `T` and of size `nie`, the indices are in the range `index:index+nie-1`.
 """
 function LBFGS_eelo(nie::Int; T = Float64, index = 1, linear = false, mem = 5)
   indices = [index:1:(index + nie - 1);]

@@ -7,18 +7,18 @@ The partitioned quasi-Newton methods exploit the partially-separable structure o
 ```math
  f(x) = \sum_{i=1}^N f_i (U_i x) , \; f_i : \R^{n_i} \to \R, \; U_i \in \R^{n_i \times n},\; n_i \ll n,
 ```
-as the sum of element function $f_i$.
+as the sum of the element functions $f_i$.
 The gradient $\nabla f$ and the Hessian $\nabla^2 f$
 ```math
 \nabla f(x) = \sum_{i=1}^N U_i^\top f_i (U_i x), \quad \nabla^2 f(x) = \sum_{i=1}^N U_i^\top f_i (U_i x) U_i,
 ```
 accumulate the element derivatives $\nabla f_i$ and $\nabla^2 f_i$.
 
-The partitioned structure of the Hessian let us the definition of partitioned quasi-Newton approximations $B \approx \nabla^2 f$, such that $B$ accumulates every element Hessian approximation $B_i \approx \nabla^2 f_i$
+The partitioned structure of the Hessian allow the definition of partitioned quasi-Newton approximations $B \approx \nabla^2 f$, such that $B$ accumulates every element Hessian approximation $B_i \approx \nabla^2 f_i$
 ```math
 B = \sum_{i=1}^N U_i^\top B_i U_i
 ```
-The partitioned quasi-Newton approximations respect sparsity structure of $\nabla^2 f$, which is not the case of classical quasi-Newton approximation (e.g. BFGS, SR1).
+The partitioned quasi-Newton approximations respect the sparsity structure of $\nabla^2 f$, which is not the case of classical quasi-Newton approximation (e.g. BFGS, SR1).
 Moreover, the rank of the partitioned updates may be proportional to the number of elements $N$, whereas classical quasi-Newton approximations are low-rank updates.
 A partitioned quasi-Newton update may update every element-Hessian $B_i$ at each step $s$.
 It requires $B_i$, $U_i s$ and $\nabla f_i (U_i (x+s)) - \nabla f_i (U_i x)$, and therefore we have to store such an approximation and vectors for every element.
@@ -99,9 +99,9 @@ get_v(partitioned_gradient_x0) == ∇f(x0)
 ```
 ## Approximate the Hessian $\nabla^2 f$
 There are at least two ways to approximate $\nabla^2 f$: a classical quasi-Newton approximation (ex: BFGS) and a partitioned quasi-Newton approximation (ex: PBFGS).
-Both methods are presented, and we expose the sparse structure of the partitioned approximation.
+This section presents both methods and exposes the sparse structure of the partitioned variant.
 ### Quasi-Newton approximation of the quadratic (BFGS)
-In the case of the BFGS method, you want to approximate the Hessian from `s = x1 - x0`
+In the case of the BFGS method, we want to approximate the Hessian from `s = x1 - x0`
 ```@example PartitionedStructuresQuadratic
 x1 = [1., 2., 2.]
 s = x1 .- x0
@@ -117,7 +117,7 @@ B = [ i==j ? 1. : 0. for i in 1:n, j in 1:n]
 
 By applying the BFGS update, you satisfy the secant equation `Bs = y`
 ```@example PartitionedStructuresQuadratic
-# PartitionedStructures.jl exports a BFGS implementation
+# PartitionedStructures.jl exports a BFGS update
 B_BFGS = BFGS(s,y,B) 
 
 using LinearAlgebra
@@ -141,7 +141,10 @@ It can be visualized with the `Matrix` constructor
 Matrix(partitioned_matrix)
 ```
 
-The second term on the diagonal accumulates two components of value 1.0 from the two initial element approximations.
+The second term of the diagonal accumulates two components of value 1.0 from the two initial element approximations.
+
+The module [PartitionedVectors.jl](https://github.com/JuliaSmoothOptimizers/PartitionedVectors.jl) eases the manipulation of the partitioned vectors.
+In PartitionedStructures.jl, the manipulation of partitioned vectors require the use of routines.
 
 Then you compute the partitioned gradient at `x1`
 ```@example PartitionedStructuresQuadratic
@@ -171,6 +174,7 @@ Then you can define the partitioned quasi-Newton PBFGS update
 B_PBFGS = update(partitioned_matrix, partitioned_gradient_difference, s; name=:pbfgs, verbose=true)
 ```
 which respects the sparsity structure of ∇²f.
+Note that there exists a variant of `update` where `s` is a partitioned vector similar to `partitioned_gradient_difference`.
 
 In addition, `update()` indicates the number of elements: updated, not updated or untouched, as long as the user doesn't set `verbose=false`.
 The partitioned update verifies the secant equation
@@ -195,14 +199,19 @@ Once the partitioned matrix is allocated,
 partitioned_matrix_PBFGS = epm_from_epv(partitioned_gradient_x0)
 partitioned_matrix_PSR1 = epm_from_epv(partitioned_gradient_x0)
 partitioned_matrix_PSE = epm_from_epv(partitioned_gradient_x0)
+
+bools = [true, true, false, true] # false means non convex
+partitioned_matrix_PCS = epm_from_epv(partitioned_gradient_x0; convex_vector = bools)
 ```
-you can apply on it any of the three partitioned updates : PBFGS, PSR1, PSE (by default) :
+you can apply on it any of the four partitioned updates : PBFGS, PSR1, PCS and PSE (by default) :
 - PBFGS updates each element approximation with BFGS;
 - PSR1 updates each element approximation with SR1;
+- PCS updates each element approximation with BFGS if the element is convex and SR1 if it is non convex (designated with `bools`);
 - In PSE, each element approximation is updated with BFGS if it is possible or with SR1 otherwise.
 ```@example PartitionedStructuresQuadratic
 B_PBFGS = update(partitioned_matrix_PBFGS, partitioned_gradient_difference, s; name=:pbfgs)
 B_PSR1 = update(partitioned_matrix_PSR1, partitioned_gradient_difference, s; name=:psr1)
+B_PCS = update(partitioned_matrix_PSR1, partitioned_gradient_difference, s; name=:pcs)
  # name=:pse by default
 B_PSE = update(partitioned_matrix_PSE, partitioned_gradient_difference, s)
 ```
@@ -214,8 +223,12 @@ norm(mul_epm_vector(partitioned_matrix_PBFGS, s) - y) < atol
 norm(mul_epm_vector(partitioned_matrix_PSR1, s) - y) < atol
 ```
 ```@example PartitionedStructuresQuadratic
+norm(mul_epm_vector(partitioned_matrix_PCS, s) - y) < atol
+```
+```@example PartitionedStructuresQuadratic
 norm(mul_epm_vector(partitioned_matrix_PSE, s) - y) < atol
 ```
+
 
 ### Limited-memory partitioned quasi-Newton operators
 These operators exist to apply the partitioned quasi-Newton methods to a partially-separable function with large $n_i$, whose element Hessian approximations can't be store as dense matrices.
@@ -223,9 +236,9 @@ The limited-memory partitioned quasi-Newton operators allocate a quasi-Newton op
 It defines three approximations:
 - PLBFGS, each element approximation is a `LBFGSOperator`;
 - PLSR1, each element approximation is a `LSR1Operator`;
-- PLSE, each element approximation may be a `LBFGSOperator` or `LSR1Operator`.
+- PLSE, each element approximation may be a `LBFGSOperator` or a `LSR1Operator`.
 
-Contrary to the partitioned quasi-Newton operators, each partitioned limited-memory quasi-Newton operators has a different type
+Contrary to the partitioned quasi-Newton operators, each limited-memory partitioned quasi-Newton operators has a different type
 ```@example PartitionedStructuresQuadratic
 partitioned_linear_operator_PLBFGS = eplo_lbfgs_from_epv(partitioned_gradient_x0)
 partitioned_linear_operator_PLSR1 = eplo_lsr1_from_epv(partitioned_gradient_x0)
@@ -251,4 +264,4 @@ That's it, you have all the tools to implement a partitioned quasi-Newton method
 
 ### Tips
 The main issue about the definition of partitioned structures is informing the $f_i$ and $U_i$.
-To address this issue you may want to take a look at [ExpressionTreeForge.jl](https://github.com/JuliaSmoothOptimizers/ExpressionTreeForge.jl) which detect automatically the partially separable structure from an [ADNLPModels](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl) or a [JuMP model](https://github.com/jump-dev/JuMP.jl).
+To address this issue you may want to take a look at [ExpressionTreeForge.jl](https://github.com/JuliaSmoothOptimizers/ExpressionTreeForge.jl) which detects automatically the partially-separable structure from an [ADNLPModels](https://github.com/JuliaSmoothOptimizers/ADNLPModels.jl) or a [JuMP model](https://github.com/jump-dev/JuMP.jl).

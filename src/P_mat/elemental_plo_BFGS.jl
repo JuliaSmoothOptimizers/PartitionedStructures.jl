@@ -16,12 +16,13 @@ export identity_eplo_LBFGS, PLBFGS_eplo, PLBFGS_eplo_rand
 
 Represent an elemental partitioned quasi-Newton limited-memory operator PLBFGS.
 Each element is an elemental element `LBFGSOperator`.
-`N` is the number of elements.
-`n` is the size of the $(_eplmo).
-`eelo_set` is the set of elemental element linear-operators.
-`spm` and `L` are sparse matrices either to form the sparse matrix gathering the elements or the Cholesky factor of `spm`.
-`component_list` summarizes for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrised by `i`.
-`permutation` is the current permutation of the $(_eplmo) (`[1:n;]` initially).
+The fields of `Elemental_plo_bfgs{T}`:
+- `N` is the number of elements;
+- `n` is the size of the $(_eplmo);
+- `eelo_set` is the set of elemental element linear-operators;
+- `spm` and `L` are sparse matrices either to form the sparse matrix gathering the elements or the Cholesky factor of `spm`;
+- `component_list` summarizes for each variable i (∈ {1,..., n}) the list of elements (⊆ {1,...,N}) being parametrized by `i`;
+- `permutation` is the current permutation of the $(_eplmo) (`[1:n;]` initially).
 """
 mutable struct Elemental_plo_bfgs{T} <: Part_LO_mat{T}
   N::Int
@@ -67,7 +68,7 @@ end
 
 Return an $(_eplmo) PLBFGS of `N` elemental element linear-operators.
 The positions are given by the vector of the element variables `element_variables`.
-`linear_vector` indicates which element linear-opeartor should not contribute to the partitioned linear-operator.
+`linear_vector` indicates (with `true`) which element linear-operator should not contribute to the partitioned linear-operator.
 """
 identity_eplo_LBFGS(
   element_variables::Vector{Vector{Int}};
@@ -129,7 +130,7 @@ end
     eplo = PLBFGS_eplo_rand(N::Int, n::Int; T=Float64, nie::Int=5)
 
 Return an $(_eplmo) PLBFGS of `N` elemental element linear-operators.
-The size of each element is `nie`, whose positions are random in the range `1:n`.
+The size of each element is `nie` with random indices within the range `1:n`.
 """
 function PLBFGS_eplo_rand(N::Int, n::Int; T = Float64, nie::Int = 5, mem = 5)
   eelo_set = map(i -> LBFGS_eelo_rand(nie; T = T, n = n, mem), [1:N;])

@@ -18,7 +18,7 @@ It has fields:
 * `indices`: indices of elemental variables;
 * `nie`: elemental size (`=length(indices)`);
 * `Bie::Symmetric{T, Matrix{T}}`: the elemental matrix;
-* `counter`: counts how many update the elemental matrix goes through from its allocation;
+* `counter`: counts how many updates have been performed since the allocation of the elemental matrix;
 * `convex`: if `convex==true`, then `Elemental_em` default update is BFGS otherwise it is SR1;
 * `linear`: if `linear==true`, then the element matrix contribution is null;
 * `_Bsr`: a vector used during quasi-Newton update of the elemental matrix.
@@ -145,7 +145,7 @@ end
     permute!(eem::Elemental_em{T}, p::Vector{Int}) where T
 
 Set the indices of the element variables of `eem` to `p`.
-Must be use with caution.
+Must be used with caution.
 """
 function permute!(eem::Elemental_em{T}, p::Vector{Int}) where {T}
   eem.indices .= p
