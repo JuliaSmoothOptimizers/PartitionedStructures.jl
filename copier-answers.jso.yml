@@ -1,0 +1,8 @@
+PackageName: "PartitionedStructures"
+PackageOwner: "JuliaSmoothOptimizers"
+PackageUUID: "a6683cb1-4e99-4d03-b5b5-b79ed0acabcf"
+_src_path: "https://github.com/JuliaSmoothOptimizers/JSOBestieTemplate.jl"
+_commit: "v0.13.0"
+AddBreakage: true
+AddBenchmark: false
+AddBenchmarkCI: true
