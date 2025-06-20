@@ -18,7 +18,7 @@ Represent an elemental element `LSR1Operator`;
 * `nie` is the elemental size (`=length(indices)`);
 * `Bie` a `LSR1Operator`;
 * `linear`: if `linear==true`, then the element matrix contribution is null;
-* `counter`: counts how many updates have been performed since the allocation of the elemental linear operator;
+* `counter`: counts how many updates have been performed since the allocation of the elemental linear operator.
 """
 mutable struct Elemental_elo_sr1{T} <: LOEltMat{T}
   nie::Int # nᵢᴱ
