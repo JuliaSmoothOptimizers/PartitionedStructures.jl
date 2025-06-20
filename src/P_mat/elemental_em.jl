@@ -67,7 +67,7 @@ function create_id_eem(elt_var::Vector{Int}; T = Float64, convex = false, linear
   nie = length(elt_var)
   _nie = (!linear) * nie
   Bie = zeros(T, _nie, _nie)
-  [Bie[i, i] = 1 for i = 1:_nie]
+  [Bie[i, i] in 1 for i = 1:_nie]
   counter = Counter_elt_mat()
   _Bsr = Vector{T}(undef, _nie)
   eem = Elemental_em{T}(nie, elt_var, Symmetric(Bie), counter, convex, linear, _Bsr)
@@ -83,7 +83,7 @@ function identity_eem(nie::Int; T = Float64, n = nie^2, convex = false, linear =
   indices = rand(1:n, nie)
   _nie = (!linear) * nie
   Bie = zeros(T, _nie, _nie)
-  [Bie[i, i] = 1 for i = 1:_nie]
+  [Bie[i, i] in 1 for i = 1:_nie]
   counter = Counter_elt_mat()
   _Bsr = Vector{T}(undef, _nie)
   eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, convex, linear, _Bsr)
@@ -116,7 +116,7 @@ function fixed_ones_eem(i::Int, nie::Int; T = Float64, mul = 5.0, convex = false
   indices = [i:(i + nie - 1);]
   _nie = (!linear) * nie
   Bie = ones(T, _nie, _nie)
-  [Bie[i, i] = mul for i = 1:_nie]
+  [Bie[i, i] in mul for i = 1:_nie]
   counter = Counter_elt_mat()
   _Bsr = Vector{T}(undef, _nie)
   eem = Elemental_em{T}(nie, indices, Symmetric(Bie), counter, convex, linear, _Bsr)
