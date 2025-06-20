@@ -14,7 +14,7 @@ The gradient $\nabla f$ and the Hessian $\nabla^2 f$
 ```
 accumulate the element derivatives $\nabla f_i$ and $\nabla^2 f_i$.
 
-The partitioned structure of the Hessian allow the definition of partitioned quasi-Newton approximations $B \approx \nabla^2 f$, such that $B$ accumulates every element Hessian approximation $B_i \approx \nabla^2 f_i$
+The partitioned structure of the Hessian allows the definition of partitioned quasi-Newton approximations $B \approx \nabla^2 f$, such that $B$ accumulates every element Hessian approximation $B_i \approx \nabla^2 f_i$
 ```math
 B = \sum_{i=1}^N U_i^\top B_i U_i
 ```
