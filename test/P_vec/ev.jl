@@ -10,7 +10,7 @@ using PartitionedStructures.M_abstract_element_struct
   # elemental
   ev1 = new_eev(nᵢᴱ)
   v1 = rand(nᵢᴱ)
-  i1 = [1:nᵢᴱ:(nᵢᴱ^2);]
+  i1 = [1:nᵢᴱ:(nᵢᴱ ^ 2);]
   set_vec!(ev1, v1)
   set_indices!(ev1, i1)
 
@@ -37,7 +37,7 @@ end
 @testset "interface SparseVector" begin
   n = 20
   sx = spzeros(Float64, n)
-  [sx[i] = i for i = 1:2:7]
+  [sx[i] in i for i = 1:2:7]
 
   ex = eev_from_sparse_vec(sx)
   _sx = sparse_vec_from_eev(ex; n = n)
@@ -61,7 +61,7 @@ end
   v1 = get_vec(eev1)
   i1 = get_indices(eev1)
   lin_com = spzeros(eltype(v1), nᵢᴱ, nᵢᴱ) # identity matrix Matrix(I,n,n) didn't work
-  [lin_com[i, i] = 1 for i = 1:nᵢᴱ]
+  [lin_com[i, i] in 1 for i = 1:nᵢᴱ]
   sv = sparsevec(i1, v1)
   _tmp = rand(Int, nᵢᴱ)
 end
