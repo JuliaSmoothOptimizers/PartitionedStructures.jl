@@ -10,7 +10,7 @@ using PartitionedStructures.M_abstract_element_struct
   # elemental
   ev1 = new_eev(nᵢᴱ)
   v1 = rand(nᵢᴱ)
-  i1 = [1:nᵢᴱ:(nᵢᴱ^2);]
+  i1 = [1:nᵢᴱ:(nᵢᴱ ^ 2);]
   set_vec!(ev1, v1)
   set_indices!(ev1, i1)
 
